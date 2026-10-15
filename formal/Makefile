@@ -70,7 +70,8 @@ phase_table: engine.v kernel_step.v kernel_accepts.v
 
 phase_table_proof:
 	sby -f phase_table.sby prove cover
-	sby -f phase_table.sby no_accepts no_open next_no_wrap target_is_next rows_while_running
+	sby -f phase_table.sby no_accepts no_open next_no_wrap target_is_next rows_while_running \
+	  config_while_running
 
 # The pair's spacing: pair_step's lemma, the kernel's check of one step carrying the pair,
 # for all inputs and an opcode at a time; then the run, which takes it, the step lemma and
@@ -121,7 +122,7 @@ phase_table_affine_proof:
 	sby -f row_step.sby no_axioms no_offset_check x_unfollowed
 	sby -f phase_table_affine.sby prove cover
 	sby -f phase_table_affine.sby offset_unchecked no_accepts no_open next_no_wrap \
-	  target_is_next rows_while_running
+	  target_is_next rows_while_running config_while_running
 
 # The axioms on the free offsets above, which phase_step.sv's AFFINE run and test_kernel.ml
 # take too, hold of the true phase - slope * x modulo 2^24: z3 finds each check unsat, and
