@@ -1656,3 +1656,51 @@ let%expect_test "a data pull is clear from data_settle cycles after a seek" =
     (core (underflow false))
     |}]
 ;;
+
+(* An out with exactly the threshold shifted always autopulls first, so the short out
+   after it finds a fresh word and takes none, as the core has it. *)
+let%expect_test "an out at exactly the threshold always autopulls" =
+  let config =
+    { Program_config.default with
+      autopull = true
+    ; pull_threshold = 8
+    ; autopull_data = true
+    }
+  in
+  let source =
+    {|
+    seek [7]
+    mov osr, null
+    out null, 8
+    out null, 4
+    out null, 2
+    halt
+|}
+  in
+  rows ~config source
+  |> print_rows ~f:(fun r -> if r.may_underrun then "MAY UNDERRUN" else "");
+  let program = Asm.assemble source |> ok_exn in
+  let machine =
+    Machine.create
+      ~config:(Asm.Program.configure program config)
+      ~program:(Asm.Program.words program |> ok_exn)
+    |> ok_exn
+  in
+  let machine = Machine.load_data machine [ 0x1234; 0x5678 ] |> ok_exn in
+  let machine = Fn.apply_n_times ~n:16 (fun m -> Machine.step m ~inputs:0) machine in
+  print_s
+    [%message
+      "core"
+        ~underflow:(machine.fault.underflow : bool)
+        ~data_ptr:(machine.data_ptr : int)
+        ~osr_count:(machine.osr_count : int)];
+  [%expect {|
+      0  seek [7]
+      1  mov osr, null
+      2  out null, 8
+      3  out null, 4
+      4  out null, 2
+      5  halt
+    (core (underflow false) (data_ptr 1) (osr_count 6))
+    |}]
+;;
