@@ -21,7 +21,8 @@ LOG_S = 3600
 BATCH = 70
 # the chip's flash load and PLL lock, with margin
 BOOT_MS = 3000
-# errors logged an hour at most, so a stuck chip cannot fill the flash
+# error and alarm lines logged an hour at most, so a stuck chip cannot rotate the hour's
+# counts out of the log
 ERRORS_PER_LOG = 8
 
 
@@ -66,9 +67,12 @@ class Soak:
     def error(self, what):
         self.errors += 1
         self.ok = False
+        self.capped("error " + what)
+
+    def capped(self, line):
         if self.logged_errors < ERRORS_PER_LOG:
             self.logged_errors += 1
-            self.write("%7d s error %s" % (self.elapsed_s(), what))
+            self.write("%7d s %s" % (self.elapsed_s(), line))
 
     def setup(self, host):
         _, _, self.track, self.edge_rows = sc.begin(host, log=lambda _: None)
@@ -83,12 +87,12 @@ class Soak:
         if s & 3:
             self.false_alarms += 1
             self.ok = False
-            self.write("%7d s FALSE ALARM engine 1 status 0x%04x pc %d" % (self.elapsed_s(), s, pc))
+            self.capped("FALSE ALARM engine 1 status 0x%04x pc %d" % (s, pc))
             sc.arm(host)
         elif pc != self.track:
             self.not_checking += 1
             self.ok = False
-            self.write("%7d s NOT CHECKING engine 1 at pc %d" % (self.elapsed_s(), pc))
+            self.capped("NOT CHECKING engine 1 at pc %d" % pc)
             sc.arm(host)
         return (first + sent) & 0xFF
 
