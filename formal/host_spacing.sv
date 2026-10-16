@@ -59,22 +59,24 @@ module host_spacing (input clk);
   always @(*) if (first) assume(clear);
 
   reg ready = 0;
-  reg [1:0] last_halted, last_start;
+  reg [1:0] last_halted, last_start, last_last_start;
   reg [140:0] last_config_0, last_config_1;
   always @(posedge clk) begin
     ready <= !clear;
     last_halted <= halted;
     last_start <= start;
+    last_last_start <= last_start;
     last_config_0 <= config_0;
     last_config_1 <= config_1;
   end
-  // a config moved in this cycle was written in the last one
+  // a config moved in this cycle was written in the last one, so a write in the start's
+  // second cycle moves it two cycles after the strobe
   wire [1:0] moved = {config_1 != last_config_1, config_0 != last_config_0};
 
   always @(posedge clk)
     if (ready && !clear) begin
       written_halted: assert((moved & ~last_halted) == 0);
-      written_apart: assert((moved & last_start) == 0);
+      written_apart: assert((moved & (last_start | last_last_start)) == 0);
       words_apart: assert(((program_write | data_write) & (start | last_start)) == 0);
     end
 
