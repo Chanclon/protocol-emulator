@@ -62,7 +62,10 @@ while time.ticks_diff(time.ticks_ms(), start) < 3000:
     time.sleep_ms(5)
 print(' '.join('%02x' % b for b in got))" > "$evidence/uart_$baud.pico_b" &
         listener=$!
-        until grep -q listening "$evidence/uart_$baud.pico_b"; do sleep 0.1; done
+        until grep -q listening "$evidence/uart_$baud.pico_b"; do
+            kill -0 $listener 2>/dev/null || { echo "Pico B stopped before listening" >&2; exit 1; }
+            sleep 0.1
+        done
         run "uart_$baud" 2500 A "'uart', $baud"
         wait $listener
         echo "Pico B at $baud: $(tail -n 1 "$evidence/uart_$baud.pico_b")"
