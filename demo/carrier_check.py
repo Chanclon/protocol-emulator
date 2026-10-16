@@ -255,7 +255,11 @@ def eeprom(bench, r):
     if not at:
         return r.check(False, nets, "", "Pico B's scan finds %s, no 24LC256 at 0x50 to 0x57: "
                        "the module on J10 or its cable" % ["0x%02x" % x for x in found])
-    absent = min(set(range(0x50, 0x58)) - set(found))
+    free = set(range(0x50, 0x58)) - set(found)
+    if not free:
+        return r.check(False, nets, "", "Pico B's scan finds every address 0x50 to 0x57: "
+                       "SDA held low")
+    absent = min(free)
     acked, refused = bench.pins.i2c_probe(at[0]), not bench.pins.i2c_probe(absent)
     note = "" if at[0] == 0x50 else ", not 0x50: its address jumpers"
     return r.check(acked and refused, nets,
