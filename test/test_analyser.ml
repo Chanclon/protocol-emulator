@@ -1362,7 +1362,7 @@ let%expect_test "a period floor leaves a load no higher than a data word" =
     "period " ^ Interval.to_string r.period);
   [%expect
     {|
-    0  mov p, osr                   period ?..?
+    0  mov p, osr                   period 0..65535
     1  halt                         period 100..65535
     |}]
 ;;

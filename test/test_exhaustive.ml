@@ -65,21 +65,18 @@ let%expect_test "every program of four words, with a table SAT finds for each re
   [%expect
     {|
     ((bound ((words 4) (delays (0)) (imms (7)) (values ()))) (programs 24081)
-     (out_of_scope 19660) (checked 141)
+     (out_of_scope 19660) (checked 140)
      (truths
       ((late 456) ("safe, never waits" 1505) ("safe, waits" 36)
        (unanchored 2424)))
-     (safe_admitted (1541 1540)) (precision 99.94%) (waiting_admitted (36 35))
-     (precision_waiting 97.22%) (unsound ()))
+     (safe_admitted (1541 1541)) (precision 100.00%) (waiting_admitted (36 36))
+     (precision_waiting 100.00%) (unsound ()))
     ((class_ Wait) (safe 18) (admitted 18) (precision 100.00%))
-    ((class_ Wait_advance) (safe 18) (admitted 17) (precision 94.44%))
-    ((class_ Anchor) (safe 756) (admitted 755) (precision 99.87%))
-    ((class_ Step) (safe 1168) (admitted 1167) (precision 99.91%))
-    ((class_ Jump) (safe 1176) (admitted 1175) (precision 99.91%))
+    ((class_ Wait_advance) (safe 18) (admitted 18) (precision 100.00%))
+    ((class_ Anchor) (safe 756) (admitted 756) (precision 100.00%))
+    ((class_ Step) (safe 1168) (admitted 1168) (precision 100.00%))
+    ((class_ Jump) (safe 1176) (admitted 1176) (precision 100.00%))
     ((class_ Nop) (safe 728) (admitted 728) (precision 100.00%))
     ((class_ Halt) (safe 190) (admitted 190) (precision 100.00%))
-    ((count 1) (waits true) (shape (Anchor Step Wait_advance Jump))
-     (refusal ((Wait_advance "analyser: phase unbounded")))
-     (example "mov t, now; add t, 7; wait t+; jmp 1") (table true))
     |}]
 ;;

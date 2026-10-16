@@ -23,10 +23,12 @@ module State = struct
     }
   [@@deriving sexp_of, compare, equal]
 
+  (* [p] is a 16-bit register whatever it holds, so [wait t+] before any [set p] still
+     leaves the phase bounded above *)
   let initial =
     { phase = Interval.top
     ; offset = Interval.top
-    ; period = Interval.top
+    ; period = { lo = Some 0; hi = Some ((1 lsl Isa.data_bits) - 1) }
     ; x = Interval.top
     ; y = Interval.top
     ; since_arm = None
