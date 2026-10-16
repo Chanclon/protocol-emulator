@@ -29,6 +29,8 @@ COPIED = ["src", "test", "bin", "ppx", "python", "formal/Makefile", "dune-projec
           "demo/paths.py", "demo/outline.py", "demo/draw.py", "demo/kernel_vs_board.py",
           "demo/glitch_map.py", "pages/die/die.bin", "test/paths/cells.json",
           "src/protocol_emulator.v", "icepi/Makefile"]
+# json the tests read, which SKIPPED drops from the test/ copy above
+COPIED_JSON = ["test/diagrams"]
 SKIPPED = shutil.ignore_patterns("sim_build", "__pycache__", "*.fst", "*.vcd", "*.xml", "*.v", "*.json",
                                  "test_provenance.ml*")
 
@@ -393,6 +395,8 @@ def main():
                 shutil.copytree(root / item, work / "0" / item, ignore=SKIPPED)
             else:
                 shutil.copy(root / item, work / "0" / item)
+        for item in COPIED_JSON:
+            shutil.copytree(root / item, work / "0" / item, dirs_exist_ok=True)
         # a copy that cannot build or elaborate the design would count every mutant invalid
         elaborate = sorted({tuple(a) for m in todo for a in ELABORATE.get(m["file"], [])})
         commands = [["exec", "--", "./bin/generate.exe", *a] for a in elaborate]
