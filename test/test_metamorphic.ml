@@ -783,30 +783,13 @@ let%expect_test "a delay split into the word and a nop changes nothing" =
      (violations_on_accepted 0) (violations_on_refused 0))
     ("delay of a set x split into it and a nop, random" (programs 21)
      (variants 23) (kernel_checked 5) (accepted 0) (refused 23)
-     (violations_on_accepted 0) (violations_on_refused 23))
-    ("random 6" (change (split (j.pc 3) (delay 1) (first 0)))
-     (broken
-      ((analyser (refused (7)) (got_refused (7 16 17)))
-       (row (r.pc 3) (pc 3)
-        (expected
-         (((phase ((lo (-22)) (hi (-5)))) (slack ()) (may_miss false) (slope 0)
-           (offset ((lo ()) (hi ()))) (x ((lo ()) (hi ()))) (y ((lo ()) (hi ())))
-           (period ((lo (26)) (hi (26)))) (since_arm ()) (captured false)
-           (awaiting false) (may_underrun false))
-          (pin_event ())))
-        (got
-         (((phase ((lo (-22)) (hi ()))) (slack ()) (may_miss false) (slope 0)
-           (offset ((lo ()) (hi ()))) (x ((lo ()) (hi ()))) (y ((lo ()) (hi ())))
-           (period ((lo (26)) (hi (26)))) (since_arm ()) (captured false)
-           (awaiting false) (may_underrun false))
-          (pin_event ())))))))
+     (violations_on_accepted 0) (violations_on_refused 0))
     |}]
 ;;
 
-(* What the split above finds: the analyser keeps a counted loop's offset only from a
-   [set x] just before it, so a nop between them loses the loop's exit phase, and a
-   program it accepted is refused. *)
-let%expect_test "a nop between set x and its counted loop loses the loop's exit phase" =
+(* What the split above found: a nop between [set x] and its counted loop lost the loop's
+   exit phase, and a program accepted without it was refused. *)
+let%expect_test "a nop between set x and its counted loop keeps the loop's exit phase" =
   let source ~between =
     String.concat
       ~sep:"\n"
@@ -829,10 +812,7 @@ let%expect_test "a nop between set x and its counted loop loses the loop's exit 
   [%expect {|
     ("set x, 3 [1]" (accepted ((words 9) (deadline_waits 2) (worst_slack (5)))))
     ("set x, 3; nop"
-     (refused
-      (((line 11) (pc (8))
-        (reason
-         "this deadline wait can be reached late, by more on each pass of a loop or after an untimed wait")))))
+     (accepted ((words 10) (deadline_waits 2) (worst_slack (5)))))
     |}]
 ;;
 

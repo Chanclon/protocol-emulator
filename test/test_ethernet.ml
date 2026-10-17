@@ -151,13 +151,13 @@ let%expect_test "the certificate" =
      18  set pins, 2 [1]              phase -63991  edge -63990  gap 64000..?
      19  set pins, 1 [3]              phase -63989..?  edge -63988..?  jitter ?  gap 4 from 21, 2 from 18
      20  set pins, 2 [1]              phase -63985..?  edge -63984..?  jitter ?  gap 4
-     22  set pins, 1 [1]              phase -63981..?  edge -63980..?  jitter ?  gap 4
-     23  set pins, 2 [1]              phase -63979..?  edge -63978..?  jitter ?  gap 2
-     24  set pins, 1 [1]              phase -63977..?  edge -63976..?  jitter ?  gap 2
-     25  out pins, 1 [1]              phase -63975..?  edge -63974..?  jitter ?  gap 2
-     26  jmp y--, 25                  phase -63973..?  flip -63972..?  jitter ?  gap 2
-     27  set pins, 1 [10]             phase -63971..?  edge -63970..?  jitter ?  gap 2
-     28  set pins, 0                  phase -63960..?  edge -63959..?  jitter ?  gap 11
+     22  set pins, 1 [1]              phase -63741  edge -63740  gap 4
+     23  set pins, 2 [1]              phase -63739  edge -63738  gap 2
+     24  set pins, 1 [1]              phase -63737  edge -63736  gap 2
+     25  out pins, 1 [1]              phase -63735..?  edge -63734..?  jitter ?  gap 2
+     26  jmp y--, 25                  phase -63733..?  flip -63732..?  jitter ?  gap 2
+     27  set pins, 1 [10]             phase -63731..?  edge -63730..?  jitter ?  gap 2
+     28  set pins, 0                  phase -63720..?  edge -63719..?  jitter ?  gap 11
     ((words 32) (edge_jitter unbounded) (sample_jitter 0) (side_jitter 0)
      (may_miss 0))
     ((issues 5808) (flips 2680) (gaps 5628) (violations ()))

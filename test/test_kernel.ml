@@ -1021,9 +1021,10 @@ let reaction (c : Certified.t) =
 ;;
 
 (* Every row the analyser gives the library has no slope and the full offset, so each
-   table is one of the tables of intervals that formal/phase_table.sby covers. The old
-   ws2812's gap loop is the one that is not. *)
-let%expect_test "the library's tables are rows of intervals" =
+   table is one of the tables of intervals that formal/phase_table.sby covers, but for
+   ethernet's preamble, a counted loop a pin write after its [set x], which
+   formal/phase_table_affine.sby covers. The old ws2812's gap loop is not one either. *)
+let%expect_test "the library's tables are rows of intervals, but for ethernet's preamble" =
   let module Kernel_bits = Kernel.Make (Bits) in
   List.iter
     (Library.certified @ [ ws2812_waiting_after_gap ])
@@ -1041,6 +1042,10 @@ let%expect_test "the library's tables are rows of intervals" =
         then print_s [%message c.name (pc : int)]));
   [%expect
     {|
+    (ethernet (pc 18))
+    (ethernet (pc 19))
+    (ethernet (pc 20))
+    (ethernet (pc 21))
     (ws2812_waiting_after_gap (pc 5))
     (ws2812_waiting_after_gap (pc 6))
     (ws2812_waiting_after_gap (pc 7))
@@ -1159,7 +1164,7 @@ let%expect_test "a bound on the jitter of every pin edge, in firmware the kernel
     (edge_meter (pc 6) (jitter_bound 0) (untimed (1)))
     (ws2812 (pc 1) (jitter_bound 0) (untimed ()))
     (ws2812_standard (pc 1) (jitter_bound 0) (untimed ()))
-    (ethernet (pc 9) (jitter_bound 0) (untimed (2 19 20 22 23 24 25 26 27 28)))
+    (ethernet (pc 9) (jitter_bound 0) (untimed (2 19 20 25 26 27 28)))
     (one_wire (pc 11) (jitter_bound 0) (untimed ()))
     (ps2 (pc 15) (jitter_bound 0) (untimed ()))
     (jtag (pc 8) (jitter_bound 2) (untimed (0 1 2 3 4)))
