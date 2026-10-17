@@ -18,6 +18,6 @@ a11d7b0a unreachable the fifo's own full register, past Host_fifo's 8 words
 
 # the kernel's checks as circuits (kernel_accepts, kernel_step) are for the proofs, not the
 # chip. The tests drive them with the library firmwares only, which never wrap a pin base,
-# write pindirs, clamp a mark or use a side-set count of 3. kernel.ml is being rewritten on
+# write pindirs, clamp a mark or use a side-set count of 3. The kernel is being rewritten on
 # kernel-batch and mutation-1015, so its holes are counted, not closed.
 module kernel 51 open
