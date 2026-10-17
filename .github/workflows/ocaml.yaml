@@ -206,6 +206,9 @@ jobs:
             exit 1
           fi
 
+      - name: Check the tree is formatted
+        run: opam exec -- dune build @fmt
+
       - name: Run tests
         run: opam exec -- dune build @runtest
 
