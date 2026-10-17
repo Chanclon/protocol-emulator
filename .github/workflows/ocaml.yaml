@@ -319,8 +319,8 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v6
 
-      - name: Install sigrok-cli
-        run: sudo apt-get update && sudo apt-get install -y sigrok-cli
+      - name: Install sigrok-cli and numpy, which the edge reader needs
+        run: sudo apt-get update && sudo apt-get install -y sigrok-cli python3-numpy
 
       - name: Decode
         run: |
