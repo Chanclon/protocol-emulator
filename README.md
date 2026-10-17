@@ -1,7 +1,7 @@
 # protocol-emulator
 
 An entry for Jane Street's protocol emulator ASIC competition, written in Hardcaml and
-built on IHP CMOS5L through Tiny Tapeout, in 6 x 4 tiles at 50 MHz.
+built on IHP CMOS5L through Tiny Tapeout, in 6 x 4 tiles at 48 MHz.
 
 ![from firmware to silicon](docs/chain.svg)
 
@@ -15,12 +15,12 @@ the RTL is proven never to miss one of its deadlines, under the assumptions belo
 | | | Source |
 |---|---|---|
 | Process | IHP SG13CMOS5L through Tiny Tapeout, 6 x 4 tiles | `info.yaml`, `.github/workflows/gds.yaml` |
-| Clock | 50 MHz | `info.yaml` |
+| Clock | 48 MHz | `info.yaml` |
 | Cores | 2 cores, 3 IHP 512 x 16 SRAM macros: a program memory each and a data memory they share | `src/protocol_emulator.v` |
 | Pins | 4 for the host's SPI, 5 in, 7 out, 8 bidirectional, and 8 wires between the cores | `info.yaml`, `src/isa.ml` |
-| Hardened | 23,595 standard cells at 49.7% utilisation, setup slack +3.100 ns at the slow corner, precheck clean | gds run [38994824755](https://github.com/MarcosAsh/protocol-emulator/actions/runs/38994824755) |
+| Hardened | 23,595 standard cells at 49.7% utilisation, setup slack +3.100 ns at the slow corner, precheck clean | gds run [39007830065](https://github.com/MarcosAsh/protocol-emulator/actions/runs/39007830065) |
 | Firmware | 43 library firmwares the kernel accepts | `test/test_kernel.ml` |
-| Proved | a program the kernel accepts never misses a deadline on each core's RTL, under the assumptions below | `formal/phase_table.sby` |
+| Proved | a program the kernel accepts never misses a deadline on each core's RTL, under the assumptions below | `formal/phase_table.sby`, `formal/phase_table_affine.sby` |
 | Board | the RTL on an Icepi Zero (ECP5 FPGA) passed the self-timing demo on 2026-10-09, no silicon yet | `python/demo_self_timing.py` |
 
 ## From source to pins
@@ -60,7 +60,7 @@ under cocotb.
 - One theorem covers every program: if the kernel accepts it, it never misses a deadline.
   `src/kernel.ml` is a checker you can read in one sitting. `formal/phase_step.sv` with a
   SAT query in `test/test_kernel.ml` proves the theorem, and so does
-  `formal/phase_table.sby`.
+  `formal/phase_table.sby`, with `formal/phase_table_affine.sby` for Ethernet.
 - The hardened netlist equals the RTL for all time from all flops 0 (`netlist_equiv` job).
 - When and how the host talks reaches the pins only through the program's own fifo
   waits and tests, or a fault. Like the other lemmas in `formal/`, it has weakened copies
@@ -101,7 +101,6 @@ under cocotb.
     captured level, stays there until the wait releases
   - the core runs the words and configuration the kernel checked, with zeros past the
     program
-  - the host loads and starts a core only while halted
   - the configuration is fixed from power-on, the only reset
   - side-set count is at most 2
 - The theorem says nothing of the underflow and overflow a slow host can cause.
@@ -173,7 +172,7 @@ no board in about 17 minutes. Each claim's last green run in CI is on the
 [results page](https://marcosash.github.io/protocol-emulator/results/).
 
 To harden, clone TinyTapeout/tt-support-tools, branch `ihp-sg13cmos5l`, into `tt/`, then
-`tt/tt_tool.py --create-user-config --ihp` and `--harden --ihp`. Gds run 38994824755, on
+`tt/tt_tool.py --create-user-config --ihp` and `--harden --ihp`. Gds run 39007830065, on
 this Verilog, signs off with setup slack +3.100 ns at the slow corner, at 49.7%
 utilisation. The picture is this harden's die by RTL module, drawn by `demo/die.py` from its
 `GDS_logs` artifact. 1,883 of 1,893 flops map by RTL line and net name. Each gate goes with
