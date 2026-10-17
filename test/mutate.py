@@ -108,9 +108,15 @@ RTL = [
     "src/program_memory.ml", "src/sram_macro.ml", "src/engines.ml", "src/top.ml",
     "src/isa.ml", "src/program_config.ml",
 ]
-# the files the chip does not instantiate, each with the generator that elaborates it alone
+# the files the chip does not instantiate, each with the generators that elaborate it alone;
+# the kernel's step is in both of its circuits, its table in neither
+KERNEL = [["kernel"], ["kernel-accepts"]]
 APART = {
-    "src/kernel.ml": [["kernel"], ["kernel-accepts"]],
+    "src/kernel.ml": KERNEL,
+    "src/kernel_types.ml": KERNEL,
+    "src/kernel_step.ml": KERNEL,
+    "src/kernel_accepts.ml": [["kernel-accepts"]],
+    "src/kernel_table.ml": [],
     "src/osr_kernel.ml": [["osr"]],
     "src/manchester_rx.ml": [
         ["manchester-rx"],
