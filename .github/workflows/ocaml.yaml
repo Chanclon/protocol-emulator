@@ -209,6 +209,9 @@ jobs:
       - name: Check the tree is formatted
         run: opam exec -- dune build @fmt
 
+      - name: Lint with Jane Street's style checker
+        run: opam exec -- dune build @lint
+
       - name: Run tests
         run: opam exec -- dune build @runtest
 

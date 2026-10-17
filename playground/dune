@@ -6,6 +6,8 @@
  (enabled_if
   (= %{env:PLAYGROUND=no} yes))
  (libraries core js_of_ocaml pio protocol_emulator)
+ (lint
+  (pps ppx_js_style -check-doc-comments))
  (preprocess
   (pps ppx_jane)))
 

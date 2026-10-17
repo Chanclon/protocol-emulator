@@ -10,5 +10,7 @@
   protocol_emulator
   protocol_emulator_test
   jsonaf)
+ (lint
+  (pps ppx_js_style -check-doc-comments))
  (preprocess
   (pps ppx_jane)))

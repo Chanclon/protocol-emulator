@@ -10,6 +10,8 @@
   protocol_emulator
   protocol_emulator_test
   pio)
+ (lint
+  (pps ppx_js_style -check-doc-comments))
  (preprocess
   (pps ppx_jane))
  (inline_tests

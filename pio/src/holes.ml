@@ -197,7 +197,7 @@ let parse ?reference text =
     List.map2_exn spots references ~f:(fun spot (_, binary) -> { spot with binary })
   in
   let zeros = List.map spots ~f:(fun _ -> 0) in
-  let%bind _ = fill_spots lines spots zeros |> Pioasm.parse in
+  let%bind (_ : Pioasm.Program.t list) = fill_spots lines spots zeros |> Pioasm.parse in
   let%bind holes =
     List.mapi (List.zip_exn spots reference_values) ~f:(fun i (spot, reference) ->
       let domain =
