@@ -61,6 +61,11 @@ concurrency:
 jobs:
   gds:
     runs-on: ubuntu-24.04
+    # id-token and attestations sign the provenance of the GDS below
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     steps:
       - name: checkout repo
         uses: actions/checkout@v6
@@ -75,6 +80,13 @@ jobs:
       # the flow has no setup checker and goes green on negative slack
       - name: Check timing and signoff
         run: python3 test/check_metrics.py runs/wokwi/final/metrics.json
+
+      # a pushed main only, so a fork's pull request never signs
+      - name: Attest the GDS
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@v3.0.0
+        with:
+          subject-path: runs/wokwi/final/gds/*.gds
 
       # a failed check is when the numbers matter most
       - name: Log the metrics
