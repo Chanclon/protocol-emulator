@@ -97,7 +97,8 @@ let%expect_test "a high shorter than T0H or T1H is bracketed from its rise to it
       in
       print_endline (Named_refusal.to_line t);
       bracket t);
-  [%expect {|
+  [%expect
+    {|
     sk6812: edge 10, T0H 167 ns < 200 ns min (SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; 8 cycles at 48 MHz, 11 needed)
     ((t.edge (10)) (measured 8) (before 0) (start 1) (last 1) (after 0))
     sk6812: edge 2, T1H 500 ns < 600 ns min (SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; 24 cycles at 48 MHz, 30 needed)
@@ -114,7 +115,8 @@ let%expect_test "a high longer than T1H's most is bracketed too" =
   in
   print_endline (Named_refusal.to_line t);
   bracket t;
-  [%expect {|
+  [%expect
+    {|
     sk6812: edge 2, T1H 1.042 us > 750 ns max (SK6812, SPC/SK6812 Rev. 01 p.5, 0.3/0.6/0.9/0.6 us +-0.15; 50 cycles at 48 MHz, 35 needed)
     ((t.edge (2)) (measured 50) (before 0) (start 1) (last 1) (after 0))
     |}]
@@ -133,7 +135,8 @@ let%expect_test "a refusal with no edge on the run names the kernel's bound" =
   let t = { t with edge = None; measured = None; cycle = 0 } in
   print_endline (Named_refusal.to_line t);
   print_endline (Named_refusal.to_svg t);
-  [%expect {|
+  [%expect
+    {|
     i2c_standard: THD:STA kernel bound 7.542 us (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 362 cycles at 48 MHz, 363 needed)
     <svg xmlns="http://www.w3.org/2000/svg" width="780" height="222" viewBox="0 0 780 222" font-family="monospace" font-size="12">
     <rect width="780" height="222" fill="#ffffff"/>

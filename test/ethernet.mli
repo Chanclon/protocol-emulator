@@ -5,14 +5,13 @@
     a 100 ns link pulse every ten of those, 16 ms at 64000.
 
     The core sends the preamble and start of frame itself, from [set]s: their ones and
-    zeros alternate, so the line is a square wave that changes every four cycles until
-    the start of frame's last two ones. Each frame bit is then an [out] of two cycles, its
+    zeros alternate, so the line is a square wave that changes every four cycles until the
+    start of frame's last two ones. Each frame bit is then an [out] of two cycles, its
     first half, and the jump of two that follows it, its second, so the loop needs no
-    deadline and ends when the count runs out. After the last bit the line stays high
-    275 ns, the TP_IDL the standard asks for, and goes idle. The host computes the FCS:
-    there is no cycle to spare between the last bit of the frame and the first of the FCS
-    for the core to fetch it, and the CRC unit would take in the FCS bits as they went
-    out. *)
+    deadline and ends when the count runs out. After the last bit the line stays high 275
+    ns, the TP_IDL the standard asks for, and goes idle. The host computes the FCS: there
+    is no cycle to spare between the last bit of the frame and the first of the FCS for
+    the core to fetch it, and the CRC unit would take in the FCS bits as they went out. *)
 
 open! Core
 open Protocol_emulator

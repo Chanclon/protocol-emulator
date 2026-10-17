@@ -308,10 +308,7 @@ let%expect_test "edge bounds past a pin wait, at the timer's ends and after a ca
           ~pattern:"in pins, 1\n"
           ~with_:"in pins, 1\n    capture_arm\n"
     ; config =
-        { spi_slave.config with
-          capture_pin = Spi.slave_sck_pin
-        ; capture_rising = false
-        }
+        { spi_slave.config with capture_pin = Spi.slave_sck_pin; capture_rising = false }
     ; single_capture_edge = true
     };
   [%expect

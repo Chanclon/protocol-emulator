@@ -558,7 +558,8 @@ let%expect_test "a delay before a deadline wait takes exactly its slack" =
   print_tallies nops_tally;
   print_tallies jump_tally;
   print_tallies field_tally;
-  [%expect {|
+  [%expect
+    {|
     ("nops before a wait, library" (programs 39) (variants 366)
      (kernel_checked 74) (accepted 257) (refused 109) (violations_on_accepted 0)
      (violations_on_refused 0))
@@ -646,7 +647,8 @@ let%expect_test "dead code changes nothing" =
              @ rows_moved ~move ~expect:(moved ~move) ~view:(whole ~added:[]) before after
             ))));
   print_tallies padding;
-  [%expect {|
+  [%expect
+    {|
     ("dead code after a word that never falls through, library" (programs 46)
      (variants 92) (kernel_checked 19) (accepted 92) (refused 0)
      (violations_on_accepted 0) (violations_on_refused 0))
@@ -688,7 +690,8 @@ let%expect_test "moving the program in memory changes nothing" =
                  before
                  after)));
   print_tallies relocation;
-  [%expect {|
+  [%expect
+    {|
     ("program moved in memory, library" (programs 46) (variants 92)
      (kernel_checked 19) (accepted 92) (refused 0) (violations_on_accepted 0)
      (violations_on_refused 0))
@@ -771,7 +774,8 @@ let%expect_test "a delay split into the word and a nop changes nothing" =
                    after))));
   print_tallies others;
   print_tallies set_x;
-  [%expect {|
+  [%expect
+    {|
     ("delay split into the word and a nop, library" (programs 6) (variants 17)
      (kernel_checked 4) (accepted 17) (refused 0) (violations_on_accepted 0)
      (violations_on_refused 0))
@@ -809,7 +813,8 @@ let%expect_test "a nop between set x and its counted loop keeps the loop's exit 
         print_s [%message name ~accepted:(Timed_program.verdict t : Analyser.Verdict.t)]
       | Error { faults; _ } ->
         print_s [%message name ~refused:(faults : Timed_program.Fault.t list)]);
-  [%expect {|
+  [%expect
+    {|
     ("set x, 3 [1]" (accepted ((words 9) (deadline_waits 2) (worst_slack (5)))))
     ("set x, 3; nop"
      (accepted ((words 10) (deadline_waits 2) (worst_slack (5)))))
@@ -901,7 +906,8 @@ let%expect_test "a deadline wait split at an earlier deadline changes nothing af
                   after
                   broken))));
   print_tallies split;
-  [%expect {|
+  [%expect
+    {|
     ("deadline wait split in two, library" (programs 35) (variants 110)
      (kernel_checked 22) (accepted 68) (refused 42) (violations_on_accepted 0)
      (violations_on_refused 0))
@@ -971,7 +977,8 @@ let%expect_test "a longer period lowers no slack and refuses nothing more" =
               else [ [%message (refused_more : int list)] ])
            @ kernel))));
   print_tallies longer;
-  [%expect {|
+  [%expect
+    {|
     ("longer period, library" (programs 36) (variants 87) (kernel_checked 18)
      (accepted 87) (refused 0) (violations_on_accepted 0)
      (violations_on_refused 0))

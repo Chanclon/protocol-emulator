@@ -738,8 +738,8 @@ loop:
 ;;
 
 (* [halted] stays high through a start's second cycle, which prefetches the word after pc
-   0 under the config of the time. A wrap written then has the core run [set x, 1] again at
-   pc 1. The host port never writes there (formal/host_spacing.sv). *)
+   0 under the config of the time. A wrap written then has the core run [set x, 1] again
+   at pc 1. The host port never writes there (formal/host_spacing.sv). *)
 let%expect_test "a config written in a start's second cycle runs the wrong word" =
   let program = assemble {|
     set x, 1
@@ -784,7 +784,8 @@ let%expect_test "a config written in a start's second cycle runs the wrong word"
                ~x:(Bits.to_unsigned_int !(o.x) : int)
                ~y:(Bits.to_unsigned_int !(o.y) : int)]);
        print_s [%message (halted_after_start : bool)]);
-  [%expect {|
+  [%expect
+    {|
     ((pc 1) (instruction 0xa021) (word_at_pc (0xa047)) (x 1) (y 0))
     ((pc 2) (instruction 0xe001) (word_at_pc (0xe001)) (x 1) (y 0))
     ((pc 3) (instruction 0x0) (word_at_pc ()) (x 1) (y 0))

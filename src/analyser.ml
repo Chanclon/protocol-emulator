@@ -448,7 +448,11 @@ let step
        after { s with y = { lo = Some 0; hi = Some ((1 lsl Isa.data_bits) - 1) } }
      | Sys Capture_arm ->
        after
-         { s with since_arm = Some (Interval.exactly 0); captured = false; awaiting = true }
+         { s with
+           since_arm = Some (Interval.exactly 0)
+         ; captured = false
+         ; awaiting = true
+         }
      | Sys Halt -> []
      | _ -> after s)
 ;;

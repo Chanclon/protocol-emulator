@@ -18,8 +18,8 @@ let usb_rates =
   ]
 ;;
 
-(* Per-bit levels to per-cycle levels, each bit starting on the first cycle at or after
-   it is due, so an off-rate sender's edges drift. *)
+(* Per-bit levels to per-cycle levels, each bit starting on the first cycle at or after it
+   is due, so an off-rate sender's edges drift. *)
 let clocked bits ~period ~num ~den =
   let start k = ((k * period * num) + den - 1) / den in
   List.concat_mapi bits ~f:(fun k level ->
@@ -167,8 +167,8 @@ let usb_rx_packets ~bit_period firmware =
     print_row "usb_rx" ~sender run ~received:(intact ~expected run))
 ;;
 
-(* Per eight bytes: SETUP + DATA0 (ACKed), IN (NAKed), IN, OUT + data for another
-   address, and a host ACK, two bit times apart plus room for answers. *)
+(* Per eight bytes: SETUP + DATA0 (ACKed), IN (NAKed), IN, OUT + data for another address,
+   and a host ACK, two bit times apart plus room for answers. *)
 let usb_device_transactions ~bit_period firmware =
   let dp = Usb.device_dp_pin in
   let dm = Usb.device_dm_pin in
@@ -363,6 +363,5 @@ let%expect_test "a halted wait for the edge has not released" =
     Premise.count premise
   in
   print_s [%message "" ~stopped:(run ~stop:10 firmware.config : Premise.Count.t)];
-  [%expect
-    {| (stopped ((arms 1) (at_captured_level 0) (left_captured_level 1))) |}]
+  [%expect {| (stopped ((arms 1) (at_captured_level 0) (left_captured_level 1))) |}]
 ;;

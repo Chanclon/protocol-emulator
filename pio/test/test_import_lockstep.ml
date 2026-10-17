@@ -179,7 +179,8 @@ let%expect_test "uart_tx sends bytes at k times its PIO edges" =
     ~words:[ 0x55; 0x00; 0xff; 0xa3 ]
     ~pio_cycles:400
     ();
-  [%expect {|
+  [%expect
+    {|
     (uart_tx (k 8) (words 65) (rtl_lockstep true)
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false)))
@@ -200,7 +201,8 @@ let%expect_test "ws2812 sends pixels at k times its PIO edges" =
     ~words:[ 0xff0000 lsl 8; 0x00a5c3 lsl 8; 0x123456 lsl 8 ]
     ~pio_cycles:800
     ();
-  [%expect {|
+  [%expect
+    {|
     (ws2812 (k 6) (words 73) (rtl_lockstep true)
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false)))
@@ -223,7 +225,8 @@ let%expect_test "spi_cpha0 shifts bytes at k times its PIO edges" =
     ~words:(List.map [ 0x9f; 0x00; 0xa5; 0x3c ] ~f:(fun b -> b lsl 24))
     ~pio_cycles:200
     ();
-  [%expect {|
+  [%expect
+    {|
     (spi_cpha0 (k 8) (words 41) (rtl_lockstep true)
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false)))
@@ -246,7 +249,8 @@ let%expect_test "ws2812 at its own rate" =
     ~words:[ 0xff0000 lsl 8; 0x00a5c3 lsl 8; 0x123456 lsl 8 ]
     ~pio_cycles:800
     ();
-  [%expect {|
+  [%expect
+    {|
     (ws2812 (k 6.25) (words 73) (rtl_lockstep true)
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false)))
@@ -265,7 +269,8 @@ let%expect_test "manchester_tx at k times its PIO edges" =
     ~words:[ 0x0000a5c3; 0x12345678 ]
     ~pio_cycles:700
     ();
-  [%expect {|
+  [%expect
+    {|
     (manchester_tx (k 7) (words 86) (rtl_lockstep true)
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false)))

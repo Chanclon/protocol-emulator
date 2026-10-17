@@ -214,7 +214,8 @@ let%expect_test "a rate comes from the clock it runs at" =
   let fifty_mhz = { Uart.log with load = Some (50_000_000 / 115_200) } in
   print_endline (Datasheet.to_string fifty_mhz (Datasheet.check Library.limits fifty_mhz));
   print_endline (Bench.rate ~unit:"baud" 434);
-  [%expect {|
+  [%expect
+    {|
     uart_log           bit            >=  8506.94 ns  kernel 434 (9041.7 ns)   needs  410       UART at 115200 baud, Maxim AN2141 p.4, +-3/152, 2%; margin a cycle
     uart_log           bit            <=  8854.17 ns  run    434 (9041.7 ns)   needs  424 FAIL  UART at 115200 baud, Maxim AN2141 p.4, +-3/152, 2%; margin a cycle
     110.6 kbaud

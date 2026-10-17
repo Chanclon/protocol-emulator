@@ -72,7 +72,8 @@ let%expect_test "other percentages" =
       print_endline
         [%string
           "%{name} %{percent#Float}%: %{Diagram_mutation.Verdict.to_string r.mutant}"]);
-  [%expect {|
+  [%expect
+    {|
     spi_master 1.%: refused: ("at 50 MHz"
      ("the mutant's edge 1 at cycle 50"
       ("outside the table class"

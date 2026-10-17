@@ -269,8 +269,8 @@ let%expect_test "the words committed for the cocotb test are current" =
   [%test_result: int list]
     (assembled "edge_logger_wire")
     ~expect:(Firmware.assemble (Firmware.edge_logger ~pin:Isa.num_pins));
-  (* the marked master is I2c.master's, less the bus clear, with each SCL move copied
-     onto the wire *)
+  (* the marked master is I2c.master's, less the bus clear, with each SCL move copied onto
+     the wire *)
   let unmarked =
     In_channel.read_lines "i2c_master_marked.asm"
     |> List.filter ~f:(fun line ->

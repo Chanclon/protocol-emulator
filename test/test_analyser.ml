@@ -1489,7 +1489,8 @@ let%expect_test "side-set holds across a write to other pins" =
     nop side 0
     halt side 0
 |};
-  [%expect {|
+  [%expect
+    {|
     0  nop side 0                   phase ?..?  side ?..?  jitter ?
     1  set pins, 1 side 0           phase ?..?  edge ?..?  jitter ?  gap ?..?
     2  nop side 0                   phase ?..?  side ?..?  jitter ?
@@ -1556,7 +1557,8 @@ let%expect_test "an analysis widens only what has not settled by max_passes" =
 ;;
 
 (* A bound widening drops on the cycles since the data pointer moved is no bound, so the
-   data pull it guards may underrun; settled, the loop's own delay and the seek's keep every pull clear. *)
+   data pull it guards may underrun; settled, the loop's own delay and the seek's keep
+   every pull clear. *)
 let%expect_test "a data pull may underrun once widening drops its settle bound" =
   let config =
     { Program_config.default with
@@ -1565,20 +1567,18 @@ let%expect_test "a data pull may underrun once widening drops its settle bound" 
     ; autopull_data = true
     }
   in
-  let source =
-    {|
+  let source = {|
     seek [7]
 loop:
     out pins, 8 [3]
     jmp loop
-|}
-  in
+|} in
   List.iter [ 256; 0 ] ~f:(fun max_passes ->
     printf "max_passes %d\n" max_passes;
     rows ~config ~max_passes source
-    |> print_rows ~f:(fun r ->
-      if r.may_underrun then "MAY UNDERRUN" else ""));
-  [%expect {|
+    |> print_rows ~f:(fun r -> if r.may_underrun then "MAY UNDERRUN" else ""));
+  [%expect
+    {|
     max_passes 256
       0  seek [7]
       1  out pins, 8 [3]
@@ -1603,7 +1603,8 @@ let%expect_test "y after a write the analyser cannot follow" =
     halt
 |}
   |> print_rows ~f:(fun r -> "y " ^ Interval.to_string r.y);
-  [%expect {|
+  [%expect
+    {|
     0  set y, 5                     y ?..?
     1  mov y, osr                   y 5
     2  set y, 5                     y 0..65535
@@ -1625,14 +1626,11 @@ let%expect_test "a data pull is clear from data_settle cycles after a seek" =
     }
   in
   List.iter [ "seek"; "seek [1]" ] ~f:(fun seek ->
-    let source =
-      [%string
-        {|
+    let source = [%string {|
     %{seek}
     out pins, 8
     halt
-|}]
-    in
+|}] in
     rows ~config source
     |> print_rows ~f:(fun r -> if r.may_underrun then "MAY UNDERRUN" else "");
     let program = Asm.assemble source |> ok_exn in
@@ -1645,7 +1643,8 @@ let%expect_test "a data pull is clear from data_settle cycles after a seek" =
     let machine = Machine.load_data machine [ 0x1234 ] |> ok_exn in
     let machine = Fn.apply_n_times ~n:8 (fun m -> Machine.step m ~inputs:0) machine in
     print_s [%message "core" ~underflow:(machine.fault.underflow : bool)]);
-  [%expect {|
+  [%expect
+    {|
       0  seek
       1  out pins, 8                  MAY UNDERRUN
       2  halt
@@ -1694,7 +1693,8 @@ let%expect_test "an out at exactly the threshold always autopulls" =
         ~underflow:(machine.fault.underflow : bool)
         ~data_ptr:(machine.data_ptr : int)
         ~osr_count:(machine.osr_count : int)];
-  [%expect {|
+  [%expect
+    {|
       0  seek [7]
       1  mov osr, null
       2  out null, 8

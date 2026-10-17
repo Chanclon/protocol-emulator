@@ -126,11 +126,13 @@ let accepted_rows_hold ?(check_spacing = Fn.id) ~step_edge () =
   let d = Decoder.decode ~side_set_count word in
   let is op = Opcode.is d.opcode op in
   let deadline = G.(is Wait &: Wait_source.is d.wait_source Deadline) in
-  (* what the core holds at the next entry, by the step lemma; after [mov t, capture]
-     that is only a range, from a cycle past the instruction up to the step *)
+  (* what the core holds at the next entry, by the step lemma; after [mov t, capture] that
+     is only a range, from a cycle past the instruction up to the step *)
   let free_phase = any "phase" Isa.timer_bits in
   let cycles = G.(uresize d.delay ~width:Isa.timer_bits +:. 1) in
-  let in_capture_range = G.(cycles +:. 1 <=: free_phase &: (free_phase <=: s.next_phase)) in
+  let in_capture_range =
+    G.(cycles +:. 1 <=: free_phase &: (free_phase <=: s.next_phase))
+  in
   let phase' =
     G.(
       mux2

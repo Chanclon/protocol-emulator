@@ -136,7 +136,8 @@ let%expect_test "an accepted osr row maps into the row the core steps to" =
       [%string "accepts => %{bound} stays in the rows"]
       ~cases
       ~claim);
-  [%expect {|
+  [%expect
+    {|
     (QED "accepts => shifted stays in the rows")
     (QED "accepts => sum stays in the rows")
     (QED "accepts => pulled stays in the rows")
@@ -151,7 +152,8 @@ let%expect_test "the rows hold only with the kernel's x" =
     "accepts => shifted stays in the rows, x anything"
     ~cases
     ~claim:claims.shifted;
-  [%expect {|
+  [%expect
+    {|
     (counterexample "accepts => shifted stays in the rows, x anything"
      (model ()))
     |}]
@@ -208,7 +210,8 @@ let%expect_test "what each out sends, in the firmware library" =
       let verdict = Osr_kernel.check ~config ~words ~kernel table in
       let sends = sends c in
       print_s [%message c.name (verdict : unit Or_error.t) (sends : (int * string) list)]);
-  [%expect {|
+  [%expect
+    {|
     (uart_tx_stamped (verdict (Ok ()))
      (sends ((11 "bit 7 - x") (16 "not a pulled word"))))
     (uart_tx (verdict (Ok ())) (sends ((9 "bit 7 - x"))))
@@ -293,7 +296,8 @@ let%expect_test "the check refuses a row one short" =
   let out = 9 in
   table.(out) <- { (table.(out)) with shifted_hi = Bits.(table.(out).shifted_hi -:. 1) };
   print_s [%message (Osr_kernel.check ~config ~words ~kernel table : unit Or_error.t)];
-  [%expect {|
+  [%expect
+    {|
     ("Osr_kernel.check ~config ~words ~kernel table"
      (Error
       ("rows the check rejects" (rejected (((pc 8) (fails ("next shifted"))))))))
@@ -415,7 +419,8 @@ let%expect_test "a sum that has not settled is widened" =
           (pc : int)
           ~shifted:((r.shifted_lo, r.shifted_hi) : int * int)
           ~sum:((r.sum_lo, r.sum_hi) : int * int)]);
-  [%expect {|
+  [%expect
+    {|
     ((pc 2) (shifted (0 32)) (sum (65535 65567)))
     ((pc 3) (shifted (0 0)) (sum (0 131071)))
     ((pc 4) (shifted (0 0)) (sum (0 131071)))
@@ -459,7 +464,7 @@ let%expect_test "an image's bounds are the hull of the states the core reaches" 
   List.iter
     [ "set y, 0", false, Fn.const true, Fn.id
     ; "out pins, 3", false, Fn.const true, Fn.id
-    ; "jmp x--, 0", true, (fun x -> x > 0), (fun x -> x - 1)
+    ; ("jmp x--, 0", true, (fun x -> x > 0), fun x -> x - 1)
     ; "jmp x--, 0", false, (fun x -> x = 0), Fn.const 0xffff
     ; "jmp 0", true, Fn.const true, Fn.id
     ]
@@ -514,8 +519,9 @@ let%expect_test "an image's bounds are the hull of the states the core reaches" 
           let bounds lo hi = Bits.to_unsigned_int lo, Bits.to_unsigned_int hi in
           let message =
             [%string
-              "%{source}, taken %{taken#Bool}: shifted %{shifted_lo#Int}..%{shifted_hi#Int}, \
-               sum %{sum_lo#Int}..%{sum_hi#Int}, x %{x_lo#Int}..%{x_hi#Int}"]
+              "%{source}, taken %{taken#Bool}: shifted \
+               %{shifted_lo#Int}..%{shifted_hi#Int}, sum %{sum_lo#Int}..%{sum_hi#Int}, x \
+               %{x_lo#Int}..%{x_hi#Int}"]
           in
           Option.iter
             (hull (List.map reached ~f:(fun (_, next, _) -> next)))
@@ -535,7 +541,8 @@ let%expect_test "an image's bounds are the hull of the states the core reaches" 
                   ~expect
                   ~message:("sum, " ^ message)));
       printf "%s%s: exact\n" source (if taken then " taken" else ""));
-  [%expect {|
+  [%expect
+    {|
     set y, 0: exact
     out pins, 3: exact
     jmp x--, 0 taken: exact
@@ -712,7 +719,8 @@ let%expect_test "the check refuses a row at pc 0 narrower than the full range" =
       table.(0) <- row;
       print_s
         [%message name (Osr_kernel.check ~config ~words ~kernel table : unit Or_error.t)]);
-  [%expect {|
+  [%expect
+    {|
     ("shifted from 1"
      ("Osr_kernel.check ~config ~words ~kernel table"
       (Error "the row at pc 0 must be the full range")))

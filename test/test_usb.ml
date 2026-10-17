@@ -335,7 +335,8 @@ let%expect_test "usb rx follows a sender off in rate" =
         (intact every_ok)
         (intact ones_ok)
         (every_missed || ones_missed));
-  [%expect {|
+  [%expect
+    {|
     sender     every byte all ones   missed
     4% fast    garbled    garbled    false
     2.5% fast  garbled    garbled    false
