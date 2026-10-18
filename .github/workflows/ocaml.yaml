@@ -435,6 +435,40 @@ jobs:
           ! grep failure results.xml
           make replay ICEPI=yes
 
+  # the Icepi Zero's build equals the RTL (formal/icepi_equiv): synth_ecp5's netlist for
+  # each bitstream the bench loads, and the teeth on the 48 MHz one; then the bitstream
+  # and its .sha256, which a board run's evidence quotes
+  icepi_equiv:
+    needs: changes
+    if: needs.changes.outputs.fpga == 'true' || needs.changes.outputs.proofs == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        mhz: [48, 40]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Install OSS CAD Suite
+        run: |
+          curl -sL https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2026-09-16/oss-cad-suite-linux-x64-20260916.tgz | tar xz -C "$HOME"
+          echo "$HOME/oss-cad-suite/bin" >> "$GITHUB_PATH"
+
+      - name: Prove the netlist equal to the RTL
+        run: make -C icepi equiv MHZ=${{ matrix.mhz }}
+
+      - name: Fail on four mutants
+        if: matrix.mhz == 48
+        run: make -C formal icepi_equiv_teeth
+
+      - name: Build the bitstream and name it
+        run: |
+          make -C icepi MHZ=${{ matrix.mhz }}
+          sha256sum icepi/build/*.json icepi/build/*.bit
+          cat icepi/build/*.sha256 >> "$GITHUB_STEP_SUMMARY"
+
   inductive_certificate:
     needs: generate
     runs-on: ubuntu-24.04

@@ -730,6 +730,50 @@ netlist_anystate_teeth:
 	$(MAKE) netlist_equiv NETLIST=netlist_anystate_teeth/stuck.v EQUIV=netlist_anystate_stuck
 	$(MAKE) netlist_anystate EQUIV=netlist_anystate_stuck ANY_EXPECT=0
 
+# The Icepi Zero's build equals the RTL: synth_ecp5's netlist, before place and route,
+# against icepi_top.v around the chip's Verilog, the block RAMs and the macros' model
+# flops on both sides (icepi_equiv/miter.ys). About ICEPI_MIN min:
+#   make -C icepi build/usb1.json && make icepi_equiv
+# ICEPI_JSON, USB and MHZ name another build, as icepi/Makefile's equiv target does.
+ICEPI = icepi_equiv_run
+ICEPI_JSON = ../icepi/build/usb1.json
+USB = 1
+MHZ = 48
+ICEPI_PROOF = read_aiger miter.aig; print_stats; scorr; print_stats; dprove; print_status
+icepi_equiv:
+	rm -rf $(ICEPI) && mkdir $(ICEPI)
+	cp $(ICEPI_JSON) $(ICEPI)/netlist.json
+	cp $(WRITTEN) $(ICEPI)/written.v
+	echo 'chparam -set USB_UIO $(USB) -set MHZ $(MHZ) icepi_top' > $(ICEPI)/params.ys
+	cd $(ICEPI) && yosys -q -l gold.log ../icepi_equiv/gold.ys
+	cd $(ICEPI) && yosys -q -l gate.log ../icepi_equiv/gate.ys
+	cd $(ICEPI) && $(FSM_STEP) > fsm_step.log
+	grep 'Status = 1 ' $(ICEPI)/fsm_step.log
+	cd $(ICEPI) && yosys -q -l miter.log ../icepi_equiv/miter.ys
+	cd $(ICEPI) && timeout 3600 yosys-abc -c '$(ICEPI_PROOF)' > proof.log
+	grep 'Status = $(EXPECT) ' $(ICEPI)/proof.log
+	@echo "netlist sha256 $$(sha256sum < $(ICEPI)/netlist.json | cut -d' ' -f1)"
+
+# Mutants that must be refuted: the LUT driving uio[2] inverted, the data memory's block
+# RAM with two data bits swapped, the written host port's state held against fsm_step, and
+# a block RAM in a mode DP16KD.v does not model, which has to stop the run
+ICEPI_TEETH = icepi_equiv_teeth
+icepi_equiv_teeth:
+	rm -rf $(ICEPI_TEETH) && mkdir $(ICEPI_TEETH)
+	jq --arg pad 'uio_pad[2]' -f icepi_equiv/flip.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/flip.json
+	jq -f icepi_equiv/swap.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/swap.json
+	jq '(.modules.icepi_top.cells[] | select(.type == "DP16KD") | .parameters.WRITEMODE_A) = "NORMAL"' \
+	  $(ICEPI_JSON) > $(ICEPI_TEETH)/mode.json
+	sed -E '/^module host_port /,/^endmodule/s/^( *sm <= )signal_wire_[0-9]+;/\1sm;/' \
+	  $(WRITTEN) > $(ICEPI_TEETH)/written.v
+	! cmp -s $(WRITTEN) $(ICEPI_TEETH)/written.v
+	$(MAKE) icepi_equiv ICEPI_JSON=$(ICEPI_TEETH)/flip.json ICEPI=icepi_equiv_flip EXPECT=0
+	$(MAKE) icepi_equiv ICEPI_JSON=$(ICEPI_TEETH)/swap.json ICEPI=icepi_equiv_swap EXPECT=0
+	! $(MAKE) icepi_equiv ICEPI_JSON=$(ICEPI_TEETH)/mode.json ICEPI=icepi_equiv_mode
+	grep -q 'DP16KD: a configuration icepi_equiv does not model' icepi_equiv_mode/gate.log
+	! $(MAKE) icepi_equiv WRITTEN=$(ICEPI_TEETH)/written.v ICEPI=icepi_equiv_written
+	grep 'Status = 0 ' icepi_equiv_written/fsm_step.log
+
 # one clock, and every other pin through one two-flop synchroniser (sync/check.tcl), on
 # the RTL and on the hardened netlist; about 3 min:
 #   make sync_rtl sync_gate NETLIST=../runs/wokwi/final/nl/tt_um_marcosash_protocol_emulator.nl.v
