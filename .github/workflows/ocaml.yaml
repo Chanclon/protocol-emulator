@@ -437,7 +437,7 @@ jobs:
 
   # the Icepi Zero's build equals the RTL (formal/icepi_equiv): synth_ecp5's netlist for
   # each bitstream the bench loads, and the teeth on the 48 MHz one; then the bitstream
-  # and its .sha256, which a board run's evidence quotes. About 30 min, 70 with the teeth
+  # and its .sha256, which a board run's evidence quotes. About 10 min, 20 with the teeth
   icepi_equiv:
     needs: changes
     if: needs.changes.outputs.fpga == 'true' || needs.changes.outputs.proofs == 'true'

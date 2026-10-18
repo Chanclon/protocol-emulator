@@ -733,7 +733,7 @@ netlist_anystate_teeth:
 # The Icepi Zero's build equals the RTL: synth_ecp5's netlist, before place and route,
 # against icepi_top.v around the chip's Verilog, the macros' cores cut on both sides
 # (icepi_equiv/miter.ys), from all 0 and from the state the bitstream configures
-# (configured.awk). About 25 min:
+# (configured.awk). About 5 min in CI:
 #   make -C icepi build/usb1.json && make icepi_equiv
 # ICEPI_JSON, USB and MHZ name another build, as icepi/Makefile's equiv target does.
 ICEPI = icepi_equiv_run
