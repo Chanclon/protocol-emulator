@@ -277,3 +277,64 @@ let%expect_test "waveform of reset and the first command" =
     └────────────────────────────┘└──────────────────────────────────────────────────────────────────┘
     |}]
 ;;
+
+let%expect_test "the chip's clock pins" =
+  let module C = Circuit.With_interface (Top.I) (Top.O) in
+  let scope = Scope.create ~flatten_design:true () in
+  let circuit =
+    C.create_exn
+      ~name:"protocol_emulator"
+      (Top.hierarchical ~memory:Ihp_sram ~engines:2 scope)
+  in
+  Design_rule_checks.verify_clock_pins circuit ~expected_clock_pins:[ "clk" ]
+;;
+
+(* [Circuit_utilization] raises on the host port's [cases], so the core alone is sized. *)
+let%expect_test "the core's area" =
+  let module C = Circuit.With_interface (Engine.I) (Engine.O) in
+  let scope = Scope.create ~flatten_design:true () in
+  let circuit =
+    C.create_exn ~name:"engine" (Engine.hierarchical ~memory:Ihp_sram scope)
+  in
+  print_s [%message (Circuit_utilization.create circuit : Circuit_utilization.t)];
+  [%expect
+    {|
+    ("Circuit_utilization.create circuit"
+     ((name engine) (adders ((count 20) (total_bits 225) (max_instance_bits 24)))
+      (subtractors ((count 14) (total_bits 199) (max_instance_bits 24)))
+      (and_gates ((count 190) (total_bits 1156)))
+      (or_gates ((count 42) (total_bits 342)))
+      (xor_gates ((count 14) (total_bits 112)))
+      (not_gates ((count 84) (total_bits 572)))
+      (equals ((count 84) (total_bits 84) (max_instance_bits 1)))
+      (comparators ((count 20) (total_bits 20) (max_instance_bits 1)))
+      (multiplexers
+       ((count 353) (total_bits 14256)
+        (multiplexers
+         (((number_of_data_elements 2) (max_instance_bits 56) (total_bits 11820)
+           (count 321))
+          ((number_of_data_elements 3) (max_instance_bits 72) (total_bits 336)
+           (count 6))
+          ((number_of_data_elements 4) (max_instance_bits 20) (total_bits 36)
+           (count 4))
+          ((number_of_data_elements 5) (max_instance_bits 5) (total_bits 80)
+           (count 1))
+          ((number_of_data_elements 8) (max_instance_bits 224) (total_bits 1816)
+           (count 14))
+          ((number_of_data_elements 12) (max_instance_bits 12) (total_bits 12)
+           (count 1))
+          ((number_of_data_elements 16) (max_instance_bits 16) (total_bits 16)
+           (count 1))
+          ((number_of_data_elements 28) (max_instance_bits 28) (total_bits 140)
+           (count 5))))))
+      (registers ((count 71) (total_bits 516)))
+      (memories
+       ((count 2) (total_bits 256)
+        (memories (((data_width 16) (depth 8) (total_bits 128) (count 2))))))
+      (constants ((count 351) (total_bits 3061)))
+      (wires ((count 174) (total_bits 1255)))
+      (concatenation ((count 223) (total_bits 5078)))
+      (part_selects ((count 781) (total_bits 4447)))
+      (instantiations ((Instantiation RM_IHPSG13_1P_512x16_c2_bm_bist)))))
+    |}]
+;;
