@@ -5,7 +5,6 @@ let tck_pin = 5
 let tdi_pin = 6
 let tms_pin = 7
 let tdo_pin = 0
-let cycle_ns = 20
 let shortest_half = 4
 
 (* each wait carries the level TCK already has *)
@@ -133,7 +132,7 @@ module Tap = struct
   let user_instruction = 0x2
 
   type t =
-    { cycle_ns : int
+    { clock_hz : int
     ; now : int
     ; state : State.t
     ; ir : int
@@ -152,8 +151,8 @@ module Tap = struct
     ; violations : string list
     }
 
-  let create ~cycle_ns =
-    { cycle_ns
+  let create ~clock_hz =
+    { clock_hz
     ; now = 0
     ; state = Test_logic_reset
     ; ir = idcode_instruction
@@ -182,9 +181,10 @@ module Tap = struct
     match since with
     | None -> t
     | Some since ->
-      let ns = (t.now - since) * t.cycle_ns in
+      let { clock_hz; _ } = t in
+      let ns = Measured.ns ~clock_hz (t.now - since) in
       let t = { t with measured = Measured.add t.measured ~name ~ns } in
-      if ns >= minimum_ns
+      if Measured.at_least ~clock_hz (t.now - since) ~ns:minimum_ns
       then t
       else { t with violations = [%string "%{name} of %{ns#Int} ns"] :: t.violations }
   ;;
@@ -288,7 +288,7 @@ let scenario =
     |> Sigrok.lines "jtag"
   in
   let peer () =
-    let tap = ref (Tap.create ~cycle_ns) in
+    let tap = ref (Tap.create ~clock_hz:Bench.clock_hz) in
     { Peer.inputs = (fun () -> Tap.tdo !tap lsl tdo_pin)
     ; step =
         (fun ~pin_out ~pin_dir:_ ->
@@ -315,7 +315,7 @@ let scenario =
       @ List.concat_map (List.chunks_of (words clocks) ~length:4) ~f:send
   ; sigrok =
       Some
-        { clock_hz = 1_000_000_000 / cycle_ns
+        { clock_hz = Bench.clock_hz
         ; decoders =
             [ Sigrok.decoder
                 "jtag"

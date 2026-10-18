@@ -1,7 +1,7 @@
 # jtag, from test/pin_trace.ml: do not edit
 # cycles ui_in uio_in uo_out uio_out uio_oe; cycle 0 is the first rising edge
 # after rst_n rises, outputs are the values after the edge
-# sigrok clock 50000000
+# sigrok clock 48000000
 # sigrok decoder jtag:tdi=OUT1:tdo=IN0:tck=OUT0:tms=OUT2
 # sigrok annotations jtag=bitstring-tdi
 # sigrok expect jtag-1: DR TDI: 00000000000000000000000000000000 (0x0), 32 bits
