@@ -144,9 +144,9 @@ let scale k =
   if fraction = 65536 then per_cycle, period + 1, 0 else per_cycle, period, fraction
 ;;
 
-let certify program ~k =
+let certify ?(place = Fn.id) program ~k =
   let per_cycle, period, fraction = scale k in
-  let setup = { (setup program ~period) with fraction; per_cycle } in
+  let setup = place { (setup program ~period) with fraction; per_cycle } in
   match Translate.translate setup program with
   | Error refusals -> Error (Verdict.Refused refusals)
   | Ok t ->

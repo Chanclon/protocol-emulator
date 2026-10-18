@@ -27,9 +27,11 @@ end
 (** [k] as [per_cycle] [wait t+]s of [p] cycles and a fraction in 65536ths. *)
 val scale : float -> int * int * int
 
-(** Translates and certifies at [k]: the relation check, then [Timed_program.check]. *)
+(** Translates and certifies at [k]: the relation check, then [Timed_program.check].
+    [place] moves the pins. *)
 val certify
-  :  Pioasm.Program.t
+  :  ?place:(Translate.Setup.t -> Translate.Setup.t)
+  -> Pioasm.Program.t
   -> k:float
   -> (Translate.t * Timed_program.t, Verdict.t) Result.t
 
