@@ -14,7 +14,7 @@ on:
         type: string
         default: ''
       shards:
-        description: 'jobs to split the mutants over; 0: 4 for engine, 20 for wide, 20 for kernel, 1 for ids'
+        description: 'jobs to split the mutants over; 0: 4 for engine, 20 for wide, 20 for kernel, one a mutant for ids'
         type: number
         default: 0
       untested:
@@ -48,7 +48,7 @@ jobs:
         run: |
           n=${SHARDS:-0}
           if [ "$n" -eq 0 ]; then
-            if [ -n "$IDS" ]; then n=1; elif [ "$SCOPE" = wide ]; then n=20
+            if [ -n "$IDS" ]; then n=$(echo $IDS | wc -w); elif [ "$SCOPE" = wide ]; then n=20
             elif [ "$SCOPE" = kernel ]; then n=20; else n=4; fi
           fi
           echo "count=$n" >> "$GITHUB_OUTPUT"
