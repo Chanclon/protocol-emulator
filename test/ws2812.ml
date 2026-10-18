@@ -220,18 +220,13 @@ let bench =
   }
 ;;
 
-(* SK6812: the low of a bit is under 20 us (012 B/0, note 3), so a longer one latches, and
-   a high under 500 ns is a zero, between the B/0 sheet's T0H and T1H. A cycle of margin
+(* SK6812: the low of a bit is under 20 us (012 B/1, note 3), so a longer one latches, and
+   a high under 500 ns is a zero, between the B/1 sheet's T0H and T1H. A cycle of margin
    covers the 74AHCT125's skew between rise and fall, 5.5 ns at most. *)
 let limits =
-  let rev01 =
+  let b1 =
     { Datasheet.Sheet.part = "SK6812"
-    ; document = "SPC/SK6812 Rev. 01"
-    ; page = "p.5, 0.3/0.6/0.9/0.6 us +-0.15"
-    }
-  and b0 =
-    { Datasheet.Sheet.part = "SK6812"
-    ; document = "OSK-SPC-SK6812-012 Rev. B/0"
+    ; document = "OSK-SPC-SK6812-012 Rev. B/1"
     ; page = "p.7"
     }
   in
@@ -248,28 +243,26 @@ let limits =
   let limit parameter limit sheet bound =
     { Datasheet.firmware = "sk6812"; parameter; limit; sheet; margin = Cycle; bound }
   in
-  [ limit "T0H" (At_least 200.) b0 (Datasheet.level ~pin:Datasheet.set_pin ~high:true ())
-  ; limit "T0H" (At_most 400.) b0 (code ~one:false fst)
-  ; limit "T1H" (At_least 600.) b0 (code ~one:true fst)
-  ; limit "T1H" (At_most 750.) rev01 (code ~one:true fst)
-  ; limit "T0L" (At_least 800.) b0 (code ~one:false snd)
-  ; limit "T0L" (At_most 1050.) rev01 (code ~one:false snd)
+  [ limit "T0H" (At_least 250.) b1 (Datasheet.level ~pin:Datasheet.set_pin ~high:true ())
+  ; limit "T0H" (At_most 400.) b1 (code ~one:false fst)
+  ; limit "T1H" (At_least 650.) b1 (code ~one:true fst)
+  ; limit "T1H" (At_most 1000.) b1 (code ~one:true fst)
+  ; limit "T0L" (At_least 800.) b1 (code ~one:false snd)
   ; limit
       "T1L"
-      (At_least 450.)
-      rev01
+      (At_least 200.)
+      b1
       (Datasheet.level ~pin:Datasheet.set_pin ~high:false ())
-  ; limit "T1L" (At_most 750.) rev01 (code ~one:true snd)
   ; limit
       "T"
       (At_least 1200.)
-      { b0 with page = "p.7, note 2" }
+      { b1 with page = "p.7, note 2" }
       (Datasheet.run ~pin:Datasheet.set_pin (fun ~clock_hz levels ->
          List.map (bits ~clock_hz levels) ~f:(fun (h, l) -> h + l)))
   ; limit
       "reset"
       (At_least 200_000.)
-      b0
+      b1
       (Datasheet.run ~pin:Datasheet.set_pin (fun ~clock_hz levels ->
          List.filter (Datasheet.lows levels) ~f:(fun l ->
            l >= Datasheet.cycles ~clock_hz 20_000.)))

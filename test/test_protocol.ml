@@ -236,16 +236,14 @@ let%expect_test "every protocol from its file to the decoded trace" =
     ws2812_standard: 32 words, 4 deadline waits, worst slack 9, the kernel accepts it, assuming no wrap
 
     limits
-    sk6812             T0H            >=      200 ns  kernel 17 (354.2 ns)     needs   11       SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; margin a cycle
-    sk6812             T0H            <=      400 ns  run    17 (354.2 ns)     needs   18       SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; margin a cycle
-    sk6812             T1H            >=      600 ns  run    34 (708.3 ns)     needs   30       SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; margin a cycle
-    sk6812             T1H            <=      750 ns  run    34 (708.3 ns)     needs   35       SK6812, SPC/SK6812 Rev. 01 p.5, 0.3/0.6/0.9/0.6 us +-0.15; margin a cycle
-    sk6812             T0L            >=      800 ns  run    42 (875.0 ns)     needs   40       SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; margin a cycle
-    sk6812             T0L            <=     1050 ns  run    42 (875.0 ns)     needs   49       SK6812, SPC/SK6812 Rev. 01 p.5, 0.3/0.6/0.9/0.6 us +-0.15; margin a cycle
-    sk6812             T1L            >=      450 ns  kernel 25 (520.8 ns)     needs   23       SK6812, SPC/SK6812 Rev. 01 p.5, 0.3/0.6/0.9/0.6 us +-0.15; margin a cycle
-    sk6812             T1L            <=      750 ns  run    25 (520.8 ns)     needs   35       SK6812, SPC/SK6812 Rev. 01 p.5, 0.3/0.6/0.9/0.6 us +-0.15; margin a cycle
-    sk6812             T              >=     1200 ns  run    59 (1229.2 ns)    needs   59       SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7, note 2; margin a cycle
-    sk6812             reset          >=   200000 ns  run    10907 (227229.2 ns) needs 9601       SK6812, OSK-SPC-SK6812-012 Rev. B/0 p.7; margin a cycle
+    sk6812             T0H            >=      250 ns  kernel 17 (354.2 ns)     needs   13       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
+    sk6812             T0H            <=      400 ns  run    17 (354.2 ns)     needs   18       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
+    sk6812             T1H            >=      650 ns  run    34 (708.3 ns)     needs   33       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
+    sk6812             T1H            <=     1000 ns  run    34 (708.3 ns)     needs   47       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
+    sk6812             T0L            >=      800 ns  run    42 (875.0 ns)     needs   40       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
+    sk6812             T1L            >=      200 ns  kernel 25 (520.8 ns)     needs   11       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
+    sk6812             T              >=     1200 ns  run    59 (1229.2 ns)    needs   59       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7, note 2; margin a cycle
+    sk6812             reset          >=   200000 ns  run    10907 (227229.2 ns) needs 9601       SK6812, OSK-SPC-SK6812-012 Rev. B/1 p.7; margin a cycle
 
     lockstep: ws2812, ws2812_standard
     ("lockstep held" (cycles 17840))

@@ -570,8 +570,8 @@ class SlowPins(Pins):
         return acc
 
 
-# SK6812 datasheet: T0H 0.3, T1H 0.6, T0L 0.9, T1L 0.6 us, each 0.15 us either way
-SK6812 = {"T0H": (150, 450), "T1H": (450, 750), "T0L": (750, 1050), "T1L": (450, 750)}
+# SK6812-012 Rev. B/1 p.7, in ns: T0L and T1L have a least and no most
+SK6812 = {"T0H": (250, 400), "T1H": (650, 1000), "T0L": (800, float("inf")), "T1L": (200, float("inf"))}
 
 
 async def neopixel(dut, gap):
@@ -628,7 +628,7 @@ async def test_neopixel(dut):
         times["T1L" if one else "T0L"].append(gap)
     for name, (low, high) in SK6812.items():
         seen = sorted(set(round(t) for t in times[name]))
-        cocotb.log.info("%s: %s ns, the SK6812 allows %d to %d", name, seen, low, high)
+        cocotb.log.info("%s: %s ns, the SK6812 allows %d to %s", name, seen, low, high)
         assert seen and all(low <= t <= high for t in seen), (name, seen)
 
 
