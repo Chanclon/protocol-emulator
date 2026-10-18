@@ -2,7 +2,7 @@ open! Core
 open Protocol_emulator
 
 let td_plus = Isa.first_bidir_pin
-let cycle_ns = 25
+let cycle_ns = 1_000_000_000 / Bench.ethernet_clock_hz
 let link_tenth = 64000
 
 let config =
