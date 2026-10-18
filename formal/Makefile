@@ -731,15 +731,16 @@ netlist_anystate_teeth:
 	$(MAKE) netlist_anystate EQUIV=netlist_anystate_stuck ANY_EXPECT=0
 
 # The Icepi Zero's build equals the RTL: synth_ecp5's netlist, before place and route,
-# against icepi_top.v around the chip's Verilog, the block RAMs and the macros' model
-# flops on both sides (icepi_equiv/miter.ys). About ICEPI_MIN min:
+# against icepi_top.v around the chip's Verilog, the macros' cores cut on both sides
+# (icepi_equiv/miter.ys), from all 0 and from the state the bitstream configures
+# (configured.awk). About 25 min:
 #   make -C icepi build/usb1.json && make icepi_equiv
 # ICEPI_JSON, USB and MHZ name another build, as icepi/Makefile's equiv target does.
 ICEPI = icepi_equiv_run
 ICEPI_JSON = ../icepi/build/usb1.json
 USB = 1
 MHZ = 48
-ICEPI_PROOF = read_aiger miter.aig; print_stats; scorr; print_stats; dprove; print_status
+ICEPI_PROOF = print_stats; scorr; print_stats; dprove; print_status
 icepi_equiv:
 	rm -rf $(ICEPI) && mkdir $(ICEPI)
 	cp $(ICEPI_JSON) $(ICEPI)/netlist.json
@@ -750,8 +751,13 @@ icepi_equiv:
 	cd $(ICEPI) && $(FSM_STEP) > fsm_step.log
 	grep 'Status = 1 ' $(ICEPI)/fsm_step.log
 	cd $(ICEPI) && yosys -q -l miter.log ../icepi_equiv/miter.ys
-	cd $(ICEPI) && timeout 3600 yosys-abc -c '$(ICEPI_PROOF)' > proof.log
+	cd $(ICEPI) && awk -f ../icepi_equiv/configured.awk miter_pre.il > configured.il
+	cd $(ICEPI) && yosys -q -l configured.log ../icepi_equiv/configured.ys
+	cd $(ICEPI) && timeout 3600 yosys-abc -c 'read_aiger miter.aig; $(ICEPI_PROOF)' > proof.log
 	grep 'Status = $(EXPECT) ' $(ICEPI)/proof.log
+	cd $(ICEPI) && timeout 3600 yosys-abc -c 'read_aiger configured.aig; $(ICEPI_PROOF)' \
+	  > configured_proof.log
+	grep 'Status = $(EXPECT) ' $(ICEPI)/configured_proof.log
 	@echo "netlist sha256 $$(sha256sum < $(ICEPI)/netlist.json | cut -d' ' -f1)"
 
 # Mutants that must be refuted: the LUT driving uio[2] inverted, the data memory's block
@@ -761,7 +767,7 @@ ICEPI_TEETH = icepi_equiv_teeth
 icepi_equiv_teeth:
 	rm -rf $(ICEPI_TEETH) && mkdir $(ICEPI_TEETH)
 	jq --arg pad 'uio_pad[2]' -f icepi_equiv/flip.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/flip.json
-	jq -f icepi_equiv/swap.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/swap.json
+	jq --arg a DIA0 --arg b DIA1 -f icepi_equiv/swap.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/swap.json
 	jq '(.modules.icepi_top.cells[] | select(.type == "DP16KD") | .parameters.WRITEMODE_A) = "NORMAL"' \
 	  $(ICEPI_JSON) > $(ICEPI_TEETH)/mode.json
 	sed -E '/^module host_port /,/^endmodule/s/^( *sm <= )signal_wire_[0-9]+;/\1sm;/' \
@@ -992,6 +998,7 @@ proof_bundle_tooth:
   inductive_write inductive_certificate inductive_proof inductive_certificates inductive_names \
   stamped_certificate stamped_proof data_certificate data_proof data_certificates data_names \
   netlist_equiv netlist_equiv_teeth netlist_anystate netlist_anystate_teeth \
+  icepi_equiv icepi_equiv_teeth \
   sync_rtl sync_gate sync_rtl_teeth sync_gate_teeth \
   fsm_miter fsm_miter_proof sram_equiv sram_equiv_proof \
   sram_equiv_step sram_equiv_teeth kernel_equiv kernel_equiv_proof kernel_miter sat_tools \
