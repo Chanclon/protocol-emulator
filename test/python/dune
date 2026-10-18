@@ -170,3 +170,13 @@
   ../clock_cliffs.sha256)
  (action
   (run python3 -B %{dep:test_clock_sweep.py} ../../demo ../..)))
+
+(rule
+ (alias runtest)
+ (deps
+  ../../demo/corpus_draw.py
+  ../../demo/corpus_decoders.tsv
+  corpus_beacon_33000000.json
+  (glob_files_rec ../traces/*.trace))
+ (action
+  (run python3 -B %{dep:test_corpus_draw.py} ../../demo ../traces)))
