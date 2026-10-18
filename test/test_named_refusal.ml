@@ -15,9 +15,9 @@ let%expect_test "an i2c START held a quarter short is named at its edge" =
   report Refusal_mutants.i2c_short_start;
   [%expect
     {|
-    i2c_standard: edge 2, THD:STA 2.521 us < 4 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 121 cycles at 48 MHz, 193 needed)
-    i2c_standard: edge 145, TSU:STA 2.521 us < 4.7 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 121 cycles at 48 MHz, 274 needed)
-    i2c_standard: edge 4, TSU:STO 2.521 us < 4 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 121 cycles at 48 MHz, 240 needed)
+    i2c_standard: edge 2, THD:STA 2.521 us < 4 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 11, p.44; 121 cycles at 48 MHz, 193 needed)
+    i2c_standard: edge 145, TSU:STA 2.521 us < 4.7 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 11, p.44; 121 cycles at 48 MHz, 274 needed)
+    i2c_standard: edge 4, TSU:STO 2.521 us < 4 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 11, p.44; 121 cycles at 48 MHz, 240 needed)
     |}]
 ;;
 
@@ -39,7 +39,7 @@ let%expect_test "the picture of the i2c START's hold" =
     {|
     <svg xmlns="http://www.w3.org/2000/svg" width="780" height="222" viewBox="0 0 780 222" font-family="monospace" font-size="12">
     <rect width="780" height="222" fill="#ffffff"/>
-    <text x="90" y="22" fill="#1a1a1a">i2c_standard: edge 2, THD:STA 2.521 us &lt; 4 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 121 cycles at 48 MHz, 193 needed)</text>
+    <text x="90" y="22" fill="#1a1a1a">i2c_standard: edge 2, THD:STA 2.521 us &lt; 4 us min (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 11, p.44; 121 cycles at 48 MHz, 193 needed)</text>
     <text x="8" y="78" fill="#1a1a1a">SCL</text>
     <path d="M90,58 L593,58 L593,92 L760,92" fill="none" stroke="#1a1a1a" stroke-width="2"/>
     <text x="8" y="134" fill="#1a1a1a">SDA</text>
@@ -136,10 +136,10 @@ let%expect_test "a refusal with no edge on the run names the kernel's bound" =
   print_endline (Named_refusal.to_svg t);
   [%expect
     {|
-    i2c_standard: THD:STA kernel bound 7.542 us (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 362 cycles at 48 MHz, 363 needed)
+    i2c_standard: THD:STA kernel bound 7.542 us (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 11, p.44; 362 cycles at 48 MHz, 363 needed)
     <svg xmlns="http://www.w3.org/2000/svg" width="780" height="222" viewBox="0 0 780 222" font-family="monospace" font-size="12">
     <rect width="780" height="222" fill="#ffffff"/>
-    <text x="90" y="22" fill="#1a1a1a">i2c_standard: THD:STA kernel bound 7.542 us (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 10; 362 cycles at 48 MHz, 363 needed)</text>
+    <text x="90" y="22" fill="#1a1a1a">i2c_standard: THD:STA kernel bound 7.542 us (I2C Standard-mode, NXP UM10204 Rev. 7.0 Table 11, p.44; 362 cycles at 48 MHz, 363 needed)</text>
     <text x="8" y="78" fill="#1a1a1a">pin 14</text>
     <path d="M90,58 L760,58" fill="none" stroke="#1a1a1a" stroke-width="2"/>
     <text x="8" y="134" fill="#1a1a1a">pin 15</text>
