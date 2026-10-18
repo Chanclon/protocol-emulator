@@ -431,8 +431,8 @@ def table(args):
                 fmt_ns(results[lo]["ns"]), fmt_ns(results[hi]["ns"]), "; ".join(edge)))
         refused = [p["refused"] for p in sweep["points"] if "refused" in p]
         if refused:
-            lines.append("  refused by the kernel, not run: %d points, e.g. %s" % (
-                len(refused), refused[0]))
+            lines.append("  refused by the kernel, not run: %d point%s, e.g. %s" % (
+                len(refused), "" if len(refused) == 1 else "s", refused[0]))
         for r in results:
             lines.append("  %-10s %2d/%-2d %-38s %s" % (
                 fmt_ns(r["ns"]), r["passed"], r["repeats"],
