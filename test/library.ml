@@ -21,6 +21,9 @@ let protocols =
   ; Swd.protocol
   ; Tables.protocol
   ; Nec.protocol
+  ; Snorble.protocol
+  ; Plinkoo.protocol
+  ; Frumbleglide.protocol
   ]
 ;;
 

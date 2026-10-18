@@ -1117,6 +1117,13 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
       , [%string
           "a 108 ms frame is at least %{((108 * clock / 1000) + max_hold - 1) / \
            max_hold#Int} steps, each held at most %{max_hold#Int} cycles"] )
+    ; ( "snorble"
+      , "no"
+      , "-"
+      , "sync 8 us, lows 1.2 and 3 us"
+      , "written for the core, not tried" )
+    ; "plinkoo", "TODO", "-", "-", "TODO whether the table interpreter runs it"
+    ; "frumbleglide", "TODO", "-", "-", "TODO whether the table interpreter runs it"
     ]
   in
   let named = List.map rows ~f:(fun (name, _, _, _, _) -> name) in
