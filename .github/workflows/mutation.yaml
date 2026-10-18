@@ -17,11 +17,21 @@ on:
         description: 'jobs to split the mutants over; 0: 4 for engine, 20 for wide, 20 for kernel, 1 for ids'
         type: number
         default: 0
+      untested:
+        description: 'kernel and wide: take every mutant of the checker to the proofs, without the tests'
+        type: boolean
+        default: false
+      proofs:
+        description: 'only these of the proofs, as test/mutate.py PROVED names them, space separated'
+        type: string
+        default: ''
 
 # the held-out sample is a function of this seed and the mutant, fixed before any run
 env:
   SCOPE: ${{ inputs.scope || 'engine' }}
   IDS: ${{ inputs.ids }}
+  UNTESTED: ${{ inputs.untested }}
+  PROOFS: ${{ inputs.proofs }}
   SEED: '20261002'
 
 jobs:
@@ -112,11 +122,15 @@ jobs:
         run: opam exec -- python3 test/mutate.py --scope "$SCOPE" ${IDS:+--id $IDS} --shard "${{ matrix.shard }}/$SHARDS" --seed "$SEED" --list
 
       # a suite that runs 45 minutes, about three times a mutant's, has hung; so has a proof
-      # past 90
+      # past 90, but for a few mutants by id, where the slowest pair lemma tasks take 3.6 h
       - name: Mutate and run the tests on every mutant
         timeout-minutes: 330
         run: |
-          prove=; [ "$SCOPE" = engine ] || prove="--prove --proof-timeout 5400"
+          prove=
+          if [ "$SCOPE" != engine ]; then
+            if [ "$UNTESTED" = true ]; then prove=--prove-only; else prove=--prove; fi
+            prove="$prove --proof-timeout $([ -n "$IDS" ] && echo 18000 || echo 5400) ${PROOFS:+--proofs $PROOFS}"
+          fi
           opam exec -- python3 test/mutate.py --scope "$SCOPE" ${IDS:+--id $IDS} --shard "${{ matrix.shard }}/$SHARDS" --seed "$SEED" --jobs 4 --timeout 2700 $prove --json "shard_${{ matrix.shard }}.jsonl"
 
       - name: Upload the results
