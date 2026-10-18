@@ -3,8 +3,7 @@ open Protocol_emulator
 
 let swclk_pin = 7
 let swdio_pin = 17
-let cycle_ns = 20
-let standard_half = 500 / cycle_ns
+let standard_half = 25
 let shortest_half = 10
 
 let config =
@@ -428,7 +427,7 @@ module Dp = struct
   end
 
   type t =
-    { cycle_ns : int
+    { clock_hz : int
     ; dpidr : int
     ; targetid : int
     ; ap_latency : int
@@ -469,12 +468,12 @@ module Dp = struct
     ?(memory = [])
     ?(corrupt_parity = false)
     ?(corrupt_acks = 0)
-    ~cycle_ns
+    ~clock_hz
     ~dpidr
     ~targetid
     ()
     =
-    { cycle_ns
+    { clock_hz
     ; dpidr
     ; targetid
     ; ap_latency
@@ -522,9 +521,12 @@ module Dp = struct
     match since with
     | None -> t
     | Some since ->
-      let ns = (t.now - since) * t.cycle_ns in
+      let { clock_hz; _ } = t in
+      let ns = Measured.ns ~clock_hz (t.now - since) in
       let t = { t with measured = Measured.add t.measured ~name ~ns } in
-      if ns >= minimum_ns then t else violation t [%string "%{name} of %{ns#Int} ns"]
+      if Measured.at_least ~clock_hz (t.now - since) ~ns:minimum_ns
+      then t
+      else violation t [%string "%{name} of %{ns#Int} ns"]
   ;;
 
   let alert_bits =
@@ -889,11 +891,11 @@ module Bus = struct
     { dps; host = None; now = 0; contention = []; undriven }
   ;;
 
-  let rp2040 ?undriven ~cycle_ns () =
+  let rp2040 ?undriven ~clock_hz () =
     create
       ?undriven
       (List.map [ rp2040_core0; rp2040_core1 ] ~f:(fun targetid ->
-         Dp.create ~cycle_ns ~dpidr:rp2040_dpidr ~targetid ()))
+         Dp.create ~clock_hz ~dpidr:rp2040_dpidr ~targetid ()))
   ;;
 
   let dps t = t.dps
@@ -1006,7 +1008,12 @@ let scenario =
       ref
         (Bus.create
            (List.map [ rp2040_core0; rp2040_core1 ] ~f:(fun targetid ->
-              Dp.create ~ap_latency:60 ~cycle_ns ~dpidr:rp2040_dpidr ~targetid ())))
+              Dp.create
+                ~ap_latency:60
+                ~clock_hz:Bench.clock_hz
+                ~dpidr:rp2040_dpidr
+                ~targetid
+                ())))
     in
     { Peer.inputs = (fun () -> Bus.inputs !bus)
     ; step = (fun ~pin_out ~pin_dir -> bus := Bus.step !bus ~pin_out ~pin_dir)
@@ -1030,7 +1037,7 @@ let scenario =
       @ List.concat_map transfers ~f:(fun (t, _, _) -> transfer t)
   ; sigrok =
       Some
-        { clock_hz = 1_000_000_000 / cycle_ns
+        { clock_hz = Bench.clock_hz
         ; decoders =
             [ Sigrok.decoder "swd" ~pins:[ "swclk", swclk_pin; "swdio", swdio_pin ] ]
         ; expect =

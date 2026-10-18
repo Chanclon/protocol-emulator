@@ -1,7 +1,7 @@
 # swd, from test/pin_trace.ml: do not edit
 # cycles ui_in uio_in uo_out uio_out uio_oe; cycle 0 is the first rising edge
 # after rst_n rises, outputs are the values after the edge
-# sigrok clock 50000000
+# sigrok clock 48000000
 # sigrok decoder swd:swclk=OUT2:swdio=IO5
 # sigrok annotations swd=read:write:ack:data
 # sigrok expect swd-1: IDCODE
