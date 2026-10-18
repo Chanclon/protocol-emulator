@@ -248,11 +248,7 @@ let limits =
   ; limit "T1H" (At_least 650.) b1 (code ~one:true fst)
   ; limit "T1H" (At_most 1000.) b1 (code ~one:true fst)
   ; limit "T0L" (At_least 800.) b1 (code ~one:false snd)
-  ; limit
-      "T1L"
-      (At_least 200.)
-      b1
-      (Datasheet.level ~pin:Datasheet.set_pin ~high:false ())
+  ; limit "T1L" (At_least 200.) b1 (Datasheet.level ~pin:Datasheet.set_pin ~high:false ())
   ; limit
       "T"
       (At_least 1200.)
