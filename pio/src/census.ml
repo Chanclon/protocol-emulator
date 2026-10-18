@@ -186,75 +186,6 @@ let real_time program =
   Option.map (sm_hz program) ~f:(fun hz -> Float.of_int clock_hz /. hz)
 ;;
 
-module Row = struct
-  type t =
-    { file : string
-    ; program : string
-    ; verdict : Verdict.t
-    ; real_time : (float * bool) option
-    ; contract : string list
-    }
-end
-
-let row ~file (program : Pioasm.Program.t) =
-  let verdict = least program in
-  let real_time =
-    Option.map (real_time program) ~f:(fun k -> k, Result.is_ok (certify program ~k))
-  in
-  let contract =
-    match Translate.translate (setup program ~period:8) program with
-    | Ok t -> t.contract
-    | Error _ -> []
-  in
-  { Row.file; program = program.name; verdict; real_time; contract }
-;;
-
-let to_string rows =
-  let line (row : Row.t) =
-    let verdict, k, words =
-      match row.verdict with
-      | Certified { k; words } -> "certified", Int.to_string k, Int.to_string words
-      | Not_certified { reason } -> "not certified: " ^ reason, "", ""
-      | Refused refusals ->
-        ( "refused: "
-          ^ (List.map refusals ~f:(fun r -> r.feature)
-             |> List.dedup_and_sort ~compare:String.compare
-             |> String.concat ~sep:", ")
-        , ""
-        , "" )
-    in
-    let real =
-      match row.real_time with
-      | None -> ""
-      | Some (k, ok) -> sprintf "%.3f %s" k (if ok then "yes" else "no")
-    in
-    sprintf "| %s | %s | %s | %s | %s | %s |" row.file row.program verdict k words real
-  in
-  let count f = List.count rows ~f:(fun (row : Row.t) -> f row.verdict) in
-  let certified =
-    count (function
-      | Verdict.Certified _ -> true
-      | _ -> false)
-  and refused =
-    count (function
-      | Verdict.Refused _ -> true
-      | _ -> false)
-  in
-  String.concat_lines
-    ([ "| file | program | verdict | least k | words | k at 48 MHz, certified |"
-     ; "|---|---|---|---|---|---|"
-     ]
-     @ List.map rows ~f:line
-     @ [ ""
-       ; sprintf
-           "%d programs: %d certified, %d refused, %d not certified"
-           (List.length rows)
-           certified
-           refused
-           (List.length rows - certified - refused)
-       ])
-;;
-
 let least_apart timed ~dirs ~a ~b ~apart =
   let config = Timed_program.config timed
   and words = Timed_program.words timed in
@@ -288,4 +219,150 @@ let least_apart timed ~dirs ~a ~b ~apart =
       if accepts mid then most ~lo:mid ~hi else most ~lo ~hi:mid)
   in
   if not (accepts 0) then None else Some (most ~lo:0 ~hi:(1 lsl 16))
+;;
+
+module Limit = struct
+  type t =
+    { parameter : string
+    ; at_least_ns : int
+    ; sheet : string
+    ; edge : string
+    ; bound : int option
+    }
+
+  let ok t =
+    Option.exists t.bound ~f:(fun n -> n * 1_000_000_000 >= t.at_least_ns * clock_hz)
+  ;;
+
+  let to_string t =
+    let proved =
+      match t.bound with
+      | None -> "the kernel proves no bound"
+      | Some n ->
+        sprintf
+          "the kernel proves %d cycles, %.3f us at %d MHz"
+          n
+          (Float.of_int n *. 1e6 /. Float.of_int clock_hz)
+          (clock_hz / 1_000_000)
+    in
+    sprintf
+      "%s, %s: %s, %s %.1f us (%s)"
+      t.parameter
+      t.edge
+      proved
+      (if ok t then "clearing" else "under")
+      (Float.of_int t.at_least_ns /. 1000.)
+      t.sheet
+  ;;
+end
+
+let limits (program : Pioasm.Program.t) timed =
+  let config = Timed_program.config timed in
+  match program.name with
+  | "i2c" ->
+    (* pindirs, which pio_i2c.c inverts: SCL falling while SDA is held low, since SDA's
+       last edge *)
+    [ { Limit.parameter = "tHD;STA"
+      ; at_least_ns = 4_000
+      ; sheet = "UM10204 Rev. 7, table 10, Standard-mode"
+      ; edge = "SDA low to SCL low"
+      ; bound =
+          least_apart
+            timed
+            ~dirs:true
+            ~a:config.side_set_base
+            ~b:config.set_base
+            ~apart:(fun ~own ~other -> (not own) && other)
+      }
+    ]
+  | _ -> []
+;;
+
+module Row = struct
+  type t =
+    { file : string
+    ; program : string
+    ; verdict : Verdict.t
+    ; real_time : (float * bool) option
+    ; refused_limits : string list
+    ; contract : string list
+    }
+end
+
+let row ~file (program : Pioasm.Program.t) =
+  let verdict = least program in
+  let at_real_time =
+    Option.map (real_time program) ~f:(fun k ->
+      match certify program ~k with
+      | Error _ -> k, false, []
+      | Ok (_, timed) ->
+        let refused =
+          List.filter_map (limits program timed) ~f:(fun limit ->
+            Option.some_if (not (Limit.ok limit)) limit.parameter)
+        in
+        k, List.is_empty refused, refused)
+  in
+  let contract =
+    match Translate.translate (setup program ~period:8) program with
+    | Ok t -> t.contract
+    | Error _ -> []
+  in
+  { Row.file
+  ; program = program.name
+  ; verdict
+  ; real_time = Option.map at_real_time ~f:(fun (k, ok, _) -> k, ok)
+  ; refused_limits = Option.value_map at_real_time ~default:[] ~f:(fun (_, _, r) -> r)
+  ; contract
+  }
+;;
+
+let to_string rows =
+  let line (row : Row.t) =
+    let verdict, k, words =
+      match row.verdict with
+      | Certified { k; words } -> "certified", Int.to_string k, Int.to_string words
+      | Not_certified { reason } -> "not certified: " ^ reason, "", ""
+      | Refused refusals ->
+        ( "refused: "
+          ^ (List.map refusals ~f:(fun r -> r.feature)
+             |> List.dedup_and_sort ~compare:String.compare
+             |> String.concat ~sep:", ")
+        , ""
+        , "" )
+    in
+    let real =
+      match row.real_time with
+      | None -> ""
+      | Some (k, true) -> sprintf "%.3f yes" k
+      | Some (k, false) ->
+        sprintf
+          "%.3f no%s"
+          k
+          (List.map row.refused_limits ~f:(fun p -> ", " ^ p) |> String.concat)
+    in
+    sprintf "| %s | %s | %s | %s | %s | %s |" row.file row.program verdict k words real
+  in
+  let count f = List.count rows ~f:(fun (row : Row.t) -> f row.verdict) in
+  let certified =
+    count (function
+      | Verdict.Certified _ -> true
+      | _ -> false)
+  and refused =
+    count (function
+      | Verdict.Refused _ -> true
+      | _ -> false)
+  in
+  String.concat_lines
+    ([ "| file | program | verdict | least k | words | k at 48 MHz, certified |"
+     ; "|---|---|---|---|---|---|"
+     ]
+     @ List.map rows ~f:line
+     @ [ ""
+       ; sprintf
+           "%d programs: %d certified, %d refused, %d not certified"
+           (List.length rows)
+           certified
+           refused
+           (List.length rows - certified - refused)
+       ])
 ;;

@@ -131,7 +131,7 @@ let%expect_test "census of pico-examples at 0d62f75" =
     | hello.pio | hello | certified | 5 | 23 |  |
     | hub75.pio | hub75_row | refused: 27-bit shift, pull threshold 32 |  |  |  |
     | hub75.pio | hub75_data_rgb888 | refused: 26-bit shift, mov :: (32-bit reverse), pull threshold 24, pull with autopull |  |  |  |
-    | i2c.pio | i2c | certified | 15 | 474 | 15.000 yes |
+    | i2c.pio | i2c | certified | 15 | 474 | 15.000 no, tHD;STA |
     | i2c.pio | set_scl_sda | certified | 3 | 41 | 15.000 yes |
     | manchester_encoding.pio | manchester_tx | certified | 5 | 86 |  |
     | manchester_encoding.pio | manchester_rx | certified | 5 | 43 |  |
@@ -207,6 +207,24 @@ let%expect_test "i2c certifies at its own rate, and the kernel refuses its START
            : float option)
         (needed : int)];
   [%expect {| ((bound (150)) (us (3.125)) (needed 192)) |}]
+;;
+
+(* the limit is on time, so a slower clock divider clears it *)
+let%expect_test "Census.limits refuses that hold at its own rate, and not at k = 20" =
+  let i2c = program "i2c.pio" "i2c" in
+  List.iter [ 15.; 20. ] ~f:(fun k ->
+    let _, timed = certify i2c ~k in
+    List.iter (Census.limits i2c timed) ~f:(fun limit ->
+      printf
+        "k = %g, ok %b: %s\n"
+        k
+        (Census.Limit.ok limit)
+        (Census.Limit.to_string limit)));
+  [%expect
+    {|
+    k = 15, ok false: tHD;STA, SDA low to SCL low: the kernel proves 150 cycles, 3.125 us at 48 MHz, under 4.0 us (UM10204 Rev. 7, table 10, Standard-mode)
+    k = 20, ok true: tHD;STA, SDA low to SCL low: the kernel proves 200 cycles, 4.167 us at 48 MHz, clearing 4.0 us (UM10204 Rev. 7, table 10, Standard-mode)
+    |}]
 ;;
 
 let%expect_test "refused features are named" =

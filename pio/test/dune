@@ -17,6 +17,7 @@
  (inline_tests
   (deps
    ../bin/pio_check.exe
+   ../bin/pio_import.exe
    (glob_files pico_examples/*.pio)
    (glob_files holes/*))
   (flags
