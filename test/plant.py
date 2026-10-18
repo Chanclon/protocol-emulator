@@ -11,10 +11,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-COPIED = ["src", "test", "bin", "python", "pio", "formal", "ppx", "demo", "pages", "dune-project",
-          ".ocamlformat", "protocol_emulator.opam"]
+COPIED = ["src", "test", "bin", "python", "pio", "formal", "ppx", "demo", "pages", "icepi",
+          "dune-project", ".ocamlformat", "protocol_emulator.opam"]
 SKIPPED = shutil.ignore_patterns("sim_build", "__pycache__", "*.fst", "*.vcd", "results.xml",
-                                 "_build", "plant.py")
+                                 "_build", "build", "plant.py")
 
 # name, area, file, text, planted text
 PLANTS = [
