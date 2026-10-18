@@ -485,8 +485,10 @@ gap:
 
   let sweep ~parameter ~nominal:nominal_cycles ~timing points =
     let observable =
-      "Pico A's ADC3 (VSYS) as the stick's LED current pulls it down, against the \
-       nominal firmware's dark and lit readings: a black then a white pixel each repeat"
+      "Pico A's ADC channel 3, which falls about 1.6 mV with the first pixel white: each \
+       repeat a white pixel, then a black one, or for the reset a white and a black back \
+       to back, passing where the step between the two readings is within 30% of the \
+       step the library's timing makes"
     in
     let points =
       List.map points ~f:(fun cycles ->
@@ -514,6 +516,36 @@ gap:
 
   let range lo hi = List.range lo hi ~stop:`inclusive
 
+  (* past the sheet's 20 us, up to where the reset sweep finds a latch *)
+  let long_lows =
+    List.map
+      [ 1.5
+      ; 2.
+      ; 3.
+      ; 4.
+      ; 5.
+      ; 6.
+      ; 7.
+      ; 8.
+      ; 10.
+      ; 12.
+      ; 15.
+      ; 20.
+      ; 25.
+      ; 30.
+      ; 40.
+      ; 50.
+      ; 60.
+      ; 70.
+      ; 80.
+      ; 90.
+      ; 100.
+      ; 110.
+      ; 120.
+      ]
+      ~f:us
+  ;;
+
   let sweeps () =
     [ sweep
         ~parameter:"T0H"
@@ -529,52 +561,12 @@ gap:
         ~parameter:"T0L"
         ~nominal:nominal.l0
         ~timing:(fun l0 -> { nominal with l0 })
-        (range 2 48
-         @ List.map
-             [ 1.5
-             ; 2.
-             ; 3.
-             ; 4.
-             ; 5.
-             ; 6.
-             ; 7.
-             ; 8.
-             ; 10.
-             ; 12.
-             ; 15.
-             ; 20.
-             ; 25.
-             ; 30.
-             ; 40.
-             ; 50.
-             ; 60.
-             ]
-             ~f:us)
+        (range 2 48 @ long_lows)
     ; sweep
         ~parameter:"T1L"
         ~nominal:nominal.l1
         ~timing:(fun l1 -> { nominal with l1 })
-        (range 2 48
-         @ List.map
-             [ 1.5
-             ; 2.
-             ; 3.
-             ; 4.
-             ; 5.
-             ; 6.
-             ; 7.
-             ; 8.
-             ; 10.
-             ; 12.
-             ; 15.
-             ; 20.
-             ; 25.
-             ; 30.
-             ; 40.
-             ; 50.
-             ; 60.
-             ]
-             ~f:us)
+        (range 2 48 @ long_lows)
     ; sweep
         ~parameter:"reset"
         ~nominal:nominal.gap
@@ -604,6 +596,15 @@ gap:
            ; 70.
            ; 80.
            ; 100.
+           ; 102.
+           ; 104.
+           ; 106.
+           ; 108.
+           ; 110.
+           ; 112.
+           ; 114.
+           ; 116.
+           ; 118.
            ; 120.
            ; 150.
            ; 200.
@@ -831,8 +832,9 @@ module Eeprom = struct
     ; rows
     ; nominal = nominal_cycles
     ; observable =
-        "the part's ACKs and the bytes it returns, decoded by sigrok's i2c decoder from \
-         analyser B, against a read of the same bytes at the eeprom demo's timing"
+        "the part's ACKs and the bytes it returns as the chip reads them, against a read \
+         of the same bytes at the eeprom demo's timing; sigrok's i2c decode of analyser \
+         B beside"
     ; points
     }
   ;;
@@ -1132,8 +1134,9 @@ swept:
     ; rows
     ; nominal = nominal_cycles
     ; observable =
-        "the part's replies on DQ: its presence pulse and the bytes it sends, decoded \
-         from analyser B at the datasheet's own sample times, and the chip's view beside"
+        "the part's presence pulse and the bytes it returns as the chip samples them, \
+         against a read at the library's timing; analyser B's capture beside, for the \
+         part's own presence and read-zero times"
     ; points
     }
   ;;

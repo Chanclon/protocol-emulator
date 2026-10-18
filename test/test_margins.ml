@@ -13,7 +13,8 @@ let%expect_test "every point" =
           (Option.value_map p.designed ~default:"-" ~f:Int.to_string)
           p.sweep_ok
           (Margins.Point.label p)));
-  [%expect {|
+  [%expect
+    {|
     SK6812 T0H
       42 ns: the kernel refuses it, line 48: this deadline wait can be reached 3 cycles late (slack -3)
       62 ns: the kernel refuses it, line 48: this deadline wait can be reached 2 cycles late (slack -2)
@@ -172,6 +173,12 @@ let%expect_test "every point" =
        1920 40 us     designed 1920 sweep true  OUT OF SPEC: T0L 40 us (sheet <= 20 us + a cycle)
        2400 50 us     designed 2400 sweep true  OUT OF SPEC: T0L 50 us (sheet <= 20 us + a cycle)
        2880 60 us     designed 2880 sweep true  OUT OF SPEC: T0L 60 us (sheet <= 20 us + a cycle)
+       3360 70 us     designed 3360 sweep true  OUT OF SPEC: T0L 70 us (sheet <= 20 us + a cycle)
+       3840 80 us     designed 3840 sweep true  OUT OF SPEC: T0L 80 us (sheet <= 20 us + a cycle)
+       4320 90 us     designed 4320 sweep true  OUT OF SPEC: T0L 90 us (sheet <= 20 us + a cycle)
+       4800 100 us    designed 4800 sweep true  OUT OF SPEC: T0L 100 us (sheet <= 20 us + a cycle)
+       5280 110 us    designed 5280 sweep true  OUT OF SPEC: T0L 110 us (sheet <= 20 us + a cycle)
+       5760 120 us    designed 5760 sweep true  OUT OF SPEC: T0L 120 us (sheet <= 20 us + a cycle)
     SK6812 T1L
       42 ns: the kernel refuses it, line 17: this deadline wait can be reached 3 cycles late (slack -3..35)
       62 ns: the kernel refuses it, line 17: this deadline wait can be reached 2 cycles late (slack -2..35)
@@ -237,6 +244,12 @@ let%expect_test "every point" =
        1920 40 us     designed 1920 sweep true  OUT OF SPEC: T1L 40 us (sheet <= 20 us + a cycle)
        2400 50 us     designed 2400 sweep true  OUT OF SPEC: T1L 50 us (sheet <= 20 us + a cycle)
        2880 60 us     designed 2880 sweep true  OUT OF SPEC: T1L 60 us (sheet <= 20 us + a cycle)
+       3360 70 us     designed 3360 sweep true  OUT OF SPEC: T1L 70 us (sheet <= 20 us + a cycle)
+       3840 80 us     designed 3840 sweep true  OUT OF SPEC: T1L 80 us (sheet <= 20 us + a cycle)
+       4320 90 us     designed 4320 sweep true  OUT OF SPEC: T1L 90 us (sheet <= 20 us + a cycle)
+       4800 100 us    designed 4800 sweep true  OUT OF SPEC: T1L 100 us (sheet <= 20 us + a cycle)
+       5280 110 us    designed 5280 sweep true  OUT OF SPEC: T1L 110 us (sheet <= 20 us + a cycle)
+       5760 120 us    designed 5760 sweep true  OUT OF SPEC: T1L 120 us (sheet <= 20 us + a cycle)
     SK6812 reset
          48 1 us      designed 48 sweep true  OUT OF SPEC: reset 1 us (sheet >= 200 us + a cycle)
          96 2 us      designed 96 sweep true  OUT OF SPEC: reset 2 us (sheet >= 200 us + a cycle)
@@ -262,6 +275,15 @@ let%expect_test "every point" =
        3360 70 us     designed 3360 sweep true  OUT OF SPEC: reset 70 us (sheet >= 200 us + a cycle)
        3840 80 us     designed 3840 sweep true  OUT OF SPEC: reset 80 us (sheet >= 200 us + a cycle)
        4800 100 us    designed 4800 sweep true  OUT OF SPEC: reset 100 us (sheet >= 200 us + a cycle)
+       4896 102 us    designed 4896 sweep true  OUT OF SPEC: reset 102 us (sheet >= 200 us + a cycle)
+       4992 104 us    designed 4992 sweep true  OUT OF SPEC: reset 104 us (sheet >= 200 us + a cycle)
+       5088 106 us    designed 5088 sweep true  OUT OF SPEC: reset 106 us (sheet >= 200 us + a cycle)
+       5184 108 us    designed 5184 sweep true  OUT OF SPEC: reset 108 us (sheet >= 200 us + a cycle)
+       5280 110 us    designed 5280 sweep true  OUT OF SPEC: reset 110 us (sheet >= 200 us + a cycle)
+       5376 112 us    designed 5376 sweep true  OUT OF SPEC: reset 112 us (sheet >= 200 us + a cycle)
+       5472 114 us    designed 5472 sweep true  OUT OF SPEC: reset 114 us (sheet >= 200 us + a cycle)
+       5568 116 us    designed 5568 sweep true  OUT OF SPEC: reset 116 us (sheet >= 200 us + a cycle)
+       5664 118 us    designed 5664 sweep true  OUT OF SPEC: reset 118 us (sheet >= 200 us + a cycle)
        5760 120 us    designed 5760 sweep true  OUT OF SPEC: reset 120 us (sheet >= 200 us + a cycle)
        7200 150 us    designed 7200 sweep true  OUT OF SPEC: reset 150 us (sheet >= 200 us + a cycle)
        9600 200 us    designed 9600 sweep true  OUT OF SPEC: reset 200 us (sheet >= 200 us + a cycle)
