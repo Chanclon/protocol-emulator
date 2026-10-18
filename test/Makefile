@@ -153,6 +153,15 @@ tolerance_bench:
 		COCOTB_RESULTS_FILE=results_tolerance_bench.xml
 	$(PYTHON_BIN) -m cocotb_tools.check_results results_tolerance_bench.xml
 
+# demo_margins.py on the RTL against models with thresholds of their own, judged as
+# demo/margins.py judges the bench: make margins_bench MARGINS=margins.json, the JSON
+# test/python/write_margins.exe writes. Needs what outside needs.
+margins_bench:
+	$(MAKE) sim OUTSIDE=yes SIM_BUILD=sim_build/outside COCOTB_TEST_MODULES=test_margins_bench \
+		PLUSARGS=+firmware=/dev/null MARGINS=$(abspath $(MARGINS)) \
+		COCOTB_RESULTS_FILE=results_margins_bench.xml
+	$(PYTHON_BIN) -m cocotb_tools.check_results results_margins_bench.xml
+
 # icepi/carrier_check.v, the bench carrier's self-test bitstream, on its own pulls and
 # models/ecp5_pads.v: make carrier_check
 carrier_check:
