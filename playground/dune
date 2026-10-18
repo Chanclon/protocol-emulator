@@ -3,9 +3,10 @@
 (executable
  (name playground)
  (modes js)
+ (modules playground example pio_example)
  (enabled_if
   (= %{env:PLAYGROUND=no} yes))
- (libraries core js_of_ocaml pio protocol_emulator)
+ (libraries core js_of_ocaml playground_checks protocol_emulator)
  (lint
   (pps ppx_js_style -check-doc-comments))
  (preprocess
@@ -40,6 +41,15 @@
  (enabled_if
   (= %{env:PLAYGROUND=no} yes))
  (deps index.html playground.bc.js))
+
+(library
+ (name playground_checks)
+ (modules checks diagram_example)
+ (libraries core pio protocol_emulator)
+ (lint
+  (pps ppx_js_style -check-doc-comments))
+ (preprocess
+  (pps ppx_jane)))
 
 ; each library diagram, and frames of bits to send, a line a frame: host bits, or a
 ; receiver's peer's
