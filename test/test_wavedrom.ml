@@ -118,7 +118,7 @@ let%expect_test "uart tx, dshot and spi master from diagrams, against the hand t
     [%message
       ""
         ~dshot_decoded:
-          (Dshot.decode Dshot.Rate.dshot600 ~cycle_ns:Dshot.cycle_ns levels
+          (Dshot.decode Dshot.Rate.dshot600 ~clock_hz:Bench.clock_hz levels
            |> Or_error.map ~f:fst
            : (int * bool) list Or_error.t)];
   (* a mode 0 slave: MISO shows the next bit after each falling SCK *)

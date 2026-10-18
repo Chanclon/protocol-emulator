@@ -727,7 +727,7 @@ let%expect_test "dshot600 from host frames, against the library's" =
     Array.to_list pins |> List.map ~f:(fun p -> (p lsr Dshot.pin) land 1 = 1)
   in
   let decoded pins =
-    Dshot.decode Dshot.Rate.dshot600 ~cycle_ns:Dshot.cycle_ns (levels pins)
+    Dshot.decode Dshot.Rate.dshot600 ~clock_hz:Bench.clock_hz (levels pins)
     |> Or_error.map ~f:fst
   in
   print_s
