@@ -2,6 +2,7 @@ open! Core
 open Hardcaml
 open Hardcaml_lws
 open! Hardcaml_waveterm
+open Expect_test_helpers_core
 open Protocol_emulator
 
 let bit_ns = 100.
@@ -431,18 +432,19 @@ let%expect_test "configs outside the receiver's range are refused" =
     ]
     ~f:(fun (name, per_bit, per_cycle, gain) ->
       let (module S) = setup name ~per_bit ~per_cycle ~gain in
-      match
-        Or_error.try_with (fun () ->
-          let module _ = Manchester_rx.Make (S) in
-          ())
-      with
-      | Ok () -> printf "%s: built\n" name
-      | Error _ -> printf "%s: refused\n" name);
+      print_endline name;
+      require_does_raise (fun () ->
+        let module _ = Manchester_rx.Make (S) in
+        ()));
   [%expect
     {|
-    no samples a cycle: refused
-    three samples a cycle: refused
-    three samples a bit: refused
-    a negative gain shift: refused
+    no samples a cycle
+    ("BUG: one or two samples a cycle" (samples_per_cycle 0))
+    three samples a cycle
+    ("BUG: one or two samples a cycle" (samples_per_cycle 3))
+    three samples a bit
+    ("BUG: four samples a bit at least" (samples_per_bit 3))
+    a negative gain shift
+    ("BUG: negative gain shift" (gain_shift -1))
     |}]
 ;;
