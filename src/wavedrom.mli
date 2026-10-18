@@ -43,7 +43,7 @@ end
 
 module State : Tables.State with type t = int
 
-(** The chip's rated clock, info.yaml's, 50 MHz. *)
+(** The chip's rated clock, info.yaml's, 48 MHz. *)
 val rated_hz : int
 
 (** As ["48 MHz"]. *)

@@ -193,6 +193,6 @@ WINDOWS = [
      "lowest_hz": 47209410, "lowest_limit": "bit <= 8854.17 ns",
      "highest_hz": 48901227, "highest_limit": "bit >= 8506.94 ns"},
     {"firmware": "diagram ws2812", "words_md5": None, "shipped_hz": 48000000,
-     "lowest_hz": 49473685, "lowest_limit": "T1H <= 950 ns",
-     "highest_hz": 70000000, "highest_limit": "T0L >= 700 ns"},
+     "lowest_hz": 47368422, "lowest_limit": "T1H <= 950 ns",
+     "highest_hz": 67142857, "highest_limit": "T0L >= 700 ns"},
 ]

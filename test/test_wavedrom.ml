@@ -214,18 +214,18 @@ let%expect_test "ws2812 from a diagram: passes of 12 bits while the host's flag 
     {|
     ((steps 38)
      (limits
-      (((edge "a<->b T0H 250ns..550ns") (cycles 26) (ns 520) (least_ns (250))
-        (most_ns (550)))
-       ((edge "a<->c T1H 650ns..950ns") (cycles 47) (ns 940) (least_ns (650))
+      (((edge "a<->b T0H 250ns..550ns") (cycles 26) (ns 541.66666666666663)
+        (least_ns (250)) (most_ns (550)))
+       ((edge "a<->c T1H 650ns..950ns") (cycles 45) (ns 937.5) (least_ns (650))
         (most_ns (950)))
-       ((edge "b<->d T0L 700ns..1000ns") (cycles 49) (ns 980) (least_ns (700))
-        (most_ns (1000)))
-       ((edge "c<->d T1L 300ns..600ns") (cycles 28) (ns 560) (least_ns (300))
-        (most_ns (600)))))
+       ((edge "b<->d T0L 700ns..1000ns") (cycles 47) (ns 979.16666666666663)
+        (least_ns (700)) (most_ns (1000)))
+       ((edge "c<->d T1L 300ns..600ns") (cycles 28) (ns 583.33333333333337)
+        (least_ns (300)) (most_ns (600)))))
      (words_a_frame 5) (frames_identical true) (violations ())
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
-    (measured ((T0H (520 520)) (T0L (980 980)) (T1H (940 940)) (T1L (560 560))))
+    (measured ((T0H (520 520)) (T0L (940 940)) (T1H (900 900)) (T1L (560 560))))
     |}]
 ;;
 
@@ -392,7 +392,7 @@ let%expect_test "diagrams outside the class are refused, with the reason" =
      (e
       ("outside the table class"
        ("the diagram's own limit does not hold" (edge "a->b T0H <= 400ns")
-        (cycles 26) (ns 520) (least_ns ()) (most_ns (400))))))
+        (cycles 26) (ns 541.66666666666663) (least_ns ()) (most_ns (400))))))
     ("a limit from the idle"
      (e
       ("outside the table class"
@@ -475,9 +475,11 @@ let%expect_test "a frame of two host words pulls the second; one with no data lo
     |}]
 ;;
 
+(* At 50 MHz, so a cycle is a round 20 ns. *)
 let%expect_test "an edge's label sets a limit in ns, us or cycles, or none" =
   let t =
     Wavedrom.of_string
+      ~clock_hz:50_000_000
       {|{ signal: [ { wave: '01=0', node: '.abc' } ],
           edge: [ 'a->b >= 26 cycles', 'a->c <= 1.2us', 'b->c = 520ns', 'a-c 0.4us..1.1us',
                   'a~>b just a label' ],

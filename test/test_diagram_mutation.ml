@@ -15,7 +15,7 @@ let%expect_test "3% faster: which diagrams still fit the table" =
     {|
     uart_tx
     original: taken, 11 steps
-    mutant: refused: ("at 50 MHz"
+    mutant: refused: ("at 48 MHz"
      ("the mutant's edge 2 at cycle 50"
       ("outside the table class"
        ("bit 0 has no step to move the host bit on: a Shift needs 26 cycles"
@@ -31,7 +31,7 @@ let%expect_test "3% faster: which diagrams still fit the table" =
 
     spi_master
     original: taken, 18 steps
-    mutant: refused: ("at 50 MHz"
+    mutant: refused: ("at 48 MHz"
      ("the mutant's edge 1 at cycle 50"
       ("outside the table class"
        ("bit 0 has no step to move the host bit on: a Shift needs 26 cycles, reading inside its input cell"
@@ -39,11 +39,11 @@ let%expect_test "3% faster: which diagrams still fit the table" =
 
     ws2812
     original: taken, 38 steps
-    edge a<->b T0H 250ns..550ns: 26 cycles, 520.0 ns, holds at 50 MHz
-    edge a<->c T1H 650ns..950ns: 47 cycles, 940.0 ns, holds at 50 MHz
-    edge b<->d T0L 700ns..1000ns: 49 cycles, 980.0 ns, holds at 50 MHz
-    edge c<->d T1L 300ns..600ns: 28 cycles, 560.0 ns, holds at 50 MHz
-    mutant: refused: ("at 50 MHz"
+    edge a<->b T0H 250ns..550ns: 26 cycles, 541.7 ns, holds at 48 MHz
+    edge a<->c T1H 650ns..950ns: 45 cycles, 937.5 ns, holds at 48 MHz
+    edge b<->d T0L 700ns..1000ns: 47 cycles, 979.2 ns, holds at 48 MHz
+    edge c<->d T1L 300ns..600ns: 28 cycles, 583.3 ns, holds at 48 MHz
+    mutant: refused: ("at 48 MHz"
      ("the mutant's edge 1 at cycle 0"
       ("outside the table class"
        ("the host's flag before a pass has no step to move the host bit on: a Shift needs 26 cycles"
@@ -74,22 +74,22 @@ let%expect_test "other percentages" =
           "%{name} %{percent#Float}%: %{Diagram_mutation.Verdict.to_string r.mutant}"]);
   [%expect
     {|
-    spi_master 1.%: refused: ("at 50 MHz"
+    spi_master 1.%: refused: ("at 48 MHz"
      ("the mutant's edge 1 at cycle 50"
       ("outside the table class"
        ("bit 0 has no step to move the host bit on: a Shift needs 26 cycles, reading inside its input cell"
         (steps "period 1, second half")))))
-    spi_master 5.%: refused: ("at 50 MHz"
+    spi_master 5.%: refused: ("at 48 MHz"
      ("the mutant's edge 1 at cycle 48"
       ("outside the table class"
        ("bit 0 has no step to move the host bit on: a Shift needs 26 cycles, reading inside its input cell"
         (steps "period 1, second half")))))
-    uart_rx 97.%: refused: ("at 50 MHz"
+    uart_rx 97.%: refused: ("at 48 MHz"
      ("the mutant's edge 1 at cycle 1"
       ("outside the table class"
        ("a (Await(pin A)(level false)) step lasts at least 17 cycles"
         (at "the edge, period 1") (cycles -8)))))
-    uart_tx 6.4%: refused: ("at 50 MHz"
+    uart_tx 6.4%: refused: ("at 48 MHz"
      ("the mutant's edge 2 at cycle 48"
       ("outside the table class"
        ("bit 0 has no step to move the host bit on: a Shift needs 26 cycles"
