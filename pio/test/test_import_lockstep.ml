@@ -235,9 +235,9 @@ let%expect_test "spi_cpha0 shifts bytes at k times its PIO edges" =
     |}]
 ;;
 
-(* at 50 MHz the example's 800 kHz takes k = 6.25: each edge within a cycle of 6.25 times
-   its PIO cycle *)
-let%expect_test "ws2812 at its own rate" =
+(* k = 6.25, the example's 800 kHz at 50 MHz: each edge within a cycle of 6.25 times its
+   PIO cycle. At 48 MHz its rate is the k = 6 above. *)
+let%expect_test "ws2812 at a fractional k" =
   lockstep
     ~k:6.25
     ~autopull:true

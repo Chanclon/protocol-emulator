@@ -4,7 +4,7 @@
 open! Core
 open Protocol_emulator
 
-(** The core's clock, 50 MHz. *)
+(** The core's clock, 48 MHz. *)
 val clock_hz : int
 
 (** The C code's configuration of a pico-examples program, and its state machine clock
@@ -44,7 +44,7 @@ module Row : sig
     { file : string
     ; program : string
     ; verdict : Verdict.t
-    ; real_time : (float * bool) option (** [k] at 50 MHz, and whether it certifies. *)
+    ; real_time : (float * bool) option (** [k] at 48 MHz, and whether it certifies. *)
     ; contract : string list
     }
 end

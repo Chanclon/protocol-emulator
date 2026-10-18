@@ -1,7 +1,7 @@
 open! Core
 open Protocol_emulator
 
-let clock_hz = 50_000_000
+let clock_hz = 48_000_000
 
 (* the core's pins: IN0 0, IO0 12 *)
 let in0 = 0
@@ -241,7 +241,7 @@ let to_string rows =
       | _ -> false)
   in
   String.concat_lines
-    ([ "| file | program | verdict | least k | words | k at 50 MHz, certified |"
+    ([ "| file | program | verdict | least k | words | k at 48 MHz, certified |"
      ; "|---|---|---|---|---|---|"
      ]
      @ List.map rows ~f:line

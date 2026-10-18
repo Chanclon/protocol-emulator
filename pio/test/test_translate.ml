@@ -119,7 +119,7 @@ let%expect_test "census of pico-examples at 0d62f75" =
        (List.map (every_program ()) ~f:(fun (file, program) -> Census.row ~file program)));
   [%expect
     {|
-    | file | program | verdict | least k | words | k at 50 MHz, certified |
+    | file | program | verdict | least k | words | k at 48 MHz, certified |
     |---|---|---|---|---|---|
     | addition.pio | addition | refused: mov ~ into a register (32-bit invert) |  |  |  |
     | apa102.pio | apa102_mini | certified | 6 | 35 |  |
@@ -131,14 +131,14 @@ let%expect_test "census of pico-examples at 0d62f75" =
     | hello.pio | hello | certified | 5 | 23 |  |
     | hub75.pio | hub75_row | refused: 27-bit shift, pull threshold 32 |  |  |  |
     | hub75.pio | hub75_data_rgb888 | refused: 26-bit shift, mov :: (32-bit reverse), pull threshold 24, pull with autopull |  |  |  |
-    | i2c.pio | i2c | certified | 15 | 474 | 15.625 yes |
-    | i2c.pio | set_scl_sda | certified | 3 | 41 | 15.625 yes |
+    | i2c.pio | i2c | certified | 15 | 474 | 15.000 yes |
+    | i2c.pio | set_scl_sda | certified | 3 | 41 | 15.000 yes |
     | manchester_encoding.pio | manchester_tx | certified | 5 | 86 |  |
     | manchester_encoding.pio | manchester_rx | certified | 5 | 43 |  |
     | nec_carrier_burst.pio | nec_carrier_burst | refused: wait irq |  |  |  |
     | nec_carrier_control.pio | nec_carrier_control | refused: pull threshold 32 |  |  |  |
     | nec_receive.pio | nec_receive | refused: push threshold 32 |  |  |  |
-    | onewire_library.pio | onewire | certified | 5 | 108 | 50.000 yes |
+    | onewire_library.pio | onewire | certified | 5 | 108 | 48.000 yes |
     | pio_serialiser.pio | pio_serialiser | certified | 9 | 22 |  |
     | pwm.pio | pwm | certified | 7 | 36 |  |
     | quadrature_encoder.pio | quadrature_encoder | refused: isr loaded whole, then shifted, isr read whole under a right shift, mov pc, mov ~ into a register (32-bit invert) |  |  |  |
@@ -152,10 +152,10 @@ let%expect_test "census of pico-examples at 0d62f75" =
     | squarewave_fast.pio | squarewave_fast | certified | 4 | 11 |  |
     | squarewave_wrap.pio | squarewave_wrap | certified | 3 | 13 |  |
     | st7789_lcd.pio | st7789_lcd | certified | 6 | 35 |  |
-    | uart_rx.pio | uart_rx_mini | certified | 5 | 32 | 54.253 yes |
-    | uart_rx.pio | uart_rx | certified | 5 | 59 | 54.253 yes |
-    | uart_tx.pio | uart_tx | certified | 5 | 65 | 54.253 yes |
-    | ws2812.pio | ws2812 | certified | 5 | 73 | 6.250 yes |
+    | uart_rx.pio | uart_rx_mini | certified | 5 | 32 | 52.083 yes |
+    | uart_rx.pio | uart_rx | certified | 5 | 59 | 52.083 yes |
+    | uart_tx.pio | uart_tx | certified | 5 | 65 | 52.083 yes |
+    | ws2812.pio | ws2812 | certified | 5 | 73 | 6.000 yes |
     | ws2812.pio | ws2812_parallel | refused: 32-bit shift |  |  |  |
 
     36 programs: 25 certified, 11 refused, 0 not certified
@@ -184,11 +184,11 @@ let%expect_test "the source printed assembles to the words translated" =
 ;;
 
 (* pico-examples#796: the START holds SDA low 10 PIO cycles before SCL falls, 3.125 us at
-   the 3.2 MHz pio_i2c.c runs, where UM10204 table 10 asks 4.0 us. At 50 MHz that rate is
-   k = 15.625, the deadlines certify, and the kernel bounds the hold below 200 cycles. *)
+   the 3.2 MHz pio_i2c.c runs, where UM10204 table 10 asks 4.0 us. At 48 MHz that rate is
+   k = 15, the deadlines certify, and the kernel bounds the hold below 192 cycles. *)
 let%expect_test "i2c certifies at its own rate, and the kernel refuses its START hold" =
   let i2c = program "i2c.pio" "i2c" in
-  let _, timed = certify i2c ~k:15.625 in
+  let _, timed = certify i2c ~k:(Option.value_exn (Census.real_time i2c)) in
   let config = Timed_program.config timed in
   let scl = config.side_set_base
   and sda = config.set_base in
@@ -201,9 +201,12 @@ let%expect_test "i2c certifies at its own rate, and the kernel refuses its START
   print_s
     [%message
       (bound : int option)
-        ~us:(Option.map bound ~f:(fun n -> Float.of_int n /. 50.) : float option)
+        ~us:
+          (Option.map bound ~f:(fun n ->
+             Float.of_int n *. 1e6 /. Float.of_int Census.clock_hz)
+           : float option)
         (needed : int)];
-  [%expect {| ((bound (149)) (us (2.98)) (needed 200)) |}]
+  [%expect {| ((bound (150)) (us (3.125)) (needed 192)) |}]
 ;;
 
 let%expect_test "refused features are named" =
