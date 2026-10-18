@@ -45,7 +45,7 @@ gap:
 ;;
 
 let dshot600 = firmware ~zero_high:31 ~bit:83
-let dshot1200 = firmware ~zero_high:16 ~bit:42
+let dshot1200 = firmware ~zero_high:15 ~bit:40
 
 let config =
   { Program_config.default with

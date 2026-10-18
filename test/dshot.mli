@@ -13,7 +13,7 @@ val pin : int
 (** 31 and 83 cycles, 646 and 1729 ns at 48 MHz; in [Library.certified]. *)
 val dshot600 : string
 
-(** 16 and 42 cycles, 320 and 840 ns; kernel-checked, not certified. *)
+(** 15 and 40 cycles, 313 and 833 ns at 48 MHz; kernel-checked, not certified. *)
 val dshot1200 : string
 
 val config : Program_config.t

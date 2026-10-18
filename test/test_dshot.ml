@@ -50,7 +50,8 @@ let%expect_test "the core sends every frame within the rate's timing" =
      (measured_ns (Ok ((T0H (646 646)) (bit (1729 1729)) (T1H (1292 1292)))))
      (t.fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
-    (dshot1200 (measured_ns (Error ("out of spec" T0H (ns 333) (nominal 313))))
+    (dshot1200
+     (measured_ns (Ok ((T0H (313 313)) (bit (833 833)) (T1H (625 625)))))
      (t.fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
     |}]
@@ -137,9 +138,9 @@ let%expect_test "every edge is placed by a deadline" =
      13  set pins, 0                  phase -30  edge -29  gap 31
     ((words 21) (edge_jitter 0) (sample_jitter 0) (side_jitter 0) (may_miss 0))
       1  set pins, 0                  phase 1  edge 2  gap ?..?
-      9  set pins, 1                  phase -15  edge -14  gap 10..?
-     11  out pins, 1                  phase -15  edge -14  gap 16
-     13  set pins, 0                  phase -15  edge -14  gap 16
+      9  set pins, 1                  phase -14  edge -13  gap 10..?
+     11  out pins, 1                  phase -14  edge -13  gap 15
+     13  set pins, 0                  phase -14  edge -13  gap 15
     ((words 20) (edge_jitter 0) (sample_jitter 0) (side_jitter 0) (may_miss 0))
     |}]
 ;;
