@@ -30,7 +30,7 @@ open Protocol_emulator
 
 val pin : int
 
-(** A unit of 6.25 us at 48 MHz. *)
+(** 300 cycles: 6.25 us at 48 MHz, not the 6 us above; every time stays in the standard. *)
 val standard_unit : int
 
 val firmware : Timed_program.t
