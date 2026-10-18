@@ -54,7 +54,12 @@ let run ?(words = read_rom) ~unit ~cycles () =
       loop t' slave pending (n - 1) answers)
   in
   let t, slave, answers =
-    loop t (Slave.create ~cycle_ns ~rom:device_rom) (unit :: words) cycles []
+    loop
+      t
+      (Slave.create ~clock_hz:Bench.clock_hz ~rom:device_rom)
+      (unit :: words)
+      cycles
+      []
   in
   print_answers answers slave t.fault
 ;;
@@ -71,17 +76,18 @@ let%expect_test "reset, read rom, eight bytes and a good crc" =
     ((presence (0)) (rom (28 ab 89 67 45 23 01 5a)) (crc8 0) (matches true)
      (log (reset presence "command 0x33" "rom sent"))
      (measured_ns
-      (("reset low" (480040 480040)) ("one low" (6000 6000)) (slot (72000 72220))
-       (high (6000 66220)) ("zero low" (66000 66000))))
+      (("reset low" (500042 500042)) ("one low" (6250 6250)) (slot (75000 75229))
+       (high (6250 68979)) ("zero low" (68750 68750))))
      (violations ())
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
     |}]
 ;;
 
-(* a unit of 20 cycles (a 3.3 MHz clock) keeps the simulation short *)
+(* a unit of 20 cycles (a 3.2 MHz clock, the standard unit's 6.25 us) keeps the simulation
+   short *)
 let%expect_test "one wire in lockstep" =
-  let slave = ref (Slave.create ~cycle_ns:300 ~rom:device_rom) in
+  let slave = ref (Slave.create ~clock_hz:3_200_000 ~rom:device_rom) in
   let pending = ref (20 :: read_rom) in
   let answers = ref [] in
   let last = ref None in
@@ -119,8 +125,8 @@ let%expect_test "one wire in lockstep" =
     ((presence (0)) (rom (28 ab 89 67 45 23 01 5a)) (crc8 0) (matches true)
      (log (reset presence "command 0x33" "rom sent"))
      (measured_ns
-      (("reset low" (480600 480600)) ("one low" (6000 6000)) (slot (72000 75300))
-       (high (6000 69300)) ("zero low" (66000 66000))))
+      (("reset low" (500625 500625)) ("one low" (6250 6250)) (slot (75000 78438))
+       (high (6250 72188)) ("zero low" (68750 68750))))
      (violations ())
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
@@ -180,7 +186,7 @@ let%expect_test "a unit of four cycles is too short" =
 let%expect_test "a sample after 15 us misses the zeros" =
   run
     ~words:[ reset; byte 0x33; byte 0xff; byte 0xff ]
-    ~unit:(8_000 / cycle_ns)
+    ~unit:(Bench.cycles_in ~us:8)
     ~cycles:180_000
     ();
   [%expect
@@ -188,8 +194,8 @@ let%expect_test "a sample after 15 us misses the zeros" =
     ((presence (0)) (rom (ff ff)) (crc8 180) (matches false)
      (log (reset presence "command 0x33"))
      (measured_ns
-      (("reset low" (640040 640040)) ("one low" (8000 8000)) (slot (96000 96220))
-       (high (8000 88220)) ("zero low" (88000 88000))))
+      (("reset low" (640042 640042)) ("one low" (8000 8000)) (slot (96000 96229))
+       (high (8000 88229)) ("zero low" (88000 88000))))
      (violations ())
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
@@ -198,13 +204,13 @@ let%expect_test "a sample after 15 us misses the zeros" =
 
 (* at 5 us the reset is 400 us and a zero 55 us, which the slave rejects *)
 let%expect_test "a unit of 5 us is out of the standard" =
-  run ~words:[ reset; byte 0x33 ] ~unit:(5_000 / cycle_ns) ~cycles:80_000 ();
+  run ~words:[ reset; byte 0x33 ] ~unit:(Bench.cycles_in ~us:5) ~cycles:80_000 ();
   [%expect
     {|
     ((presence (1)) (rom ()) (crc8 0) (matches false) (log ())
      (measured_ns
-      ((slot (60000 805200)) (high (5000 405160)) ("one low" (5000 5000))))
-     (violations ("low of 400040 ns" "low of 55000 ns"))
+      ((slot (60000 805208)) (high (5000 405167)) ("one low" (5000 5000))))
+     (violations ("low of 400042 ns" "low of 55000 ns"))
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
     |}]
