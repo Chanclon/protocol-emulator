@@ -213,7 +213,10 @@ class Job:
                 ("attempts", str(len(attempts))), ("final", final.name),
                 ("time", datetime.datetime.now().isoformat(timespec="seconds")),
                 ("commit", head), ("bitstream", str(self.args.bitstream or "flash")),
-                ("bitstream_sha256", bit_hash), ("pico_a", self.pico),
+                ("bitstream_sha256", bit_hash),
+                ("netlist_sha256", ledger.netlist(self.args.bitstream, bit_hash)
+                 if self.args.bitstream else "-"),
+                ("pico_a", self.pico),
                 ("rate", os.environ.get("RATE", "24M"))]
         info += [("attempt%d" % n, "%s: %s" % (v, " ".join(
             "%s=%s" % (s.name, "timeout" if s.status is None else s.status) for s in st)))

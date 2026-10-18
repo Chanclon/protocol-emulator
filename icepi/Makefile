@@ -1,5 +1,7 @@
 # The chip on an Icepi Zero (ECP5 LFE5U-25F): make [REV=v1.4] [USB=1] [SEED=1], then
 # make prog to load it or make flash to keep it. USB=0 puts uio[1:0] on the header too.
+# The bitstream's .sha256 names it and the netlist it came from, which make equiv proves
+# equal to the RTL (formal/icepi_equiv).
 # MHZ=40 clocks the chip at 40 MHz for 10BASE-T, with USB=0 unless told, since low speed
 # USB needs 48, and names its bitstream apart. The SRAM macro is its IHP behavioural model,
 # which yosys maps to block RAM.
@@ -36,6 +38,10 @@ $(BUILD)/$(NAME).config: $(JSON) header.lpf $(REV).lpf
 
 $(BUILD)/$(NAME).bit: $(BUILD)/$(NAME).config
 	ecppack --compress --input $< --bit $@
+	cd $(BUILD) && sha256sum $(notdir $(JSON)) $(NAME).bit > $(NAME).sha256
+
+equiv: $(JSON)
+	$(MAKE) -C ../formal icepi_equiv ICEPI_JSON=$(abspath $(JSON)) USB=$(USB) MHZ=$(MHZ)
 
 # openFPGALoader knows the board: its FT231X's bit-banged JTAG
 prog: $(BUILD)/$(NAME).bit
@@ -68,4 +74,4 @@ check-prog: $(CHECK).bit
 clean:
 	rm -rf $(BUILD)
 
-.PHONY: bit prog flash check check-prog clean
+.PHONY: bit equiv prog flash check check-prog clean
