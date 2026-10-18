@@ -247,7 +247,7 @@ module Point = struct
              in
              let margin =
                match row.margin with
-               | Cycle -> ""
+               | Cycle -> " + a cycle"
                | Ns { ns; why } -> [%string " + %{time_ns ns} %{why}"]
              in
              [%string
