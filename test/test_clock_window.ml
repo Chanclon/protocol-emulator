@@ -88,8 +88,8 @@ let%expect_test "the CAN receiver's window is its tolerance" =
 ;;
 
 (* The diagrams' limits as [Wavedrom.compile] checks them at a clock: it compiles at each
-   end and refuses a hertz past, naming the edge. ws2812.json's 26, 21 and 28 cycles were
-   drawn at the rated 50 MHz. *)
+   end and refuses a hertz past, naming the edge. ws2812.json's 19, 19 and 22 cycles are a
+   1.25 us bit at the rated 48 MHz. *)
 let%expect_test "the diagrams' windows" =
   let read name = In_channel.read_all [%string "diagrams/%{name}.json"] in
   List.iter (Clock_window.diagrams ~dir:"diagrams") ~f:(fun (t : Clock_window.t) ->
@@ -110,11 +110,8 @@ let%expect_test "the diagrams' windows" =
        : unit Or_error.t)];
   [%expect
     {|
-    diagram ws2812      49.474 T1H <= 950 ns                48.000  70.000 T0L >= 700 ns
+    diagram ws2812      47.368 T1H <= 950 ns                48.000  67.143 T0L >= 700 ns
     ((compiles_at_ends true) (refused_past true))
-    (Error
-     ("outside the table class"
-      ("the diagram's own limit does not hold" (edge "a<->c T1H 650ns..950ns")
-       (cycles 47) (ns 979.16666666666663) (least_ns (650)) (most_ns (950)))))
+    (Ok ())
     |}]
 ;;

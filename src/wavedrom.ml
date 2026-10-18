@@ -34,7 +34,7 @@ module State = struct
 end
 
 (* info.yaml's clock *)
-let rated_hz = 50_000_000
+let rated_hz = 48_000_000
 let clock_name hz = sprintf "%g MHz" (Float.of_int hz /. 1e6)
 let ns ~clock_hz cycles = cycles *. 1e9 /. Float.of_int clock_hz
 
