@@ -1203,6 +1203,14 @@ let () =
   let flag name = Array.exists args ~f:(String.equal name) in
   if flag "-fsm"
   then print_string (fsm_miter ~mutant:(flag "-mutant"))
+  else if flag "-verilog-corpus"
+  then
+    From_verilog.main_corpus args ~inductive:(fun ~host ~ports ~extra ~config source ->
+      inductive ~host ~ports ~extra ~config source)
+  else if flag "-verilog"
+  then
+    From_verilog.main args ~inductive:(fun ~host ~ports ~extra ~config source ->
+      inductive ~host ~ports ~extra ~config source)
   else if flag "-names"
   then
     (* every certificate formal/Makefile proves by induction, for CI's jobs *)

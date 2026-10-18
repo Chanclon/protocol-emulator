@@ -1,5 +1,5 @@
 # pico-examples pio/i2c (issue #796) at the 100 kHz pio_i2c.c sets on a 125 MHz clock,
-# against UM10204 table 10, Standard-mode. scl is the side-set pin, sda the set pin; a
+# against UM10204 table 11, Standard-mode. scl is the side-set pin, sda the set pin; a
 # slave may stretch scl. The exec lines are the START, RSTART and STOP sequences
 # pio_i2c.c sends through out exec.
 program i2c

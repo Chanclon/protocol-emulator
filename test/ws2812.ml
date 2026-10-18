@@ -2,7 +2,6 @@ open! Core
 open Protocol_emulator
 
 let pin = 5
-let cycle_ns = 20
 
 (* y is bits in the word less one: 15 then 7 per pixel. Both paths round a word's end take
    thirteen cycles, fourteen with a tail over 7. The reset gap waits on every pass of its
@@ -96,7 +95,7 @@ end
 
 module Strip = struct
   type t =
-    { cycle_ns : int
+    { clock_hz : int
     ; level : int
     ; run : int
     ; pending : int option (* the bit whose low time is running *)
@@ -113,8 +112,8 @@ module Strip = struct
   let one_high_ns = 800
   let one_low_ns = 450
 
-  let create ~cycle_ns =
-    { cycle_ns
+  let create ~clock_hz =
+    { clock_hz
     ; level = 0
     ; run = 0
     ; pending = None
@@ -125,30 +124,38 @@ module Strip = struct
     }
   ;;
 
-  let within ns ~nominal = abs (ns - nominal) <= tolerance_ns
-
-  let checked t ~name ~ns ~nominal =
+  let checked t ~name ~cycles ~nominal =
+    let { clock_hz; _ } = t in
+    let ns = Measured.ns ~clock_hz cycles in
     let t = { t with measured = Measured.add t.measured ~name ~ns } in
-    if within ns ~nominal
+    if Measured.at_least ~clock_hz cycles ~ns:(nominal - tolerance_ns)
+       && Measured.at_most ~clock_hz cycles ~ns:(nominal + tolerance_ns)
     then t
     else { t with violations = [%string "%{name} of %{ns#Int} ns"] :: t.violations }
   ;;
 
-  let fell t ~ns =
-    let bit = if ns > (zero_high_ns + one_high_ns) / 2 then 1 else 0 in
+  let fell t ~cycles =
+    let one =
+      not
+        (Measured.at_most
+           ~clock_hz:t.clock_hz
+           cycles
+           ~ns:((zero_high_ns + one_high_ns) / 2))
+    in
+    let bit = Bool.to_int one in
     let t =
-      if bit = 1
-      then checked t ~name:"T1H" ~ns ~nominal:one_high_ns
-      else checked t ~name:"T0H" ~ns ~nominal:zero_high_ns
+      if one
+      then checked t ~name:"T1H" ~cycles ~nominal:one_high_ns
+      else checked t ~name:"T0H" ~cycles ~nominal:zero_high_ns
     in
     { t with bits = bit :: t.bits; pending = Some bit }
   ;;
 
-  let rose t ~ns =
+  let rose t ~cycles =
     match t.pending with
     | None -> t
-    | Some 1 -> checked t ~name:"T1L" ~ns ~nominal:one_low_ns
-    | Some _ -> checked t ~name:"T0L" ~ns ~nominal:zero_low_ns
+    | Some 1 -> checked t ~name:"T1L" ~cycles ~nominal:one_low_ns
+    | Some _ -> checked t ~name:"T0L" ~cycles ~nominal:zero_low_ns
   ;;
 
   let latch t =
@@ -172,12 +179,14 @@ module Strip = struct
   let step t ~level =
     if level <> t.level
     then (
-      let ns = t.run * t.cycle_ns in
-      let t = if level = 0 then fell t ~ns else rose t ~ns in
+      let cycles = t.run in
+      let t = if level = 0 then fell t ~cycles else rose t ~cycles in
       { t with level; run = 1 })
     else (
       let t = { t with run = t.run + 1 } in
-      if level = 0 && Option.is_some t.pending && t.run * t.cycle_ns >= reset_ns
+      if level = 0
+         && Option.is_some t.pending
+         && Measured.at_least ~clock_hz:t.clock_hz t.run ~ns:reset_ns
       then latch t
       else t)
   ;;

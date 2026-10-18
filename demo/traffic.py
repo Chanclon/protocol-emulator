@@ -20,6 +20,7 @@ import demo_flash  # noqa: E402
 import demo_neopixel  # noqa: E402
 import demo_referee  # noqa: E402
 import demo_swd  # noqa: E402
+import pio_firmware  # noqa: E402
 
 
 def typed(text):
@@ -249,6 +250,22 @@ def start_hold(_levels):
     return judge
 
 
+def pio_ws2812(_levels):
+    frames = pio_firmware.WS2812["data"]
+    return lambda decoded, _log: exactly(decoded, stick(frames), "two frames")
+
+
+def pio_spi(_levels):
+    def judge(decoded, _log):
+        jedec = re.compile(r"spiflash-1: (Manufacturer ID|Memory type|Device ID): ")
+        ident = [d for d in decoded if jedec.match(d)]
+        expected = ["spiflash-1: Manufacturer ID: 0xef", "spiflash-1: Memory type: 0x40",
+                    "spiflash-1: Device ID: 0x17"]
+        return exactly(ident, expected, "a W25Q64JV's JEDEC ID")
+
+    return judge
+
+
 def uart(data, what):
     return lambda decoded: exactly(decoded, ["uart-1: %02X" % b for b in data], what)
 
@@ -261,6 +278,11 @@ def self_timing(_levels):
         return uart(sent, "the bytes of both tables")(decoded)
 
     return judge
+
+
+def pio_uart_tx(_levels):
+    data = pio_firmware.UART_TX["data"].encode()
+    return lambda decoded, _log: uart(data, "uart_tx.c's string")(decoded)
 
 
 def keyboard(_levels):
@@ -310,6 +332,9 @@ CHECKS = {
     "self_timing": (OUT0, self_timing),
     "keyboard": (OUT0, keyboard),
     "sweep": (OUT0, sweep),
+    "pio_ws2812": (NEO, pio_ws2812),
+    "pio_uart_tx": (OUT0, pio_uart_tx),
+    "pio_spi": ({0: "SCK", 1: "MOSI", 2: "MISO", 3: "CS"}, pio_spi),
 }
 
 

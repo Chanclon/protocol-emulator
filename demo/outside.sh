@@ -8,8 +8,9 @@
 # The capture, the Pico's log and the decode are kept as <name>.sr, .log and .decode in
 # CAPTURES, the current directory unless set.
 # Usage: PICO=id:<serial of Pico A> demo/outside.sh <act>, one of
-#   flash eeprom eeprom_stretch ds18b20 neopixel start_hold can can_node swd referee,
-#   or a protocol whose python/demo_<act>.py has an "# outside:" line
+#   flash eeprom eeprom_stretch ds18b20 neopixel start_hold can can_node swd referee
+#   pio_ws2812 pio_uart_tx pio_spi, or a protocol whose python/demo_<act>.py has an
+#   "# outside:" line
 set -e
 act=$1
 captures=${CAPTURES:-.}
@@ -73,12 +74,30 @@ referee)
     files="python/demo_neopixel.py python/demo_self_check.py test/uart_tx_host_rate.hex
         test/uart_tx_host_rate_rows.hex test/self_check_wire.hex test/scrub.hex"
     ;;
+pio_ws2812)
+    ms=2000
+    decode="-P rgb_led_ws281x:din=D4 -A rgb_led_ws281x=rgb:reset"
+    analyser=B
+    files="python/pio_firmware.py python/pio_upstream.py"
+    ;;
+pio_uart_tx)
+    ms=2000
+    decode="-P uart:rx=D4:baudrate=115200 -A uart=rx-data"
+    analyser=A
+    files="python/pio_firmware.py python/pio_upstream.py"
+    ;;
+pio_spi)
+    ms=2000
+    decode="-P spi:clk=D0:mosi=D1:miso=D2:cs=D3,spiflash:chip=winbond_w25q80dv -A spiflash"
+    analyser=B
+    files="python/pio_firmware.py python/pio_upstream.py"
+    ;;
 *)
     # any other demo is a protocol of its own, whose script's "# outside:" line gives the
     # analyser, the capture's length and sigrok's decoders
     line=$(sed -n 's/^# outside: //p' "python/demo_$act.py" 2>/dev/null | head -1)
     if [ -z "$line" ]; then
-        echo "usage: PICO=id:<serial> $0 flash|eeprom|eeprom_stretch|ds18b20|neopixel|start_hold|can|can_node|swd|referee|<protocol>" >&2
+        echo "usage: PICO=id:<serial> $0 flash|eeprom|eeprom_stretch|ds18b20|neopixel|start_hold|can|can_node|swd|referee|pio_ws2812|pio_uart_tx|pio_spi|<protocol>" >&2
         exit 1
     fi
     analyser=$(echo "$line" | sed -n 's/.*analyser=\([^ ]*\).*/\1/p')

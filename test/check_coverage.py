@@ -40,6 +40,9 @@ INSTANCES = {
     "tx": "host_fifo",
 }
 
+# the files of a module split in parts
+PARTS = {"kernel_types": "kernel", "kernel_step": "kernel", "kernel_accepts": "kernel", "kernel_table": "kernel"}
+
 # [@@deriving hardcaml] code sits at the record's field lines and its frame loses the
 # caller: the engine's config registers are only ever made by the host port
 DERIVED_OWNER = {"Protocol_emulator__Engine.Config": "host_port"}
@@ -95,7 +98,7 @@ def from_stack(frames):
         if owner:
             derived = owner
         else:
-            module = Path(file).stem
+            module = PARTS.get(Path(file).stem, Path(file).stem)
     module = module or derived
     if not ours or module is None:
         return None, None, None

@@ -118,7 +118,7 @@ let%expect_test "uart tx, dshot and spi master from diagrams, against the hand t
     [%message
       ""
         ~dshot_decoded:
-          (Dshot.decode Dshot.Rate.dshot600 ~cycle_ns:Dshot.cycle_ns levels
+          (Dshot.decode Dshot.Rate.dshot600 ~clock_hz:Bench.clock_hz levels
            |> Or_error.map ~f:fst
            : (int * bool) list Or_error.t)];
   (* a mode 0 slave: MISO shows the next bit after each falling SCK *)
@@ -196,7 +196,7 @@ let%expect_test "ws2812 from a diagram: passes of 12 bits while the host's flag 
     run ~cycles:14_000 ~inputs:(Fn.const 0) (Wavedrom.image t |> ok_exn) host_words
   in
   let strip =
-    Array.fold pins ~init:(Ws2812.Strip.create ~cycle_ns:Ws2812.cycle_ns) ~f:(fun s p ->
+    Array.fold pins ~init:(Ws2812.Strip.create ~clock_hz:Bench.clock_hz) ~f:(fun s p ->
       Ws2812.Strip.step s ~level:((p lsr Ws2812.pin) land 1))
   in
   print_s
@@ -225,7 +225,7 @@ let%expect_test "ws2812 from a diagram: passes of 12 bits while the host's flag 
      (words_a_frame 5) (frames_identical true) (violations ())
      (fault
       ((underflow false) (overflow false) (missed_deadline false) (decode false))))
-    (measured ((T0H (520 520)) (T0L (940 940)) (T1H (900 900)) (T1L (560 560))))
+    (measured ((T0H (542 542)) (T0L (979 979)) (T1H (938 938)) (T1L (583 583))))
     |}]
 ;;
 

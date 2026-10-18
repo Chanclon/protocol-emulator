@@ -727,7 +727,7 @@ let%expect_test "dshot600 from host frames, against the library's" =
     Array.to_list pins |> List.map ~f:(fun p -> (p lsr Dshot.pin) land 1 = 1)
   in
   let decoded pins =
-    Dshot.decode Dshot.Rate.dshot600 ~cycle_ns:Dshot.cycle_ns (levels pins)
+    Dshot.decode Dshot.Rate.dshot600 ~clock_hz:Bench.clock_hz (levels pins)
     |> Or_error.map ~f:fst
   in
   print_s
@@ -1015,7 +1015,7 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
   limit "spi_master" ~at:shift ~fits:(fun half -> fits (spi_master ~half));
   limit "dshot" ~at:shift ~fits:(fun zero_high ->
     fits (dshot ~zero_high ~bit:(3 * zero_high)));
-  let dshot1200 = fits (dshot ~zero_high:16 ~bit:42) in
+  let dshot1200 = fits (dshot ~zero_high:15 ~bit:40) in
   let i2c_quarter = i2c_slave_least_quarter (List.range ~stride:(-1) 40 0) in
   let rows =
     [ ( "uart"
@@ -1088,7 +1088,7 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
       , [%string "T0H %{shift#Int} cycles and up"]
       , "600 and 1200"
       , [%string
-          "600 built; 1200's T0H of 16 cycles is under a plain step's %{plain#Int}"] )
+          "600 built; 1200's T0H of 15 cycles is under a plain step's %{plain#Int}"] )
     ; "sent", "design", "tick 150", "tick 150", "the host computes the CRC-4"
     ; ( "cec"
       , "design"
@@ -1146,7 +1146,7 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
     can        tx only  tx to 1.92 Mbit/s
       library 500 kbit/s; the host stuffs and adds the CRC; a node resyncs on every edge and acks on the CRC
     dshot      600 only T0H 26 cycles and up
-      library 600 and 1200; 600 built; 1200's T0H of 16 cycles is under a plain step's 19
+      library 600 and 1200; 600 built; 1200's T0H of 15 cycles is under a plain step's 19
     sent       design   tick 150
       library tick 150; the host computes the CRC-4
     cec        design   unit 2500
