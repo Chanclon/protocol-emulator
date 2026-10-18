@@ -2,8 +2,7 @@ open! Core
 open Protocol_emulator
 
 let pin = 12
-let cycle_ns = 20
-let standard_unit = 6_000 / cycle_ns
+let standard_unit = 300
 
 let config =
   { Program_config.default with
@@ -115,7 +114,7 @@ module Slave = struct
   end
 
   type t =
-    { cycle_ns : int
+    { clock_hz : int
     ; rom : int list
     ; phase : Phase.t
     ; last : Last.t
@@ -133,8 +132,8 @@ module Slave = struct
   let presence_us = 120
   let zero_hold_us = 15
 
-  let create ~cycle_ns ~rom =
-    { cycle_ns
+  let create ~clock_hz ~rom =
+    { clock_hz
     ; rom
     ; phase = Asleep
     ; last = Nothing
@@ -149,8 +148,10 @@ module Slave = struct
   ;;
 
   let drive_low t = t.drive > 0
-  let ns t cycles = cycles * t.cycle_ns
-  let cycles t us = us * 1000 / t.cycle_ns
+  let ns t cycles = Measured.ns ~clock_hz:t.clock_hz cycles
+  let cycles t us = Measured.cycles ~clock_hz:t.clock_hz ~ns:(us * 1000)
+  let at_least t cycles ns = Measured.at_least ~clock_hz:t.clock_hz cycles ~ns
+  let at_most t cycles ns = Measured.at_most ~clock_hz:t.clock_hz cycles ~ns
   let log_line t line = { t with log = line :: t.log }
   let timed t ~name ~ns = { t with measured = Measured.add t.measured ~name ~ns }
 
@@ -167,12 +168,12 @@ module Slave = struct
     let t =
       match t.last with
       | Nothing -> t
-      | Reset -> require t (high >= 480_000) ~name:"high after reset" ~ns:high
+      | Reset -> require t (at_least t t.run 480_000) ~name:"high after reset" ~ns:high
       | Slot ->
         let slot = ns t t.since_fall in
         let t = timed (timed t ~name:"slot" ~ns:slot) ~name:"high" ~ns:high in
-        let t = require t (slot >= 60_000) ~name:"slot" ~ns:slot in
-        require t (high >= 1_000) ~name:"high" ~ns:high
+        let t = require t (at_least t t.since_fall 60_000) ~name:"slot" ~ns:slot in
+        require t (at_least t t.run 1_000) ~name:"high" ~ns:high
     in
     match t.phase with
     | Rom i ->
@@ -198,7 +199,8 @@ module Slave = struct
 
   let rose t =
     let low = ns t t.run in
-    if low >= 480_000
+    let within lo hi = at_least t t.run lo && at_most t t.run hi in
+    if at_least t t.run 480_000
     then
       log_line
         (timed
@@ -208,9 +210,9 @@ module Slave = struct
         "reset"
     else (
       let t = { t with last = Slot } in
-      if 1_000 <= low && low <= 15_000
+      if within 1_000 15_000
       then shift_command (timed t ~name:"one low" ~ns:low) 1
-      else if 60_000 <= low && low <= 120_000
+      else if within 60_000 120_000
       then shift_command (timed t ~name:"zero low" ~ns:low) 0
       else require t false ~name:"low" ~ns:low)
   ;;
@@ -324,7 +326,7 @@ let scenario =
   let rom = rom ~family:0x28 ~serial:0x0123_4567_89ab in
   let unit = standard_unit in
   let peer () =
-    let slave = ref (Slave.create ~cycle_ns ~rom) in
+    let slave = ref (Slave.create ~clock_hz:Bench.clock_hz ~rom) in
     let low = ref false in
     { Peer.inputs = (fun () -> if !low then 0 else 1 lsl pin)
     ; step =
@@ -354,7 +356,7 @@ let scenario =
       @ read_four
   ; sigrok =
       Some
-        { clock_hz = 1_000_000_000 / cycle_ns
+        { clock_hz = Bench.clock_hz
         ; decoders =
             [ String.concat
                 ~sep:","
@@ -378,8 +380,8 @@ let scenario =
             ]
         ; joins_after = None
         ; rejected = None
-        ; (* edge 6 starts the command's second slot: 14 us early, the first is 52 us *)
-          teeth = [ [ Shift { pin; edge = 6; cycles = -14_000 / cycle_ns } ] ]
+        ; (* edge 6 starts the command's second slot: 14 us early, the first is 61 us *)
+          teeth = [ [ Shift { pin; edge = 6; cycles = -Bench.cycles_in ~us:14 } ] ]
         }
   }
 ;;

@@ -3,8 +3,7 @@ open Protocol_emulator
 
 let data_pin = 12
 let clock_pin = 13
-let cycle_ns = 20
-let standard_quarter = 20_000 / cycle_ns
+let standard_quarter = 1000
 
 let config =
   { Program_config.default with
@@ -131,7 +130,7 @@ module Host = struct
   end
 
   type t =
-    { cycle_ns : int
+    { clock_hz : int
     ; script : (int * Action.t) list
     ; now : int
     ; mode : Mode.t
@@ -151,8 +150,8 @@ module Host = struct
   let inhibit_us = 100
   let request_overlap_us = 10
 
-  let create ~cycle_ns script =
-    { cycle_ns
+  let create ~clock_hz script =
+    { clock_hz
     ; script
     ; now = 0
     ; mode = Listening []
@@ -172,14 +171,16 @@ module Host = struct
 
   let clock_low t = t.clock_low
   let data_low t = t.data_low
-  let ns t cycles = cycles * t.cycle_ns
-  let cycles t us = us * 1000 / t.cycle_ns
+  let cycles t us = Measured.cycles ~clock_hz:t.clock_hz ~ns:(us * 1000)
   let log_line t line = { t with log = line :: t.log }
   let violation t line = { t with violations = line :: t.violations }
 
-  let checked t ~name ~ns ~at_least ~at_most =
+  let checked ?at_most t ~name ~cycles ~at_least =
+    let { clock_hz; _ } = t in
+    let ns = Measured.ns ~clock_hz cycles in
     let t = { t with measured = Measured.add t.measured ~name ~ns } in
-    if at_least <= ns && ns <= at_most
+    if Measured.at_least ~clock_hz cycles ~ns:at_least
+       && Option.for_all at_most ~f:(fun ns -> Measured.at_most ~clock_hz cycles ~ns)
     then t
     else violation t [%string "%{name} of %{ns#Int} ns"]
   ;;
@@ -213,13 +214,7 @@ module Host = struct
       let t = { t with data_moved = true } in
       if List.is_empty bits
       then t
-      else
-        checked
-          t
-          ~name:"hold"
-          ~ns:(ns t t.clock_run)
-          ~at_least:5_000
-          ~at_most:Int.max_value
+      else checked t ~name:"hold" ~cycles:t.clock_run ~at_least:5_000
     | Inhibiting _ | Requesting _ | Sending _ -> t
   ;;
 
@@ -227,12 +222,7 @@ module Host = struct
     let t =
       if in_frame t && not t.own_clock
       then
-        checked
-          t
-          ~name:"clock high"
-          ~ns:(ns t t.clock_run)
-          ~at_least:30_000
-          ~at_most:50_000
+        checked t ~name:"clock high" ~cycles:t.clock_run ~at_least:30_000 ~at_most:50_000
       else t
     in
     let t =
@@ -240,8 +230,7 @@ module Host = struct
       | Listening bits ->
         let t =
           if t.data_moved
-          then
-            checked t ~name:"setup" ~ns:(ns t t.data_run) ~at_least:5_000 ~at_most:25_000
+          then checked t ~name:"setup" ~cycles:t.data_run ~at_least:5_000 ~at_most:25_000
           else t
         in
         let bits = data :: bits in
@@ -267,8 +256,7 @@ module Host = struct
   let clock_rose t =
     if t.own_clock
     then t
-    else
-      checked t ~name:"clock low" ~ns:(ns t t.clock_run) ~at_least:30_000 ~at_most:50_000
+    else checked t ~name:"clock low" ~cycles:t.clock_run ~at_least:30_000 ~at_most:50_000
   ;;
 
   let observe t ~clock ~data =
@@ -357,7 +345,7 @@ let scenario =
           (match !inhibit_in with
            | Some 0 ->
              inhibit_in := None;
-             holding := 100_000 / cycle_ns
+             holding := Bench.cycles_in ~us:100
            | Some n -> inhibit_in := Some (n - 1)
            | None -> if !holding > 0 then decr holding);
           clock := if Peer.bit pin_dir clock_pin = 1 || !holding > 0 then 0 else 1;
@@ -379,7 +367,7 @@ let scenario =
       @ List.concat_map bytes ~f:send
   ; sigrok =
       Some
-        { clock_hz = 1_000_000_000 / cycle_ns
+        { clock_hz = Bench.clock_hz
         ; decoders = [ Sigrok.decoder "ps2" ~pins:[ "clk", clock_pin; "data", data_pin ] ]
         ; expect =
             [ ( "ps2=start-bit:word:parity-ok:stop-bit"

@@ -244,6 +244,26 @@ class Decodes(unittest.TestCase):
         self.assertEqual(self.check("sweep", [], log, edges=18),
                          ["D4 (OUT0) has 36 edges, fewer than the 38 the chip stamped"])
 
+    def test_pio_ws2812(self):
+        good = traffic.stick(traffic.pio_firmware.WS2812["data"])
+        self.assertEqual(self.check("pio_ws2812", good), [])
+        self.assertEqual(self.check("pio_ws2812", good[:9]),
+                         ["two frames: the decode has 9 lines, expected 18"])
+
+    def test_pio_uart_tx(self):
+        good = ["uart-1: %02X" % b for b in b"Hello, world! (from PIO!)\r\n"]
+        self.assertEqual(self.check("pio_uart_tx", good), [])
+        self.assertEqual(len(self.check("pio_uart_tx", good[:-1])), 1)
+
+    def test_pio_spi(self):
+        ident = ["spiflash-1: Manufacturer ID: 0xef", "spiflash-1: Memory type: 0x40",
+                 "spiflash-1: Device ID: 0x17"]
+        self.assertEqual(self.check("pio_spi", ["spiflash-1: Command: Read JEDEC ID"] + ident), [])
+        # an empty socket reads zeros
+        self.assertEqual(self.check("pio_spi", [d[:-4] + "0x00" for d in ident]), [
+            "a W25Q64JV's JEDEC ID: decode line 1 reads 'spiflash-1: Manufacturer ID: 0x00', "
+            "expected 'spiflash-1: Manufacturer ID: 0xef'"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,7 +13,7 @@ import demo_neopixel
 import protocol_emulator as pe
 
 MHZ = 48
-# UM10204 table 10, t_HD;STA in Standard-mode: 192 cycles
+# UM10204 table 11, t_HD;STA in Standard-mode: 192 cycles
 LIMIT_NS = 4000
 COUNT = 64
 # Pico B starts a read every 20 ms, two STARTs a read

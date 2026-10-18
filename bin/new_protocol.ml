@@ -286,7 +286,7 @@ let bench =
    { Datasheet.firmware = bench.name
    ; parameter = "tLOW"
    ; limit = At_least 4700.
-   ; sheet = { part = "I2C"; document = "NXP UM10204 Rev. 7.0"; page = "Table 10" }
+   ; sheet = { part = "I2C"; document = "NXP UM10204 Rev. 7.0"; page = "Table 11, p.44" }
    ; margin = Cycle
    ; bound = Datasheet.level ~pin:Datasheet.set_pin ~high:false ()
    } *)
