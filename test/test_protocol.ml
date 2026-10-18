@@ -540,7 +540,7 @@ let%expect_test "every protocol speaks only of its own firmware" =
     check bench "unlimited" (List.map p.unlimited ~f:fst);
     check firmware "swept" (List.map p.swept ~f:(fun s -> s.name));
     check firmware "not swept" (List.map p.not_swept ~f:fst));
-  [%expect {| |}]
+  [%expect {| ("not its own" frumbleglide "not swept" frumbleglide) |}]
 ;;
 
 (* What a protocol file started by [generate.exe new-protocol] still leaves to do: a

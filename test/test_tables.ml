@@ -1122,8 +1122,16 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
       , "-"
       , "sync 8 us, lows 1.2 and 3 us"
       , "written for the core, not tried" )
-    ; "plinkoo", "TODO", "-", "-", "TODO whether the table interpreter runs it"
-    ; "frumbleglide", "TODO", "-", "-", "TODO whether the table interpreter runs it"
+    ; ( "plinkoo"
+      , "no"
+      , "-"
+      , "sync 5.17 us, bits of 16 cycles"
+      , "written for the core, not tried" )
+    ; ( "frumbleglide"
+      , "no"
+      , "-"
+      , "cells of 96 and 97 cycles"
+      , "refused: no whole cycle count is a tCELL" )
     ]
   in
   let named = List.map rows ~f:(fun (name, _, _, _, _) -> name) in
@@ -1173,5 +1181,11 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
       library 1 MHz; SWDIO turns around, which needs pins and pindirs in one table
     nec        untried  -
       library unit 27000, half 13500; a 108 ms frame is at least 83 steps, each held at most 65535 cycles
+    snorble    no       -
+      library sync 8 us, lows 1.2 and 3 us; written for the core, not tried
+    plinkoo    no       -
+      library sync 5.17 us, bits of 16 cycles; written for the core, not tried
+    frumbleglide no       -
+      library cells of 96 and 97 cycles; refused: no whole cycle count is a tCELL
     |}]
 ;;
