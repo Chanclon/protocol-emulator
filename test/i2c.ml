@@ -681,13 +681,13 @@ let limits =
       })
     ~rise:(Ns { ns = 300.; why = "TR, param 4" })
     ~times:
-      [ "THIGH", (600., "p.3, param 2")
-      ; "TLOW", (1300., "p.3, param 3")
-      ; "THD:STA", (600., "p.3, param 6")
-      ; "TSU:STA", (600., "p.3, param 7")
-      ; "TSU:DAT", (100., "p.3, param 9")
-      ; "TSU:STO", (600., "p.3, param 10")
-      ; "TBUF", (1300., "p.4, param 14")
+      [ "THIGH", (600., "p.4, param 2")
+      ; "TLOW", (1300., "p.4, param 3")
+      ; "THD:STA", (600., "p.4, param 6")
+      ; "TSU:STA", (600., "p.4, param 7")
+      ; "TSU:DAT", (100., "p.4, param 9")
+      ; "TSU:STO", (600., "p.4, param 10")
+      ; "TBUF", (1300., "p.5, param 14")
       ]
 ;;
 
@@ -738,7 +738,7 @@ let um10204 (mode : Mode.t) firmware =
     { Datasheet.firmware
     ; parameter = "1/fSCL"
     ; limit = At_least (1e9 /. rate)
-    ; sheet = sheet "Table 10, fSCL"
+    ; sheet = sheet "Table 11, p.44, fSCL"
     ; margin = Cycle
     ; bound =
         Datasheet.run ~pin:Datasheet.side_pin (fun ~clock_hz:_ levels ->
@@ -749,7 +749,7 @@ let um10204 (mode : Mode.t) firmware =
   limits_with
     ~sheet
     ~rise:(Ns { ns = rise; why = "tr" })
-    ~times:(List.map times ~f:(fun (parameter, ns) -> parameter, (ns, "Table 10")))
+    ~times:(List.map times ~f:(fun (parameter, ns) -> parameter, (ns, "Table 11, p.44")))
     firmware
   @ [ period ]
 ;;

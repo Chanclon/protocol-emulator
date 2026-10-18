@@ -32,7 +32,7 @@ proofs() {
 rtl() {
   changed src test python demo info.yaml icepi/carrier_check.v ':!*.ml' ':!*.mli' ':!**/dune' ':!*.md' ':!*.sh' \
     ':!test/assemble' ':!test/certify' ':!test/split' ':!test/python' ':!test/results.py' \
-    ':!test/check_docs.py' ':!test/mutate.py' ':!test/mutation_allow.txt' \
+    ':!test/check_docs.py' ':!test/mutate.py' ':!test/mutation_allow.txt' ':!test/plant.py' \
     ':!test/check_coverage.py' ':!test/coverage_triage.txt' \
     ':!test/heldout.sha256' ':!test/evidence.py' ':!test/evidence.sha256'
 }
