@@ -20,7 +20,7 @@ let%expect_test "i2c at its own rate is refused on tHD;STA, by name" =
   [%expect
     {|
     ; i2c at k = 15, refused: tHD;STA
-    ; limit: tHD;STA, SDA low to SCL low: the kernel proves 150 cycles, 3.125 us at 48 MHz, under 4.0 us (UM10204 Rev. 7, table 10, Standard-mode)
+    ; limit: tHD;STA, SDA low to SCL low: the kernel proves 150 cycles, 3.125 us at 48 MHz, under 4.0 us (UM10204 Rev. 7.0, table 11, p.44, Standard-mode)
     ((words 474) (deadline_waits 193) (worst_slack (0)))
     exit 2
     |}]

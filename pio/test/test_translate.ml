@@ -184,7 +184,7 @@ let%expect_test "the source printed assembles to the words translated" =
 ;;
 
 (* pico-examples#796: the START holds SDA low 10 PIO cycles before SCL falls, 3.125 us at
-   the 3.2 MHz pio_i2c.c runs, where UM10204 table 10 asks 4.0 us. At 48 MHz that rate is
+   the 3.2 MHz pio_i2c.c runs, where UM10204 table 11 asks 4.0 us. At 48 MHz that rate is
    k = 15, the deadlines certify, and the kernel bounds the hold below 192 cycles. *)
 let%expect_test "i2c certifies at its own rate, and the kernel refuses its START hold" =
   let i2c = program "i2c.pio" "i2c" in
@@ -222,8 +222,8 @@ let%expect_test "Census.limits refuses that hold at its own rate, and not at k =
         (Census.Limit.to_string limit)));
   [%expect
     {|
-    k = 15, ok false: tHD;STA, SDA low to SCL low: the kernel proves 150 cycles, 3.125 us at 48 MHz, under 4.0 us (UM10204 Rev. 7, table 10, Standard-mode)
-    k = 20, ok true: tHD;STA, SDA low to SCL low: the kernel proves 200 cycles, 4.167 us at 48 MHz, clearing 4.0 us (UM10204 Rev. 7, table 10, Standard-mode)
+    k = 15, ok false: tHD;STA, SDA low to SCL low: the kernel proves 150 cycles, 3.125 us at 48 MHz, under 4.0 us (UM10204 Rev. 7.0, table 11, p.44, Standard-mode)
+    k = 20, ok true: tHD;STA, SDA low to SCL low: the kernel proves 200 cycles, 4.167 us at 48 MHz, clearing 4.0 us (UM10204 Rev. 7.0, table 11, p.44, Standard-mode)
     |}]
 ;;
 

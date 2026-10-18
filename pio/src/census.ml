@@ -264,7 +264,7 @@ let limits (program : Pioasm.Program.t) timed =
        last edge *)
     [ { Limit.parameter = "tHD;STA"
       ; at_least_ns = 4_000
-      ; sheet = "UM10204 Rev. 7, table 10, Standard-mode"
+      ; sheet = "UM10204 Rev. 7.0, table 11, p.44, Standard-mode"
       ; edge = "SDA low to SCL low"
       ; bound =
           least_apart
