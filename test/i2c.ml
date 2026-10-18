@@ -681,13 +681,13 @@ let limits =
       })
     ~rise:(Ns { ns = 300.; why = "TR, param 4" })
     ~times:
-      [ "THIGH", (600., "p.3, param 2")
-      ; "TLOW", (1300., "p.3, param 3")
-      ; "THD:STA", (600., "p.3, param 6")
-      ; "TSU:STA", (600., "p.3, param 7")
-      ; "TSU:DAT", (100., "p.3, param 9")
-      ; "TSU:STO", (600., "p.3, param 10")
-      ; "TBUF", (1300., "p.4, param 14")
+      [ "THIGH", (600., "p.4, param 2")
+      ; "TLOW", (1300., "p.4, param 3")
+      ; "THD:STA", (600., "p.4, param 6")
+      ; "TSU:STA", (600., "p.4, param 7")
+      ; "TSU:DAT", (100., "p.4, param 9")
+      ; "TSU:STO", (600., "p.4, param 10")
+      ; "TBUF", (1300., "p.5, param 14")
       ]
 ;;
 
