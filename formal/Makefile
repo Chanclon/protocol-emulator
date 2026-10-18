@@ -1,5 +1,5 @@
 all: issue_timing host_timing host_spacing late_host fifo_order unreachable phase_step fetch_step edge_step event_step frame_step \
-  value_step narrow saturating chip_frame fail_safe isolation data_step teeth fsm_miter \
+  value_step narrow saturating chip_frame fail_safe isolation data_step teeth fsm_miter verilog_in \
   sram_equiv kernel_equiv translation frontend_equiv link self_check self_check_clean powerup offset_axioms
 
 # every dune here runs from the checkout's root, which a worktree inside another checkout
@@ -476,6 +476,21 @@ fsm_miter: engine_sram.v
 fsm_miter_proof:
 	sby -f fsm_miter.sby prove short_gap early mutant
 
+# Verilog in (write_certificate.ml -verilog-corpus): the transmitters in
+# test/certify/third_party, each refused by name or compiled by its frame, certified and
+# written as a miter beside the engine; the accepted ones are proved, ~30 s, teeth ~5 min
+# (the second's mutant, ~10 min, is left to a local run).
+# verilog_in_proof runs on files written already, for CI.
+verilog_in: engine_sram.v
+	(cd .. && dune exec -- test/certify/write_certificate.exe -verilog-corpus -out formal) \
+	  > verilog_corpus.txt
+	$(MAKE) verilog_in_proof
+
+verilog_in_proof:
+	diff ../test/certify/third_party/corpus.expected verilog_corpus.txt
+	sby -f verilog_nandland_uart.sby prove early mutant short_gap
+	sby -f verilog_alexforencich_uart_tied.sby prove early
+
 memory_flops.v: ../src/*.ml
 	cd .. && dune exec -- bin/generate.exe memory > formal/memory_flops.v
 
@@ -949,7 +964,7 @@ proof_bundle_tooth:
   stamped_certificate stamped_proof data_certificate data_proof data_certificates data_names \
   netlist_equiv netlist_equiv_teeth netlist_anystate netlist_anystate_teeth \
   sync_rtl sync_gate sync_rtl_teeth sync_gate_teeth \
-  fsm_miter fsm_miter_proof sram_equiv sram_equiv_proof \
+  fsm_miter fsm_miter_proof verilog_in verilog_in_proof sram_equiv sram_equiv_proof \
   sram_equiv_step sram_equiv_teeth kernel_equiv kernel_equiv_proof kernel_miter sat_tools \
   narrow narrow_proof saturating saturating_proof saturating_chip self_check self_check_proof \
   self_check_clean self_check_clean_proof \
