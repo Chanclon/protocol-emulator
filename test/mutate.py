@@ -149,7 +149,8 @@ SCOPES = {
 # The trusted checker: the generator of its check of a row, as Kernel.check and
 # Osr_kernel.check decide it, the outputs that must match and the groups whose and
 # accepts; the lines where it is software the gates leave out; and the proofs, fastest
-# first, a mutant that accepts more must pass. TASKS reads a task list of formal/Makefile.
+# first, a mutant that accepts more must pass: an sby run each, or one a task of a task list
+# of formal/Makefile, those of the second list, the slowest, last.
 PROVED = {
     "src/kernel.ml": {
         "check": ["check-gates"],
@@ -164,8 +165,8 @@ PROVED = {
             ("row_step", ["row_step.sby", "jmp", "wait", "in", "out", "mov", "set", "alu_x", "alu_y", "alu_p",
               "alu_t", "sys"]),
             ("phase_table_affine", ["phase_table_affine.sby", "prove"]),
-            ("pair_step", ["pair_step.sby", "TASKS=PAIR_STEP_TASKS"]),
             ("phase_spacing", ["phase_spacing.sby", "prove"]),
+            ("pair_step", ["pair_step.sby"], "PAIR_STEP_TASKS", "PAIR_STEP_ALONE"),
         ],
     },
     "src/osr_kernel.ml": {
@@ -312,6 +313,19 @@ def makefile_tasks(root, name):
     return re.search(rf"^{name} = (.*)$", text, re.M).group(1).split()
 
 
+def proof_runs(root, spec):
+    # each sby run of a checker's proofs, by name
+    runs = []
+    for name, args, *lists in spec["proofs"]:
+        if not lists:
+            runs.append((name, args))
+            continue
+        tasks, slow = (makefile_tasks(root, n) for n in lists)
+        for task in [t for t in tasks if t not in slow] + slow:
+            runs.append((f"{name}:{task}", args + [task]))
+    return runs
+
+
 def outside(file, line):
     # a line of the checker's software that its gates leave out
     lines = (Path(__file__).resolve().parent.parent / file).read_text().split("\n")
@@ -407,19 +421,21 @@ def prove(cwd, m, original, prover, timeout, proof_timeout, untested, only):
     formal = cwd / "formal"
     if run_logged(["make", *spec["verilog"]], formal, logs / "verilog.log", timeout) != 0:
         return {"class": "invalid", "evidence": evidence + ["the proofs' verilog fails"]}
-    for name, args in [(name, args) for name, args in spec["proofs"] if not only or name in only]:
-        args = [w for a in args for w in (makefile_tasks(cwd, a[6:]) if a.startswith("TASKS=") else [a])]
+    runs = proof_runs(cwd, spec)
+    picked = [(name, args) for name, args in runs if not only or name in only or name.split(":")[0] in only]
+    for name, args in picked:
         code = run_logged(["sby", "-f", *args], formal, logs / f"{name}.log", proof_timeout)
         if code is None:
             return {"class": "unproved", "evidence": evidence + [f"{name} timed out"]}
         if code != 0:
             lines = (logs / f"{name}.log").read_text().splitlines()
-            failed = [line for line in lines if re.search(r"Assert failed|trace|summary", line)]
+            # the failed assertion and the counterexample's constants: the program, the rows
+            failed = [line for line in lines if re.search(r"Assert failed|anyconst|summary", line)]
             lax = any("FAIL for basecase" in line or "returned FAIL" in line and "induction" not in line
                       for line in lines)
-            return {"class": "LAX" if lax else "unproved", "evidence": evidence + [f"{name} fails:"] + failed[-20:]}
+            return {"class": "LAX" if lax else "unproved", "evidence": evidence + [f"{name} fails:"] + failed[-60:]}
         evidence.append(f"{name} holds")
-    skipped = [name for name, _ in spec["proofs"] if only and name not in only]
+    skipped = [name for name, args in runs if (name, args) not in picked]
     if skipped:
         evidence.append(f"not run: {' '.join(skipped)}")
     return {"class": "TESTED" if tested else "unproved" if skipped else "SOUND", "evidence": evidence}
