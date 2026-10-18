@@ -8,9 +8,13 @@
 # transcript (transcript.jsonl, stream-json), stages.log, speed.tsv and verdict.txt: certified,
 # refused with the named limit, or failed. speed.tsv is the worktree's demo/speed.tsv rows for
 # NAME, which generate new-protocol and the formal targets write through demo/speed.py.
-# Usage: demo/intake.sh [--dry-run] [--budget USD] [--model M] [--out DIR] SPEC NAME
+# Before the agent, demo/extract.py reads the spec's limits twice, blind: a disagreement stops
+# the run with "limit disputed, SPEC p.N" (exit 3) and keeps both readings in disputed.tsv.
+# Once a person has ruled on them (demo/extract.py rule), --limits that run directory goes on.
+# Usage: demo/intake.sh [--dry-run] [--limits-only] [--limits RUN] [--budget USD] [--model M] [--out DIR] SPEC NAME
 #        demo/intake.sh --scan TRANSCRIPT   clean, or touched (exit 1) if a tool input names the held-out list
-#   --dry-run  makes the worktree and run directory and prints the claude command, then removes the worktree
+#   --dry-run  makes the worktree and run directory and prints the claude commands, then removes the worktree
+#   --limits-only  stops after the two readings
 set -e
 # a tool input that names the sealed held-out list: exit 1 if the transcript has one
 scan() {
@@ -29,12 +33,16 @@ PY
 }
 if [ "$1" = --scan ]; then scan "$2" && echo clean || { echo touched; exit 1; }; exit 0; fi
 dry=
+limits_only=
+settled=
 budget=${INTAKE_BUDGET:-25}
 model=
 out=${INTAKE_OUT:-$HOME/.local/share/protocol-emulator/intake}
 while [ $# -gt 0 ]; do
     case $1 in
     --dry-run) dry=yes ;;
+    --limits-only) limits_only=yes ;;
+    --limits) settled=$(realpath "$2"); shift ;;
     --budget) budget=$2; shift ;;
     --model) model=$2; shift ;;
     --out) out=$2; shift ;;
@@ -104,12 +112,47 @@ awk '/^=== page /{p=$3; next}
     tolower($0) ~ /(table|figure|fig\.)|[0-9] ?(ns|µs|us|ms|khz|mhz|kbit|baud|bps)([^a-z]|$)/ {print p ": " $0}' \
     "$run/spec.txt" | head -400 > "$run/spec.index"
 
+# the limits, read twice blind
+doc=$(basename "$spec")
+if [ "$kind" = wavejson ]; then
+    limits_note="a WaveJSON file's numbers are exact, so its limits were not read twice"
+elif [ -n "$settled" ]; then
+    case $(head -n 1 "$settled/agreement.txt" 2>/dev/null) in
+    "limits agreed"*) ;;
+    *) verdict "failed: $settled has no settled limits"; exit 1 ;;
+    esac
+    cmp -s "$settled/spec.txt" "$run/spec.txt" || { verdict "failed: $settled read another spec"; exit 1; }
+    cp "$settled/limits.tsv" "$settled/agreement.txt" "$settled/disputed.tsv" "$settled/ruled.tsv" "$run/"
+    head -n 1 "$run/agreement.txt" > "$run/extract.log"
+    log "limits from $settled"
+    limits_note="the spec's timing limits were read twice, blind, in $settled and settled ($(tail -n 1 "$run/agreement.txt"), ruled.tsv holds the rulings): $run/limits.tsv. Take each limit row's number and page from it; a number it lacks is not a limit"
+elif [ -n "$dry" ]; then
+    python3 -I "$here/demo/extract.py" run "$run" "$doc" --dry-run ${model:+--model "$model"}
+    limits_note="the dry run read no limits"
+else
+    log "read twice start"
+    status=0
+    python3 -I "$here/demo/extract.py" run "$run" "$doc" --budget "${INTAKE_READ_BUDGET:-5}" \
+        ${model:+--model "$model"} > "$run/extract.log" 2>&1 || status=$?
+    log "read twice exit $status: $(tail -n 1 "$run/extract.log")"
+    case $status in
+    0) ;;
+    3) verdict "$(head -n 1 "$run/extract.log")"; echo "both readings: $run/disputed.tsv"; exit 3 ;;
+    *) verdict "failed: $(head -n 1 "$run/extract.log")"; exit 1 ;;
+    esac
+    limits_note="the spec's timing limits were read twice, blind, and agree ($(tail -n 1 "$run/agreement.txt")): $run/limits.tsv. Take each limit row's number and page from it; a number it lacks is not a limit"
+fi
+if [ -n "$limits_only" ]; then
+    verdict "$(head -n 1 "$run/extract.log" 2>/dev/null || echo "no limits read")"
+    exit 0
+fi
+
 # the worktree and the prompt
 git -C "$root" worktree add -q -b "intake/$name" "$tree" HEAD ||
     { verdict "failed: could not make the worktree $tree"; exit 1; }
 log "worktree $tree"
 sed -e "s#@NAME@#$name#g" -e "s#@SPEC@#$spec#g" -e "s#@KIND@#$kind#g" -e "s#@DIR@#$run#g" \
-    -e "s#@SPEC_NOTE@#$note#" \
+    -e "s#@SPEC_NOTE@#$note#" -e "s#@LIMITS_NOTE@#$limits_note#" \
     "$here/demo/intake_prompt.txt" > "$run/prompt.txt"
 tools="Read,Write,Edit,Glob,Grep,Bash(dune:*),Bash(make:*),Bash(test/only.sh:*),Bash(python3:*),Bash(ocamlformat:*),Bash(sigrok-cli:*),Bash(git add:*),Bash(git commit:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(timeout:*),Bash(ls:*),Bash(cat:*),Bash(sleep:*)"
 cat > "$run/settings.json" <<JSON

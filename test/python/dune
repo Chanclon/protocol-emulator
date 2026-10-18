@@ -180,3 +180,11 @@
   (glob_files_rec ../traces/*.trace))
  (action
   (run python3 -B %{dep:test_corpus_draw.py} ../../demo ../traces)))
+
+(rule
+ (alias runtest)
+ (deps
+  ../../demo/extract.py
+  (glob_files extract/*.txt))
+ (action
+  (run python3 -B %{dep:test_extract.py} ../../demo)))

@@ -6,6 +6,7 @@ Read CLAUDE.md and CONVENTIONS.md first. Terse comments. Never open GUI windows 
 
 Spec
 - @SPEC_NOTE@
+- @LIMITS_NOTE@.
 - Cite the page, figure or table of every number you put in a limit row (the "Datasheet"
   source and the row's reason), from the "=== page N ===" markers. A number you cannot place
   on a page is not a limit: leave it out and say so in the report.
