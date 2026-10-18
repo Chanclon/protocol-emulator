@@ -278,8 +278,7 @@ let to_vcd t =
             Bool.( <> ) (level t ~pin ~cycle) (level t ~pin ~cycle:(cycle - 1)))
         with
         | [] -> []
-        | changed ->
-          sprintf "#%d" (ps cycle) :: List.map changed ~f:(value ~cycle))
+        | changed -> sprintf "#%d" (ps cycle) :: List.map changed ~f:(value ~cycle))
   in
   List.concat
     [ [ "$timescale 1ps $end"; "$scope module core $end" ]
