@@ -11,7 +11,7 @@ module Run = struct
     ; upstream : string
     ; program : string
     ; data : string (** A Python literal, for the demo to show. *)
-    ; pio_words : int list
+    ; pio_words : int list list
     }
 end
 
@@ -39,8 +39,9 @@ let grb (r, g, b) = ((g lsl 16) lor (r lsl 8) lor b) lsl 8
 (* uart_tx.c's string; uart_tx_program_putc puts each character as a word *)
 let hello = "Hello, world! (from PIO!)\r\n"
 
-(* W25Q64JV's Read JEDEC ID, 9Fh, and three bytes for the reply *)
-let jedec = [ 0x9f; 0; 0; 0 ]
+(* W25Q64JV's Release Power-down, ABh, which it needs 3 us after, then Read JEDEC ID, 9Fh,
+   and three bytes for the reply *)
+let commands = [ [ 0xab ]; [ 0x9f; 0; 0; 0 ] ]
 
 let runs =
   [ { Run.name = "WS2812"
@@ -53,22 +54,27 @@ let runs =
           |> sprintf "        [%s],\n")
         |> String.concat
         |> sprintf "[\n%s    ]"
-    ; pio_words = List.concat_map frames ~f:(List.map ~f:grb)
+    ; pio_words = List.map frames ~f:(List.map ~f:grb)
     }
   ; { name = "UART_TX"
     ; upstream = "pio/uart_tx/uart_tx.pio"
     ; program = "uart_tx"
     ; data = sprintf "%S" hello
-    ; pio_words = String.to_list hello |> List.map ~f:Char.to_int
+    ; pio_words = [ String.to_list hello |> List.map ~f:Char.to_int ]
     }
   ; { name = "SPI"
     ; upstream = "pio/spi/spi.pio"
     ; program = "spi_cpha0_cs"
     ; data =
-        List.map jedec ~f:(sprintf "0x%02x") |> String.concat ~sep:", " |> sprintf "[%s]"
+        List.map commands ~f:(fun command ->
+          List.map command ~f:(sprintf "0x%02x")
+          |> String.concat ~sep:", "
+          |> sprintf "[%s]")
+        |> String.concat ~sep:", "
+        |> sprintf "[%s]"
         (* 8-bit frames shifted left: pio_spi_write8_blocking writes each byte to the
            fifo's top byte *)
-    ; pio_words = List.map jedec ~f:(fun b -> b lsl 24)
+    ; pio_words = List.map commands ~f:(List.map ~f:(fun b -> b lsl 24))
     }
   ]
 ;;
@@ -145,6 +151,9 @@ let () =
     print_string "    },\n    \"words\": [\n";
     words_lines (Timed_program.words timed);
     printf "    ],\n    \"data\": %s,\n    \"tx\": [\n" run.data;
-    words_lines (List.concat_map run.pio_words ~f:(Translate.tx_words setup t));
+    List.iter run.pio_words ~f:(fun piece ->
+      print_string "      [\n";
+      words_lines (List.concat_map piece ~f:(Translate.tx_words setup t));
+      print_string "      ],\n");
     print_string "    ],\n}\n")
 ;;
