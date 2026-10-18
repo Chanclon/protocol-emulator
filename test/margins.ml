@@ -1141,7 +1141,9 @@ swept:
     }
   ;;
 
-  let uss = List.map ~f:us
+  (* whole microseconds, and steps of [stride] *)
+  let uss = List.map ~f:(fun n -> us (Float.of_int n))
+  let range ?(stride = 1) lo hi = List.range lo hi ~stride ~stop:`inclusive
 
   let sweeps () =
     let n = nominal in
@@ -1151,66 +1153,23 @@ swept:
         ~nominal:n.reset_low
         ~timing:(fun reset_low -> { n with reset_low })
         (uss
-           [ 5.
-           ; 10.
-           ; 15.
-           ; 20.
-           ; 25.
-           ; 30.
-           ; 40.
-           ; 50.
-           ; 60.
-           ; 70.
-           ; 80.
-           ; 90.
-           ; 100.
-           ; 120.
-           ; 140.
-           ; 160.
-           ; 200.
-           ; 240.
-           ; 300.
-           ; 400.
-           ; 480.
-           ; 504.
-           ])
+           (range 5 30 ~stride:5
+            @ range 40 100 ~stride:10
+            @ [ 120; 140; 160 ]
+            @ range 200 240 ~stride:5
+            @ [ 300; 400; 480; 504 ]))
     ; sweep
         ~parameter:"presence sample"
         ~what:"the master's presence sample after the reset lets go, then READ ROM"
         ~nominal:n.presence
         ~timing:(fun presence -> { n with presence })
         (uss
-           [ 2.
-           ; 5.
-           ; 10.
-           ; 15.
-           ; 20.
-           ; 25.
-           ; 30.
-           ; 35.
-           ; 40.
-           ; 45.
-           ; 50.
-           ; 55.
-           ; 60.
-           ; 65.
-           ; 70.
-           ; 72.
-           ; 75.
-           ; 80.
-           ; 90.
-           ; 100.
-           ; 120.
-           ; 140.
-           ; 160.
-           ; 180.
-           ; 200.
-           ; 220.
-           ; 240.
-           ; 260.
-           ; 280.
-           ; 300.
-           ])
+           ([ 2; 5; 10; 15; 20; 25 ]
+            @ range 30 35
+            @ range 40 70 ~stride:5
+            @ [ 72; 75; 80; 90; 100; 120 ]
+            @ range 140 160 ~stride:5
+            @ range 180 300 ~stride:20))
     ; sweep
         ~parameter:"tLOW0"
         ~what:"a zero's low in the scratchpad bytes written, read back at the library's"
@@ -1222,106 +1181,34 @@ swept:
           ; slot = Int.max n.slot (low0 + us 6.)
           })
         (uss
-           [ 2.
-           ; 4.
-           ; 6.
-           ; 8.
-           ; 10.
-           ; 12.
-           ; 14.
-           ; 16.
-           ; 18.
-           ; 20.
-           ; 22.
-           ; 24.
-           ; 26.
-           ; 28.
-           ; 30.
-           ; 32.
-           ; 35.
-           ; 40.
-           ; 45.
-           ; 50.
-           ; 55.
-           ; 60.
-           ; 66.
-           ; 80.
-           ; 100.
-           ; 114.
-           ])
+           (range 2 28 ~stride:2
+            @ [ 29; 30; 32; 35; 40; 45; 50; 55; 60; 66; 80; 100; 114 ]))
     ; sweep
         ~parameter:"tLOW1"
         ~what:"a one's low in the scratchpad bytes written, read back at the library's"
         ~nominal:n.low1
         ~timing:(fun low1 -> { n with low1 })
         (uss
-           [ 1.
-           ; 2.
-           ; 3.
-           ; 4.
-           ; 5.
-           ; 6.
-           ; 8.
-           ; 10.
-           ; 12.
-           ; 14.
-           ; 15.
-           ; 16.
-           ; 18.
-           ; 20.
-           ; 22.
-           ; 24.
-           ; 26.
-           ; 28.
-           ; 30.
-           ; 32.
-           ; 35.
-           ; 40.
-           ; 45.
-           ; 50.
-           ; 55.
-           ])
+           (range 1 6
+            @ range 8 14 ~stride:2
+            @ [ 15; 16; 18; 20; 22; 24; 26; 28; 29; 30; 32; 35; 40; 45; 50; 55 ]))
     ; sweep
         ~parameter:"read sample"
         ~what:"the master's sample in READ ROM's read slots, after a 6 us low"
         ~nominal:n.sample
         ~timing:(fun sample -> { n with sample })
         (uss
-           [ 7.
-           ; 8.
-           ; 9.
-           ; 10.
-           ; 11.
-           ; 12.
-           ; 13.
-           ; 14.
-           ; 15.
-           ; 16.
-           ; 17.
-           ; 18.
-           ; 19.
-           ; 20.
-           ; 22.
-           ; 24.
-           ; 26.
-           ; 28.
-           ; 30.
-           ; 32.
-           ; 34.
-           ; 36.
-           ; 38.
-           ; 40.
-           ; 45.
-           ; 50.
-           ; 55.
-           ; 60.
-           ])
+           (range 7 20
+            @ range 22 28 ~stride:2
+            @ [ 29 ]
+            @ range 30 40 ~stride:2
+            @ [ 45; 50; 55; 60 ]))
     ; sweep
         ~parameter:"tREC"
         ~what:"the high after a zero's 66 us in the scratchpad bytes written"
         ~nominal:(n.slot - n.low0)
         ~timing:(fun recovery -> { n with slot = n.low0 + recovery })
-        [ 1; 2; 4; 8; 12; 16; 24; 32; 40; 48; 56; 72; 96; 144; 288 ]
+        ([ 1; 2; 4 ] @ range 8 12 @ [ 16; 24; 32; 40; 48; 56; 72; 96; 144; 288 ])
     ; sweep
         ~parameter:"tSLOT + tREC"
         ~what:"the whole slot, a zero's low 6 us short of it, in the bytes written"
@@ -1335,7 +1222,10 @@ swept:
           ; sample = Int.min n.sample (slot - 1)
           })
         (uss
-           [ 10.; 15.; 20.; 25.; 30.; 35.; 40.; 45.; 50.; 55.; 60.; 61.; 62.; 65.; 72. ])
+           (range 10 30 ~stride:5
+            @ range 31 35
+            @ range 40 60 ~stride:5
+            @ [ 61; 62; 65; 72 ]))
     ]
   ;;
 end
