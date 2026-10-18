@@ -6,6 +6,7 @@
   protocol_emulator
   hardcaml_test_harness
   hardcaml_waveterm
+  expect_test_helpers_core
   hardcaml_verify
   re
   hardcaml_hobby_boards
