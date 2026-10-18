@@ -5,7 +5,7 @@
 # --prove-only every mutant, without the tests.
 # Usage: python3 test/mutate.py [--scope engine|wide|kernel] [--file F ...] [--operator NAME ...]
 #        [--id ID ...] [--shard I/N] [--seed S] [--jobs N] [--timeout S] [--json OUT] [--list]
-#        [--prove | --prove-only] [--proof-timeout S]
+#        [--prove | --prove-only] [--proof-timeout S] [--proofs NAME ...]
 #        python3 test/mutate.py --report OUT ...
 import argparse
 import hashlib
@@ -344,14 +344,14 @@ def run_logged(command, cwd, log, timeout):
             return None
 
 
-def prove(cwd, m, original, prover, timeout, proof_timeout):
+def prove(cwd, m, original, prover, timeout, proof_timeout, untested, only):
     # A survivor of the checker, by its gates against the original's: EQUIVALENT if its
     # decision is the same for every input, STRICT if it accepts only what the original
     # does, so the original's theorem holds of it, either under the formula of
     # test/mutation_assume.txt if any. Else it accepts more: LAX if the SAT lemma or a
-    # proof then fails on it, the trace the counterexample, SOUND if every one holds,
-    # TESTED if, untested before, the lemma's file fails a test. OUTSIDE: software of the
-    # checker the gates leave out, which only a test can kill.
+    # proof then fails on it, the trace the counterexample, SOUND if every one holds, TESTED
+    # if, untested before, a test of the lemma's file fails but every proof holds. OUTSIDE:
+    # software of the checker the gates leave out, which only a test can kill.
     spec = PROVED[m["file"]]
     logs = cwd / "_prove"
     logs.mkdir(exist_ok=True)
@@ -387,19 +387,27 @@ def prove(cwd, m, original, prover, timeout, proof_timeout):
     # it accepts more: the SAT lemma, then the proofs, each until one fails. A failed base
     # case is a run the mutant lets miss: LAX. A failed induction step is only unproved.
     log = logs / "lemma.log"
+    tested = False
     if run_logged(["sh", "test/only.sh", spec["lemma"]], cwd, log, proof_timeout) != 0:
         # LAX only where a QED of the lemma's became a counterexample
         lines = log.read_text().splitlines()
         lost = {m.group(1) for line in lines if (m := re.match(r'^-.*\(QED "([^"]*)"', line))}
         lax = any(re.match(rf'^\+.*\(counterexample "{re.escape(name)}"', line) for line in lines
                   for name in lost)
-        return {"class": "LAX" if lax else "TESTED",
-                "evidence": evidence + [f"{spec['lemma']} fails:"] + lines[-40:]}
-    evidence.append(f"{spec['lemma']} holds")
+        verdicts = [line for line in lines if re.match(r'^[-+ ].*\((QED|counterexample) "', line)]
+        if lax:
+            return {"class": "LAX", "evidence": evidence + [f"{spec['lemma']} fails:"] + verdicts + lines[-40:]}
+        # untested, a test of the lemma's file that fails kills it, but the proofs still run
+        if not untested:
+            return {"class": "TESTED", "evidence": evidence + [f"{spec['lemma']} fails:"] + lines[-40:]}
+        tested = True
+        evidence += [f"{spec['lemma']} fails a test, its QEDs hold:"] + verdicts + lines[-40:]
+    else:
+        evidence.append(f"{spec['lemma']} holds")
     formal = cwd / "formal"
     if run_logged(["make", *spec["verilog"]], formal, logs / "verilog.log", timeout) != 0:
         return {"class": "invalid", "evidence": evidence + ["the proofs' verilog fails"]}
-    for name, args in spec["proofs"]:
+    for name, args in [(name, args) for name, args in spec["proofs"] if not only or name in only]:
         args = [w for a in args for w in (makefile_tasks(cwd, a[6:]) if a.startswith("TASKS=") else [a])]
         code = run_logged(["sby", "-f", *args], formal, logs / f"{name}.log", proof_timeout)
         if code is None:
@@ -411,7 +419,10 @@ def prove(cwd, m, original, prover, timeout, proof_timeout):
                       for line in lines)
             return {"class": "LAX" if lax else "unproved", "evidence": evidence + [f"{name} fails:"] + failed[-20:]}
         evidence.append(f"{name} holds")
-    return {"class": "SOUND", "evidence": evidence}
+    skipped = [name for name, _ in spec["proofs"] if only and name not in only]
+    if skipped:
+        evidence.append(f"not run: {' '.join(skipped)}")
+    return {"class": "TESTED" if tested else "unproved" if skipped else "SOUND", "evidence": evidence}
 
 
 def read_allowed():
@@ -505,6 +516,7 @@ def main():
     p.add_argument("--prove", action="store_true", help="take each survivor of the checker to the proofs")
     p.add_argument("--prove-only", action="store_true", help="take every mutant of the checker, untested")
     p.add_argument("--proof-timeout", type=int, default=4 * 3600, help="seconds per proof")
+    p.add_argument("--proofs", nargs="+", help="only these of PROVED's sby proofs, by name")
     args = p.parse_args()
     proving = args.prove or args.prove_only
     if args.report:
@@ -554,7 +566,7 @@ def main():
                 result, by = verdict(copy, m["file"], args.dune_jobs, timeout)
             if proving and m["file"] in PROVED and result in ("survived", "untested"):
                 proved = prove(copy, m, work / "original", work / "prove_mutant.exe", timeout,
-                               args.proof_timeout)
+                               args.proof_timeout, args.prove_only, args.proofs)
         finally:
             (copy / m["file"]).write_text(original)
             copies.put(copy)
