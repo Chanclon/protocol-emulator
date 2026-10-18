@@ -22,7 +22,7 @@ let listing (program : Asm.Program.t) words =
   |> String.concat ~sep:"\n"
 ;;
 
-let check ?period ~single_capture_edge ~capture_pin ~capture_falling source : Report.t =
+let check ?period ?period_floor ~single_capture_edge ~config source : Report.t =
   let refused stage e =
     { Report.verdict = "refused by the " ^ stage
     ; detail = Error.to_string_hum e
@@ -33,12 +33,13 @@ let check ?period ~single_capture_edge ~capture_pin ~capture_falling source : Re
   match Asm.assemble source with
   | Error e -> refused "assembler" e
   | Ok program ->
-    let unconfigured =
-      { Program_config.default with capture_pin; capture_rising = not capture_falling }
-    in
-    let config = Asm.Program.configure program unconfigured in
     let rows =
-      Analyser.analyse ?period ~single_capture_edge ~config program.instructions
+      Analyser.analyse
+        ?period
+        ?period_floor
+        ~single_capture_edge
+        ~config:(Asm.Program.configure program config)
+        program.instructions
     in
     let report =
       { Report.verdict = ""
@@ -50,35 +51,26 @@ let check ?period ~single_capture_edge ~capture_pin ~capture_falling source : Re
       ; rows = Analyser.to_string ~side_set_count:program.side_set_count rows
       }
     in
-    (match Analyser.check ?period ~single_capture_edge ~config:unconfigured program with
-     | Error e ->
-       { (refused "analyser" e) with listing = report.listing; rows = report.rows }
-     | Ok verdict ->
-       let analysed = Analyser.Verdict.to_string verdict in
-       (match
-          let open Or_error.Let_syntax in
-          let%bind words = Asm.Program.words program in
-          Kernel.check
-            ?period
-            ~single_capture_edge
-            ~config
-            ~words
-            (Kernel.Table.of_analyser rows)
-        with
-        | Error e ->
-          { report with
-            verdict = "refused by the kernel"
-          ; detail =
-              analysed
-              ^ ", but the kernel rejects the analyser's rows\n"
-              ^ Error.to_string_hum e
-          }
-        | Ok () ->
-          { report with
-            verdict = "accepted"
-          ; detail =
-              analysed ^ "\nkernel: accepted, so no deadline is missed by the step lemma"
-          }))
+    (match
+       Timed_program.check ?period ?period_floor ~single_capture_edge ~config source
+     with
+     | Error { faults = _; verdict = None; error } ->
+       { (refused "analyser" error) with listing = report.listing; rows = report.rows }
+     | Error { faults = _; verdict = Some verdict; error } ->
+       { report with
+         verdict = "refused by the kernel"
+       ; detail =
+           Analyser.Verdict.to_string verdict
+           ^ ", but the kernel rejects the analyser's rows\n"
+           ^ Error.to_string_hum error
+       }
+     | Ok timed ->
+       { report with
+         verdict = "accepted"
+       ; detail =
+           Analyser.Verdict.to_string (Timed_program.verdict timed)
+           ^ "\nkernel: accepted, so no deadline is missed by the step lemma"
+       })
 ;;
 
 module Pio_report = struct

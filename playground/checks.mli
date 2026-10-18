@@ -2,6 +2,7 @@
     compared with the page's. *)
 
 open! Core
+open Protocol_emulator
 
 module Report : sig
   type t =
@@ -12,13 +13,13 @@ module Report : sig
     }
 end
 
-(** [generate.exe assemble -listing] and [-rows], with its flags that the page offers,
+(** [generate.exe assemble -listing] and [-rows], under [config] and its assumption flags,
     naming whichever of the assembler, analyser and kernel refuses. *)
 val check
   :  ?period:int
+  -> ?period_floor:int
   -> single_capture_edge:bool
-  -> capture_pin:int
-  -> capture_falling:bool
+  -> config:Program_config.t
   -> string
   -> Report.t
 

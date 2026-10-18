@@ -4,21 +4,35 @@ open Protocol_emulator
 open Playground_checks
 
 let () =
-  let check source period single_capture_edge capture_pin capture_falling =
-    let report =
-      Checks.check
-        ?period:(Js.Opt.to_option period)
-        ~single_capture_edge:(Js.to_bool single_capture_edge)
-        ~capture_pin
-        ~capture_falling:(Js.to_bool capture_falling)
-        (Js.to_string source)
-    in
+  let report (report : Checks.Report.t) =
     Js.Unsafe.obj
       [| "verdict", Js.Unsafe.inject (Js.string report.verdict)
        ; "detail", Js.Unsafe.inject (Js.string report.detail)
        ; "listing", Js.Unsafe.inject (Js.string report.listing)
        ; "rows", Js.Unsafe.inject (Js.string report.rows)
       |]
+  in
+  let check source period single_capture_edge capture_pin capture_falling =
+    Checks.check
+      ?period:(Js.Opt.to_option period)
+      ~single_capture_edge:(Js.to_bool single_capture_edge)
+      ~config:
+        { Program_config.default with
+          capture_pin
+        ; capture_rising = not (Js.to_bool capture_falling)
+        }
+      (Js.to_string source)
+    |> report
+  in
+  (* under a whole configuration, a sexp, as the library's firmware is checked *)
+  let check_configured source config period period_floor single_capture_edge =
+    Checks.check
+      ?period:(Js.Opt.to_option period)
+      ?period_floor:(Js.Opt.to_option period_floor)
+      ~single_capture_edge:(Js.to_bool single_capture_edge)
+      ~config:(Js.to_string config |> Sexp.of_string |> Program_config.t_of_sexp)
+      (Js.to_string source)
+    |> report
   in
   let check_pio source spec =
     let report =
@@ -80,6 +94,7 @@ let () =
     "protocolEmulator"
     (Js.Unsafe.obj
        [| "check", Js.Unsafe.inject (Js.wrap_callback check)
+        ; "checkConfigured", Js.Unsafe.inject (Js.wrap_callback check_configured)
         ; ( "examples"
           , Js.Unsafe.inject
               (Js.array
