@@ -71,3 +71,45 @@
     "|}, \"000100001111111100000000\\n100000000000000110101010\"\n  ; \"uart_rx\", {|")
    (cat %{dep:../test/diagrams/uart_rx.json})
    (echo "|}, \"11000101\\n00111010\"\n  ]\n"))))
+
+; Each library firmware through the page and generate.exe, and each diagram at 48 and 50
+; MHz through the page and a native build, byte for byte:
+; PLAYGROUND=yes dune build @playground/agree
+
+(executable
+ (name reference)
+ (modules reference)
+ (libraries core protocol_emulator protocol_emulator_test playground_checks)
+ (lint
+  (pps ppx_js_style -check-doc-comments))
+ (preprocess
+  (pps ppx_jane)))
+
+(rule
+ (enabled_if
+  (= %{env:PLAYGROUND=no} yes))
+ (deps
+  (glob_files ../test/diagrams/*.json))
+ (action
+  (with-stdout-to
+   corpus.json
+   (run ./reference.exe %{deps}))))
+
+(rule
+ (enabled_if
+  (= %{env:PLAYGROUND=no} yes))
+ (targets native.txt browser.txt)
+ (action
+  (run
+   node
+   %{dep:agree.js}
+   %{dep:playground.bc.js}
+   %{dep:../bin/generate.exe}
+   %{dep:corpus.json})))
+
+(rule
+ (alias agree)
+ (enabled_if
+  (= %{env:PLAYGROUND=no} yes))
+ (action
+  (diff native.txt browser.txt)))
