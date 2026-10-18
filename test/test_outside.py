@@ -1151,7 +1151,7 @@ WS2812_PIO = {"T0H": 375, "T0L": 875, "T1H": 750, "T1L": 500}
 async def test_pio_ws2812(dut):
     """Raspberry Pi's ws2812.pio as demo_pio_ws2812 runs it, Pico A's SPI at its clock with
     its pause after each byte: both frames whole, no fault, and each bit's high and low
-    times those the program makes on an RP2040."""
+    times those the program makes on an RP2040, inside the SK6812 B/1 sheet's."""
     await reset(dut)
     analyser = Analyser({4: bit(dut.uo_out, 4)})
     half = 48_000_000 // demo_pio_ws2812.SPI_HZ // 2
@@ -1175,6 +1175,7 @@ async def test_pio_ws2812(dut):
         times["T1L" if one else "T0L"].add(gap)
     cocotb.log.info("ns: %s, an RP2040's %s", times, WS2812_PIO)
     assert times == {name: {ns} for name, ns in WS2812_PIO.items()}, times
+    assert all(SK6812[name][0] <= ns <= SK6812[name][1] for name, ns in WS2812_PIO.items())
 
 
 @cocotb.test()
