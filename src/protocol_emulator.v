@@ -7512,7 +7512,7 @@ module host_port (
     wire signal_mux;
     wire signal_mux_1;
     wire signal_wire;
-    reg signal_reg;
+    reg configs$1$manchester;
     wire signal_select_5;
     wire signal_eq_18;
     wire [6:0] signal_const_21;
@@ -7522,7 +7522,7 @@ module host_port (
     wire signal_mux_2;
     wire signal_mux_3;
     wire signal_wire_1;
-    reg signal_reg_1;
+    reg configs$1$autopull_data;
     wire [15:0] signal_const_22;
     wire signal_eq_20;
     wire [6:0] signal_const_24;
@@ -7532,7 +7532,7 @@ module host_port (
     wire [15:0] signal_mux_4;
     wire [15:0] signal_mux_5;
     wire [15:0] signal_wire_2;
-    reg [15:0] signal_reg_2;
+    reg [15:0] configs$1$period_fraction;
     wire [8:0] signal_const_25;
     wire [8:0] signal_select_6;
     wire signal_eq_22;
@@ -7543,7 +7543,7 @@ module host_port (
     wire [8:0] signal_mux_6;
     wire [8:0] signal_mux_7;
     wire [8:0] signal_wire_3;
-    reg [8:0] signal_reg_3;
+    reg [8:0] configs$1$wrap_top;
     wire [8:0] signal_select_7;
     wire signal_eq_24;
     wire [6:0] signal_const_30;
@@ -7553,7 +7553,7 @@ module host_port (
     wire [8:0] signal_mux_8;
     wire [8:0] signal_mux_9;
     wire [8:0] signal_wire_4;
-    reg [8:0] signal_reg_4;
+    reg [8:0] configs$1$wrap_bottom;
     wire signal_select_8;
     wire signal_eq_26;
     wire [6:0] signal_const_33;
@@ -7563,7 +7563,7 @@ module host_port (
     wire signal_mux_10;
     wire signal_mux_11;
     wire signal_wire_5;
-    reg signal_reg_5;
+    reg configs$1$stuff_level;
     wire [4:0] signal_const_34;
     wire [4:0] signal_select_9;
     wire signal_eq_28;
@@ -7574,7 +7574,7 @@ module host_port (
     wire [4:0] signal_mux_12;
     wire [4:0] signal_mux_13;
     wire [4:0] signal_wire_6;
-    reg [4:0] signal_reg_6;
+    reg [4:0] configs$1$stuff_threshold;
     wire signal_select_10;
     wire signal_eq_30;
     wire [6:0] signal_const_39;
@@ -7584,7 +7584,7 @@ module host_port (
     wire signal_mux_14;
     wire signal_mux_15;
     wire signal_wire_7;
-    reg signal_reg_7;
+    reg configs$1$crc_reflect;
     wire signal_eq_32;
     wire [6:0] signal_const_42;
     wire signal_eq_33;
@@ -7593,7 +7593,7 @@ module host_port (
     wire [15:0] signal_mux_16;
     wire [15:0] signal_mux_17;
     wire [15:0] signal_wire_8;
-    reg [15:0] signal_reg_8;
+    reg [15:0] configs$1$crc_init;
     wire signal_eq_34;
     wire [6:0] signal_const_45;
     wire signal_eq_35;
@@ -7602,7 +7602,7 @@ module host_port (
     wire [15:0] signal_mux_18;
     wire [15:0] signal_mux_19;
     wire [15:0] signal_wire_9;
-    reg [15:0] signal_reg_9;
+    reg [15:0] configs$1$crc_poly;
     wire [4:0] signal_select_11;
     wire signal_eq_36;
     wire [6:0] signal_const_48;
@@ -7612,7 +7612,7 @@ module host_port (
     wire [4:0] signal_mux_20;
     wire [4:0] signal_mux_21;
     wire [4:0] signal_wire_10;
-    reg [4:0] signal_reg_10;
+    reg [4:0] configs$1$crc_width;
     wire [4:0] signal_select_12;
     wire signal_eq_38;
     wire [6:0] signal_const_51;
@@ -7622,7 +7622,7 @@ module host_port (
     wire [4:0] signal_mux_22;
     wire [4:0] signal_mux_23;
     wire [4:0] signal_wire_11;
-    reg [4:0] signal_reg_11;
+    reg [4:0] configs$1$pull_threshold;
     wire signal_select_13;
     wire signal_eq_40;
     wire [6:0] signal_const_54;
@@ -7632,7 +7632,7 @@ module host_port (
     wire signal_mux_24;
     wire signal_mux_25;
     wire signal_wire_12;
-    reg signal_reg_12;
+    reg configs$1$autopull;
     wire [4:0] signal_select_14;
     wire signal_eq_42;
     wire [6:0] signal_const_57;
@@ -7642,7 +7642,7 @@ module host_port (
     wire [4:0] signal_mux_26;
     wire [4:0] signal_mux_27;
     wire [4:0] signal_wire_13;
-    reg [4:0] signal_reg_13;
+    reg [4:0] configs$1$push_threshold;
     wire signal_select_15;
     wire signal_eq_44;
     wire [6:0] signal_const_60;
@@ -7652,7 +7652,7 @@ module host_port (
     wire signal_mux_28;
     wire signal_mux_29;
     wire signal_wire_14;
-    reg signal_reg_14;
+    reg configs$1$autopush;
     wire signal_select_16;
     wire signal_eq_46;
     wire [6:0] signal_const_63;
@@ -7662,7 +7662,7 @@ module host_port (
     wire signal_mux_30;
     wire signal_mux_31;
     wire signal_wire_15;
-    reg signal_reg_15;
+    reg configs$1$out_shift_right;
     wire signal_select_17;
     wire signal_eq_48;
     wire [6:0] signal_const_66;
@@ -7672,7 +7672,7 @@ module host_port (
     wire signal_mux_32;
     wire signal_mux_33;
     wire signal_wire_16;
-    reg signal_reg_16;
+    reg configs$1$in_shift_right;
     wire signal_select_18;
     wire signal_eq_50;
     wire [6:0] signal_const_69;
@@ -7682,7 +7682,7 @@ module host_port (
     wire signal_mux_34;
     wire signal_mux_35;
     wire signal_wire_17;
-    reg signal_reg_17;
+    reg configs$1$capture_rising;
     wire [4:0] signal_select_19;
     wire signal_eq_52;
     wire [6:0] signal_const_72;
@@ -7692,7 +7692,7 @@ module host_port (
     wire [4:0] signal_mux_36;
     wire [4:0] signal_mux_37;
     wire [4:0] signal_wire_18;
-    reg [4:0] signal_reg_18;
+    reg [4:0] configs$1$capture_pin;
     wire [4:0] signal_select_20;
     wire signal_eq_54;
     wire [6:0] signal_const_75;
@@ -7702,7 +7702,7 @@ module host_port (
     wire [4:0] signal_mux_38;
     wire [4:0] signal_mux_39;
     wire [4:0] signal_wire_19;
-    reg [4:0] signal_reg_19;
+    reg [4:0] configs$1$jmp_pin;
     wire [2:0] signal_const_76;
     wire [2:0] signal_select_21;
     wire signal_eq_56;
@@ -7713,7 +7713,7 @@ module host_port (
     wire [2:0] signal_mux_40;
     wire [2:0] signal_mux_41;
     wire [2:0] signal_wire_20;
-    reg [2:0] signal_reg_20;
+    reg [2:0] configs$1$set_count;
     wire [4:0] signal_select_22;
     wire signal_eq_58;
     wire [6:0] signal_const_81;
@@ -7723,7 +7723,7 @@ module host_port (
     wire [4:0] signal_mux_42;
     wire [4:0] signal_mux_43;
     wire [4:0] signal_wire_21;
-    reg [4:0] signal_reg_21;
+    reg [4:0] configs$1$set_base;
     wire [4:0] signal_select_23;
     wire signal_eq_60;
     wire [6:0] signal_const_84;
@@ -7733,7 +7733,7 @@ module host_port (
     wire [4:0] signal_mux_44;
     wire [4:0] signal_mux_45;
     wire [4:0] signal_wire_22;
-    reg [4:0] signal_reg_22;
+    reg [4:0] configs$1$out_count;
     wire [4:0] signal_select_24;
     wire signal_eq_62;
     wire [6:0] signal_const_87;
@@ -7743,7 +7743,7 @@ module host_port (
     wire [4:0] signal_mux_46;
     wire [4:0] signal_mux_47;
     wire [4:0] signal_wire_23;
-    reg [4:0] signal_reg_23;
+    reg [4:0] configs$1$out_base;
     wire [4:0] signal_select_25;
     wire signal_eq_64;
     wire [6:0] signal_const_90;
@@ -7753,7 +7753,7 @@ module host_port (
     wire [4:0] signal_mux_48;
     wire [4:0] signal_mux_49;
     wire [4:0] signal_wire_24;
-    reg [4:0] signal_reg_24;
+    reg [4:0] configs$1$in_count;
     wire [4:0] signal_select_26;
     wire signal_eq_66;
     wire [6:0] signal_const_93;
@@ -7763,7 +7763,7 @@ module host_port (
     wire [4:0] signal_mux_50;
     wire [4:0] signal_mux_51;
     wire [4:0] signal_wire_25;
-    reg [4:0] signal_reg_25;
+    reg [4:0] configs$1$in_base;
     wire signal_select_27;
     wire signal_eq_68;
     wire [6:0] signal_const_96;
@@ -7773,7 +7773,7 @@ module host_port (
     wire signal_mux_52;
     wire signal_mux_53;
     wire signal_wire_26;
-    reg signal_reg_26;
+    reg configs$1$side_set_pindirs;
     wire [4:0] signal_select_28;
     wire signal_eq_70;
     wire [6:0] signal_const_99;
@@ -7783,7 +7783,7 @@ module host_port (
     wire [4:0] signal_mux_54;
     wire [4:0] signal_mux_55;
     wire [4:0] signal_wire_27;
-    reg [4:0] signal_reg_27;
+    reg [4:0] configs$1$side_set_base;
     wire [1:0] signal_const_100;
     wire [1:0] signal_select_29;
     wire signal_eq_72;
@@ -7794,7 +7794,7 @@ module host_port (
     wire [1:0] signal_mux_56;
     wire [1:0] signal_mux_57;
     wire [1:0] signal_wire_28;
-    reg [1:0] signal_reg_28;
+    reg [1:0] configs$1$side_set_count;
     wire signal_eq_74;
     wire signal_select_30;
     wire signal_eq_75;
@@ -7843,7 +7843,7 @@ module host_port (
     wire signal_mux_58;
     wire signal_mux_59;
     wire signal_wire_29;
-    reg signal_reg_29;
+    reg configs$0$manchester;
     wire signal_select_35;
     wire signal_eq_92;
     wire signal_eq_93;
@@ -7852,7 +7852,7 @@ module host_port (
     wire signal_mux_60;
     wire signal_mux_61;
     wire signal_wire_30;
-    reg signal_reg_30;
+    reg configs$0$autopull_data;
     wire signal_eq_94;
     wire signal_eq_95;
     wire signal_and_102;
@@ -7860,7 +7860,7 @@ module host_port (
     wire [15:0] signal_mux_62;
     wire [15:0] signal_mux_63;
     wire [15:0] signal_wire_31;
-    reg [15:0] signal_reg_31;
+    reg [15:0] configs$0$period_fraction;
     wire [8:0] signal_select_36;
     wire signal_eq_96;
     wire signal_eq_97;
@@ -7869,7 +7869,7 @@ module host_port (
     wire [8:0] signal_mux_64;
     wire [8:0] signal_mux_65;
     wire [8:0] signal_wire_32;
-    reg [8:0] signal_reg_32;
+    reg [8:0] configs$0$wrap_top;
     wire [8:0] signal_select_37;
     wire signal_eq_98;
     wire signal_eq_99;
@@ -7878,7 +7878,7 @@ module host_port (
     wire [8:0] signal_mux_66;
     wire [8:0] signal_mux_67;
     wire [8:0] signal_wire_33;
-    reg [8:0] signal_reg_33;
+    reg [8:0] configs$0$wrap_bottom;
     wire signal_select_38;
     wire signal_eq_100;
     wire signal_eq_101;
@@ -7887,7 +7887,7 @@ module host_port (
     wire signal_mux_68;
     wire signal_mux_69;
     wire signal_wire_34;
-    reg signal_reg_34;
+    reg configs$0$stuff_level;
     wire [4:0] signal_select_39;
     wire signal_eq_102;
     wire signal_eq_103;
@@ -7896,7 +7896,7 @@ module host_port (
     wire [4:0] signal_mux_70;
     wire [4:0] signal_mux_71;
     wire [4:0] signal_wire_35;
-    reg [4:0] signal_reg_35;
+    reg [4:0] configs$0$stuff_threshold;
     wire signal_select_40;
     wire signal_eq_104;
     wire signal_eq_105;
@@ -7905,7 +7905,7 @@ module host_port (
     wire signal_mux_72;
     wire signal_mux_73;
     wire signal_wire_36;
-    reg signal_reg_36;
+    reg configs$0$crc_reflect;
     wire signal_eq_106;
     wire signal_eq_107;
     wire signal_and_114;
@@ -7913,7 +7913,7 @@ module host_port (
     wire [15:0] signal_mux_74;
     wire [15:0] signal_mux_75;
     wire [15:0] signal_wire_37;
-    reg [15:0] signal_reg_37;
+    reg [15:0] configs$0$crc_init;
     wire signal_eq_108;
     wire signal_eq_109;
     wire signal_and_116;
@@ -7921,7 +7921,7 @@ module host_port (
     wire [15:0] signal_mux_76;
     wire [15:0] signal_mux_77;
     wire [15:0] signal_wire_38;
-    reg [15:0] signal_reg_38;
+    reg [15:0] configs$0$crc_poly;
     wire [4:0] signal_select_41;
     wire signal_eq_110;
     wire signal_eq_111;
@@ -7930,7 +7930,7 @@ module host_port (
     wire [4:0] signal_mux_78;
     wire [4:0] signal_mux_79;
     wire [4:0] signal_wire_39;
-    reg [4:0] signal_reg_39;
+    reg [4:0] configs$0$crc_width;
     wire [4:0] signal_select_42;
     wire signal_eq_112;
     wire signal_eq_113;
@@ -7939,7 +7939,7 @@ module host_port (
     wire [4:0] signal_mux_80;
     wire [4:0] signal_mux_81;
     wire [4:0] signal_wire_40;
-    reg [4:0] signal_reg_40;
+    reg [4:0] configs$0$pull_threshold;
     wire signal_select_43;
     wire signal_eq_114;
     wire signal_eq_115;
@@ -7948,7 +7948,7 @@ module host_port (
     wire signal_mux_82;
     wire signal_mux_83;
     wire signal_wire_41;
-    reg signal_reg_41;
+    reg configs$0$autopull;
     wire [4:0] signal_select_44;
     wire signal_eq_116;
     wire signal_eq_117;
@@ -7957,7 +7957,7 @@ module host_port (
     wire [4:0] signal_mux_84;
     wire [4:0] signal_mux_85;
     wire [4:0] signal_wire_42;
-    reg [4:0] signal_reg_42;
+    reg [4:0] configs$0$push_threshold;
     wire signal_select_45;
     wire signal_eq_118;
     wire signal_eq_119;
@@ -7966,7 +7966,7 @@ module host_port (
     wire signal_mux_86;
     wire signal_mux_87;
     wire signal_wire_43;
-    reg signal_reg_43;
+    reg configs$0$autopush;
     wire signal_select_46;
     wire signal_eq_120;
     wire signal_eq_121;
@@ -7975,7 +7975,7 @@ module host_port (
     wire signal_mux_88;
     wire signal_mux_89;
     wire signal_wire_44;
-    reg signal_reg_44;
+    reg configs$0$out_shift_right;
     wire signal_select_47;
     wire signal_eq_122;
     wire signal_eq_123;
@@ -7984,7 +7984,7 @@ module host_port (
     wire signal_mux_90;
     wire signal_mux_91;
     wire signal_wire_45;
-    reg signal_reg_45;
+    reg configs$0$in_shift_right;
     wire signal_select_48;
     wire signal_eq_124;
     wire signal_eq_125;
@@ -7993,7 +7993,7 @@ module host_port (
     wire signal_mux_92;
     wire signal_mux_93;
     wire signal_wire_46;
-    reg signal_reg_46;
+    reg configs$0$capture_rising;
     wire [4:0] signal_select_49;
     wire signal_eq_126;
     wire signal_eq_127;
@@ -8002,7 +8002,7 @@ module host_port (
     wire [4:0] signal_mux_94;
     wire [4:0] signal_mux_95;
     wire [4:0] signal_wire_47;
-    reg [4:0] signal_reg_47;
+    reg [4:0] configs$0$capture_pin;
     wire [4:0] signal_select_50;
     wire signal_eq_128;
     wire signal_eq_129;
@@ -8011,7 +8011,7 @@ module host_port (
     wire [4:0] signal_mux_96;
     wire [4:0] signal_mux_97;
     wire [4:0] signal_wire_48;
-    reg [4:0] signal_reg_48;
+    reg [4:0] configs$0$jmp_pin;
     wire [2:0] signal_select_51;
     wire signal_eq_130;
     wire signal_eq_131;
@@ -8020,7 +8020,7 @@ module host_port (
     wire [2:0] signal_mux_98;
     wire [2:0] signal_mux_99;
     wire [2:0] signal_wire_49;
-    reg [2:0] signal_reg_49;
+    reg [2:0] configs$0$set_count;
     wire [4:0] signal_select_52;
     wire signal_eq_132;
     wire signal_eq_133;
@@ -8029,7 +8029,7 @@ module host_port (
     wire [4:0] signal_mux_100;
     wire [4:0] signal_mux_101;
     wire [4:0] signal_wire_50;
-    reg [4:0] signal_reg_50;
+    reg [4:0] configs$0$set_base;
     wire [4:0] signal_select_53;
     wire signal_eq_134;
     wire signal_eq_135;
@@ -8038,7 +8038,7 @@ module host_port (
     wire [4:0] signal_mux_102;
     wire [4:0] signal_mux_103;
     wire [4:0] signal_wire_51;
-    reg [4:0] signal_reg_51;
+    reg [4:0] configs$0$out_count;
     wire [4:0] signal_select_54;
     wire signal_eq_136;
     wire signal_eq_137;
@@ -8047,7 +8047,7 @@ module host_port (
     wire [4:0] signal_mux_104;
     wire [4:0] signal_mux_105;
     wire [4:0] signal_wire_52;
-    reg [4:0] signal_reg_52;
+    reg [4:0] configs$0$out_base;
     wire [4:0] signal_select_55;
     wire signal_eq_138;
     wire signal_eq_139;
@@ -8056,7 +8056,7 @@ module host_port (
     wire [4:0] signal_mux_106;
     wire [4:0] signal_mux_107;
     wire [4:0] signal_wire_53;
-    reg [4:0] signal_reg_53;
+    reg [4:0] configs$0$in_count;
     wire [4:0] signal_select_56;
     wire signal_eq_140;
     wire signal_eq_141;
@@ -8065,7 +8065,7 @@ module host_port (
     wire [4:0] signal_mux_108;
     wire [4:0] signal_mux_109;
     wire [4:0] signal_wire_54;
-    reg [4:0] signal_reg_54;
+    reg [4:0] configs$0$in_base;
     wire signal_select_57;
     wire signal_eq_142;
     wire signal_eq_143;
@@ -8074,7 +8074,7 @@ module host_port (
     wire signal_mux_110;
     wire signal_mux_111;
     wire signal_wire_55;
-    reg signal_reg_55;
+    reg configs$0$side_set_pindirs;
     wire [4:0] signal_select_58;
     wire signal_eq_144;
     wire signal_eq_145;
@@ -8083,7 +8083,7 @@ module host_port (
     wire [4:0] signal_mux_112;
     wire [4:0] signal_mux_113;
     wire [4:0] signal_wire_56;
-    reg [4:0] signal_reg_56;
+    reg [4:0] configs$0$side_set_base;
     wire [1:0] signal_select_59;
     wire signal_eq_146;
     wire signal_eq_147;
@@ -8092,7 +8092,7 @@ module host_port (
     wire [1:0] signal_mux_114;
     wire [1:0] signal_mux_115;
     wire [1:0] signal_wire_57;
-    reg [1:0] signal_reg_57;
+    reg [1:0] configs$0$side_set_count;
     wire [7:0] signal_select_60;
     wire [15:0] rx_head;
     wire [15:0] signal_wire_58;
@@ -8278,14 +8278,14 @@ module host_port (
     assign signal_eq_17 = addr == signal_const_18;
     assign signal_and_20 = signal_eq_17 & signal_eq_16;
     assign signal_and_21 = signal_and_20 & signal_wire_62;
-    assign signal_mux = signal_and_21 ? signal_select_4 : signal_reg;
-    assign signal_mux_1 = write ? signal_mux : signal_reg;
+    assign signal_mux = signal_and_21 ? signal_select_4 : configs$1$manchester;
+    assign signal_mux_1 = write ? signal_mux : configs$1$manchester;
     assign signal_wire = signal_mux_1;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg <= signal_const_16;
+            configs$1$manchester <= signal_const_16;
         else
-            signal_reg <= signal_wire;
+            configs$1$manchester <= signal_wire;
     end
     assign signal_select_5 = value[0:0];
     assign signal_eq_18 = select == signal_const;
@@ -8293,14 +8293,14 @@ module host_port (
     assign signal_eq_19 = addr == signal_const_21;
     assign signal_and_22 = signal_eq_19 & signal_eq_18;
     assign signal_and_23 = signal_and_22 & signal_wire_62;
-    assign signal_mux_2 = signal_and_23 ? signal_select_5 : signal_reg_1;
-    assign signal_mux_3 = write ? signal_mux_2 : signal_reg_1;
+    assign signal_mux_2 = signal_and_23 ? signal_select_5 : configs$1$autopull_data;
+    assign signal_mux_3 = write ? signal_mux_2 : configs$1$autopull_data;
     assign signal_wire_1 = signal_mux_3;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_1 <= signal_const_16;
+            configs$1$autopull_data <= signal_const_16;
         else
-            signal_reg_1 <= signal_wire_1;
+            configs$1$autopull_data <= signal_wire_1;
     end
     assign signal_const_22 = 16'b0000000000000000;
     assign signal_eq_20 = select == signal_const;
@@ -8308,14 +8308,14 @@ module host_port (
     assign signal_eq_21 = addr == signal_const_24;
     assign signal_and_24 = signal_eq_21 & signal_eq_20;
     assign signal_and_25 = signal_and_24 & signal_wire_62;
-    assign signal_mux_4 = signal_and_25 ? value : signal_reg_2;
-    assign signal_mux_5 = write ? signal_mux_4 : signal_reg_2;
+    assign signal_mux_4 = signal_and_25 ? value : configs$1$period_fraction;
+    assign signal_mux_5 = write ? signal_mux_4 : configs$1$period_fraction;
     assign signal_wire_2 = signal_mux_5;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_2 <= signal_const_22;
+            configs$1$period_fraction <= signal_const_22;
         else
-            signal_reg_2 <= signal_wire_2;
+            configs$1$period_fraction <= signal_wire_2;
     end
     assign signal_const_25 = 9'b000000000;
     assign signal_select_6 = value[8:0];
@@ -8324,14 +8324,14 @@ module host_port (
     assign signal_eq_23 = addr == signal_const_27;
     assign signal_and_26 = signal_eq_23 & signal_eq_22;
     assign signal_and_27 = signal_and_26 & signal_wire_62;
-    assign signal_mux_6 = signal_and_27 ? signal_select_6 : signal_reg_3;
-    assign signal_mux_7 = write ? signal_mux_6 : signal_reg_3;
+    assign signal_mux_6 = signal_and_27 ? signal_select_6 : configs$1$wrap_top;
+    assign signal_mux_7 = write ? signal_mux_6 : configs$1$wrap_top;
     assign signal_wire_3 = signal_mux_7;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_3 <= signal_const_25;
+            configs$1$wrap_top <= signal_const_25;
         else
-            signal_reg_3 <= signal_wire_3;
+            configs$1$wrap_top <= signal_wire_3;
     end
     assign signal_select_7 = value[8:0];
     assign signal_eq_24 = select == signal_const;
@@ -8339,14 +8339,14 @@ module host_port (
     assign signal_eq_25 = addr == signal_const_30;
     assign signal_and_28 = signal_eq_25 & signal_eq_24;
     assign signal_and_29 = signal_and_28 & signal_wire_62;
-    assign signal_mux_8 = signal_and_29 ? signal_select_7 : signal_reg_4;
-    assign signal_mux_9 = write ? signal_mux_8 : signal_reg_4;
+    assign signal_mux_8 = signal_and_29 ? signal_select_7 : configs$1$wrap_bottom;
+    assign signal_mux_9 = write ? signal_mux_8 : configs$1$wrap_bottom;
     assign signal_wire_4 = signal_mux_9;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_4 <= signal_const_25;
+            configs$1$wrap_bottom <= signal_const_25;
         else
-            signal_reg_4 <= signal_wire_4;
+            configs$1$wrap_bottom <= signal_wire_4;
     end
     assign signal_select_8 = value[0:0];
     assign signal_eq_26 = select == signal_const;
@@ -8354,14 +8354,14 @@ module host_port (
     assign signal_eq_27 = addr == signal_const_33;
     assign signal_and_30 = signal_eq_27 & signal_eq_26;
     assign signal_and_31 = signal_and_30 & signal_wire_62;
-    assign signal_mux_10 = signal_and_31 ? signal_select_8 : signal_reg_5;
-    assign signal_mux_11 = write ? signal_mux_10 : signal_reg_5;
+    assign signal_mux_10 = signal_and_31 ? signal_select_8 : configs$1$stuff_level;
+    assign signal_mux_11 = write ? signal_mux_10 : configs$1$stuff_level;
     assign signal_wire_5 = signal_mux_11;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_5 <= signal_const_16;
+            configs$1$stuff_level <= signal_const_16;
         else
-            signal_reg_5 <= signal_wire_5;
+            configs$1$stuff_level <= signal_wire_5;
     end
     assign signal_const_34 = 5'b00000;
     assign signal_select_9 = value[4:0];
@@ -8370,14 +8370,14 @@ module host_port (
     assign signal_eq_29 = addr == signal_const_36;
     assign signal_and_32 = signal_eq_29 & signal_eq_28;
     assign signal_and_33 = signal_and_32 & signal_wire_62;
-    assign signal_mux_12 = signal_and_33 ? signal_select_9 : signal_reg_6;
-    assign signal_mux_13 = write ? signal_mux_12 : signal_reg_6;
+    assign signal_mux_12 = signal_and_33 ? signal_select_9 : configs$1$stuff_threshold;
+    assign signal_mux_13 = write ? signal_mux_12 : configs$1$stuff_threshold;
     assign signal_wire_6 = signal_mux_13;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_6 <= signal_const_34;
+            configs$1$stuff_threshold <= signal_const_34;
         else
-            signal_reg_6 <= signal_wire_6;
+            configs$1$stuff_threshold <= signal_wire_6;
     end
     assign signal_select_10 = value[0:0];
     assign signal_eq_30 = select == signal_const;
@@ -8385,42 +8385,42 @@ module host_port (
     assign signal_eq_31 = addr == signal_const_39;
     assign signal_and_34 = signal_eq_31 & signal_eq_30;
     assign signal_and_35 = signal_and_34 & signal_wire_62;
-    assign signal_mux_14 = signal_and_35 ? signal_select_10 : signal_reg_7;
-    assign signal_mux_15 = write ? signal_mux_14 : signal_reg_7;
+    assign signal_mux_14 = signal_and_35 ? signal_select_10 : configs$1$crc_reflect;
+    assign signal_mux_15 = write ? signal_mux_14 : configs$1$crc_reflect;
     assign signal_wire_7 = signal_mux_15;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_7 <= signal_const_16;
+            configs$1$crc_reflect <= signal_const_16;
         else
-            signal_reg_7 <= signal_wire_7;
+            configs$1$crc_reflect <= signal_wire_7;
     end
     assign signal_eq_32 = select == signal_const;
     assign signal_const_42 = 7'b0100100;
     assign signal_eq_33 = addr == signal_const_42;
     assign signal_and_36 = signal_eq_33 & signal_eq_32;
     assign signal_and_37 = signal_and_36 & signal_wire_62;
-    assign signal_mux_16 = signal_and_37 ? value : signal_reg_8;
-    assign signal_mux_17 = write ? signal_mux_16 : signal_reg_8;
+    assign signal_mux_16 = signal_and_37 ? value : configs$1$crc_init;
+    assign signal_mux_17 = write ? signal_mux_16 : configs$1$crc_init;
     assign signal_wire_8 = signal_mux_17;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_8 <= signal_const_22;
+            configs$1$crc_init <= signal_const_22;
         else
-            signal_reg_8 <= signal_wire_8;
+            configs$1$crc_init <= signal_wire_8;
     end
     assign signal_eq_34 = select == signal_const;
     assign signal_const_45 = 7'b0100011;
     assign signal_eq_35 = addr == signal_const_45;
     assign signal_and_38 = signal_eq_35 & signal_eq_34;
     assign signal_and_39 = signal_and_38 & signal_wire_62;
-    assign signal_mux_18 = signal_and_39 ? value : signal_reg_9;
-    assign signal_mux_19 = write ? signal_mux_18 : signal_reg_9;
+    assign signal_mux_18 = signal_and_39 ? value : configs$1$crc_poly;
+    assign signal_mux_19 = write ? signal_mux_18 : configs$1$crc_poly;
     assign signal_wire_9 = signal_mux_19;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_9 <= signal_const_22;
+            configs$1$crc_poly <= signal_const_22;
         else
-            signal_reg_9 <= signal_wire_9;
+            configs$1$crc_poly <= signal_wire_9;
     end
     assign signal_select_11 = value[4:0];
     assign signal_eq_36 = select == signal_const;
@@ -8428,14 +8428,14 @@ module host_port (
     assign signal_eq_37 = addr == signal_const_48;
     assign signal_and_40 = signal_eq_37 & signal_eq_36;
     assign signal_and_41 = signal_and_40 & signal_wire_62;
-    assign signal_mux_20 = signal_and_41 ? signal_select_11 : signal_reg_10;
-    assign signal_mux_21 = write ? signal_mux_20 : signal_reg_10;
+    assign signal_mux_20 = signal_and_41 ? signal_select_11 : configs$1$crc_width;
+    assign signal_mux_21 = write ? signal_mux_20 : configs$1$crc_width;
     assign signal_wire_10 = signal_mux_21;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_10 <= signal_const_34;
+            configs$1$crc_width <= signal_const_34;
         else
-            signal_reg_10 <= signal_wire_10;
+            configs$1$crc_width <= signal_wire_10;
     end
     assign signal_select_12 = value[4:0];
     assign signal_eq_38 = select == signal_const;
@@ -8443,14 +8443,14 @@ module host_port (
     assign signal_eq_39 = addr == signal_const_51;
     assign signal_and_42 = signal_eq_39 & signal_eq_38;
     assign signal_and_43 = signal_and_42 & signal_wire_62;
-    assign signal_mux_22 = signal_and_43 ? signal_select_12 : signal_reg_11;
-    assign signal_mux_23 = write ? signal_mux_22 : signal_reg_11;
+    assign signal_mux_22 = signal_and_43 ? signal_select_12 : configs$1$pull_threshold;
+    assign signal_mux_23 = write ? signal_mux_22 : configs$1$pull_threshold;
     assign signal_wire_11 = signal_mux_23;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_11 <= signal_const_34;
+            configs$1$pull_threshold <= signal_const_34;
         else
-            signal_reg_11 <= signal_wire_11;
+            configs$1$pull_threshold <= signal_wire_11;
     end
     assign signal_select_13 = value[0:0];
     assign signal_eq_40 = select == signal_const;
@@ -8458,14 +8458,14 @@ module host_port (
     assign signal_eq_41 = addr == signal_const_54;
     assign signal_and_44 = signal_eq_41 & signal_eq_40;
     assign signal_and_45 = signal_and_44 & signal_wire_62;
-    assign signal_mux_24 = signal_and_45 ? signal_select_13 : signal_reg_12;
-    assign signal_mux_25 = write ? signal_mux_24 : signal_reg_12;
+    assign signal_mux_24 = signal_and_45 ? signal_select_13 : configs$1$autopull;
+    assign signal_mux_25 = write ? signal_mux_24 : configs$1$autopull;
     assign signal_wire_12 = signal_mux_25;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_12 <= signal_const_16;
+            configs$1$autopull <= signal_const_16;
         else
-            signal_reg_12 <= signal_wire_12;
+            configs$1$autopull <= signal_wire_12;
     end
     assign signal_select_14 = value[4:0];
     assign signal_eq_42 = select == signal_const;
@@ -8473,14 +8473,14 @@ module host_port (
     assign signal_eq_43 = addr == signal_const_57;
     assign signal_and_46 = signal_eq_43 & signal_eq_42;
     assign signal_and_47 = signal_and_46 & signal_wire_62;
-    assign signal_mux_26 = signal_and_47 ? signal_select_14 : signal_reg_13;
-    assign signal_mux_27 = write ? signal_mux_26 : signal_reg_13;
+    assign signal_mux_26 = signal_and_47 ? signal_select_14 : configs$1$push_threshold;
+    assign signal_mux_27 = write ? signal_mux_26 : configs$1$push_threshold;
     assign signal_wire_13 = signal_mux_27;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_13 <= signal_const_34;
+            configs$1$push_threshold <= signal_const_34;
         else
-            signal_reg_13 <= signal_wire_13;
+            configs$1$push_threshold <= signal_wire_13;
     end
     assign signal_select_15 = value[0:0];
     assign signal_eq_44 = select == signal_const;
@@ -8488,14 +8488,14 @@ module host_port (
     assign signal_eq_45 = addr == signal_const_60;
     assign signal_and_48 = signal_eq_45 & signal_eq_44;
     assign signal_and_49 = signal_and_48 & signal_wire_62;
-    assign signal_mux_28 = signal_and_49 ? signal_select_15 : signal_reg_14;
-    assign signal_mux_29 = write ? signal_mux_28 : signal_reg_14;
+    assign signal_mux_28 = signal_and_49 ? signal_select_15 : configs$1$autopush;
+    assign signal_mux_29 = write ? signal_mux_28 : configs$1$autopush;
     assign signal_wire_14 = signal_mux_29;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_14 <= signal_const_16;
+            configs$1$autopush <= signal_const_16;
         else
-            signal_reg_14 <= signal_wire_14;
+            configs$1$autopush <= signal_wire_14;
     end
     assign signal_select_16 = value[0:0];
     assign signal_eq_46 = select == signal_const;
@@ -8503,14 +8503,14 @@ module host_port (
     assign signal_eq_47 = addr == signal_const_63;
     assign signal_and_50 = signal_eq_47 & signal_eq_46;
     assign signal_and_51 = signal_and_50 & signal_wire_62;
-    assign signal_mux_30 = signal_and_51 ? signal_select_16 : signal_reg_15;
-    assign signal_mux_31 = write ? signal_mux_30 : signal_reg_15;
+    assign signal_mux_30 = signal_and_51 ? signal_select_16 : configs$1$out_shift_right;
+    assign signal_mux_31 = write ? signal_mux_30 : configs$1$out_shift_right;
     assign signal_wire_15 = signal_mux_31;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_15 <= signal_const_16;
+            configs$1$out_shift_right <= signal_const_16;
         else
-            signal_reg_15 <= signal_wire_15;
+            configs$1$out_shift_right <= signal_wire_15;
     end
     assign signal_select_17 = value[0:0];
     assign signal_eq_48 = select == signal_const;
@@ -8518,14 +8518,14 @@ module host_port (
     assign signal_eq_49 = addr == signal_const_66;
     assign signal_and_52 = signal_eq_49 & signal_eq_48;
     assign signal_and_53 = signal_and_52 & signal_wire_62;
-    assign signal_mux_32 = signal_and_53 ? signal_select_17 : signal_reg_16;
-    assign signal_mux_33 = write ? signal_mux_32 : signal_reg_16;
+    assign signal_mux_32 = signal_and_53 ? signal_select_17 : configs$1$in_shift_right;
+    assign signal_mux_33 = write ? signal_mux_32 : configs$1$in_shift_right;
     assign signal_wire_16 = signal_mux_33;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_16 <= signal_const_16;
+            configs$1$in_shift_right <= signal_const_16;
         else
-            signal_reg_16 <= signal_wire_16;
+            configs$1$in_shift_right <= signal_wire_16;
     end
     assign signal_select_18 = value[0:0];
     assign signal_eq_50 = select == signal_const;
@@ -8533,14 +8533,14 @@ module host_port (
     assign signal_eq_51 = addr == signal_const_69;
     assign signal_and_54 = signal_eq_51 & signal_eq_50;
     assign signal_and_55 = signal_and_54 & signal_wire_62;
-    assign signal_mux_34 = signal_and_55 ? signal_select_18 : signal_reg_17;
-    assign signal_mux_35 = write ? signal_mux_34 : signal_reg_17;
+    assign signal_mux_34 = signal_and_55 ? signal_select_18 : configs$1$capture_rising;
+    assign signal_mux_35 = write ? signal_mux_34 : configs$1$capture_rising;
     assign signal_wire_17 = signal_mux_35;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_17 <= signal_const_16;
+            configs$1$capture_rising <= signal_const_16;
         else
-            signal_reg_17 <= signal_wire_17;
+            configs$1$capture_rising <= signal_wire_17;
     end
     assign signal_select_19 = value[4:0];
     assign signal_eq_52 = select == signal_const;
@@ -8548,14 +8548,14 @@ module host_port (
     assign signal_eq_53 = addr == signal_const_72;
     assign signal_and_56 = signal_eq_53 & signal_eq_52;
     assign signal_and_57 = signal_and_56 & signal_wire_62;
-    assign signal_mux_36 = signal_and_57 ? signal_select_19 : signal_reg_18;
-    assign signal_mux_37 = write ? signal_mux_36 : signal_reg_18;
+    assign signal_mux_36 = signal_and_57 ? signal_select_19 : configs$1$capture_pin;
+    assign signal_mux_37 = write ? signal_mux_36 : configs$1$capture_pin;
     assign signal_wire_18 = signal_mux_37;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_18 <= signal_const_34;
+            configs$1$capture_pin <= signal_const_34;
         else
-            signal_reg_18 <= signal_wire_18;
+            configs$1$capture_pin <= signal_wire_18;
     end
     assign signal_select_20 = value[4:0];
     assign signal_eq_54 = select == signal_const;
@@ -8563,14 +8563,14 @@ module host_port (
     assign signal_eq_55 = addr == signal_const_75;
     assign signal_and_58 = signal_eq_55 & signal_eq_54;
     assign signal_and_59 = signal_and_58 & signal_wire_62;
-    assign signal_mux_38 = signal_and_59 ? signal_select_20 : signal_reg_19;
-    assign signal_mux_39 = write ? signal_mux_38 : signal_reg_19;
+    assign signal_mux_38 = signal_and_59 ? signal_select_20 : configs$1$jmp_pin;
+    assign signal_mux_39 = write ? signal_mux_38 : configs$1$jmp_pin;
     assign signal_wire_19 = signal_mux_39;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_19 <= signal_const_34;
+            configs$1$jmp_pin <= signal_const_34;
         else
-            signal_reg_19 <= signal_wire_19;
+            configs$1$jmp_pin <= signal_wire_19;
     end
     assign signal_const_76 = 3'b000;
     assign signal_select_21 = value[2:0];
@@ -8579,14 +8579,14 @@ module host_port (
     assign signal_eq_57 = addr == signal_const_78;
     assign signal_and_60 = signal_eq_57 & signal_eq_56;
     assign signal_and_61 = signal_and_60 & signal_wire_62;
-    assign signal_mux_40 = signal_and_61 ? signal_select_21 : signal_reg_20;
-    assign signal_mux_41 = write ? signal_mux_40 : signal_reg_20;
+    assign signal_mux_40 = signal_and_61 ? signal_select_21 : configs$1$set_count;
+    assign signal_mux_41 = write ? signal_mux_40 : configs$1$set_count;
     assign signal_wire_20 = signal_mux_41;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_20 <= signal_const_76;
+            configs$1$set_count <= signal_const_76;
         else
-            signal_reg_20 <= signal_wire_20;
+            configs$1$set_count <= signal_wire_20;
     end
     assign signal_select_22 = value[4:0];
     assign signal_eq_58 = select == signal_const;
@@ -8594,14 +8594,14 @@ module host_port (
     assign signal_eq_59 = addr == signal_const_81;
     assign signal_and_62 = signal_eq_59 & signal_eq_58;
     assign signal_and_63 = signal_and_62 & signal_wire_62;
-    assign signal_mux_42 = signal_and_63 ? signal_select_22 : signal_reg_21;
-    assign signal_mux_43 = write ? signal_mux_42 : signal_reg_21;
+    assign signal_mux_42 = signal_and_63 ? signal_select_22 : configs$1$set_base;
+    assign signal_mux_43 = write ? signal_mux_42 : configs$1$set_base;
     assign signal_wire_21 = signal_mux_43;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_21 <= signal_const_34;
+            configs$1$set_base <= signal_const_34;
         else
-            signal_reg_21 <= signal_wire_21;
+            configs$1$set_base <= signal_wire_21;
     end
     assign signal_select_23 = value[4:0];
     assign signal_eq_60 = select == signal_const;
@@ -8609,14 +8609,14 @@ module host_port (
     assign signal_eq_61 = addr == signal_const_84;
     assign signal_and_64 = signal_eq_61 & signal_eq_60;
     assign signal_and_65 = signal_and_64 & signal_wire_62;
-    assign signal_mux_44 = signal_and_65 ? signal_select_23 : signal_reg_22;
-    assign signal_mux_45 = write ? signal_mux_44 : signal_reg_22;
+    assign signal_mux_44 = signal_and_65 ? signal_select_23 : configs$1$out_count;
+    assign signal_mux_45 = write ? signal_mux_44 : configs$1$out_count;
     assign signal_wire_22 = signal_mux_45;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_22 <= signal_const_34;
+            configs$1$out_count <= signal_const_34;
         else
-            signal_reg_22 <= signal_wire_22;
+            configs$1$out_count <= signal_wire_22;
     end
     assign signal_select_24 = value[4:0];
     assign signal_eq_62 = select == signal_const;
@@ -8624,14 +8624,14 @@ module host_port (
     assign signal_eq_63 = addr == signal_const_87;
     assign signal_and_66 = signal_eq_63 & signal_eq_62;
     assign signal_and_67 = signal_and_66 & signal_wire_62;
-    assign signal_mux_46 = signal_and_67 ? signal_select_24 : signal_reg_23;
-    assign signal_mux_47 = write ? signal_mux_46 : signal_reg_23;
+    assign signal_mux_46 = signal_and_67 ? signal_select_24 : configs$1$out_base;
+    assign signal_mux_47 = write ? signal_mux_46 : configs$1$out_base;
     assign signal_wire_23 = signal_mux_47;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_23 <= signal_const_34;
+            configs$1$out_base <= signal_const_34;
         else
-            signal_reg_23 <= signal_wire_23;
+            configs$1$out_base <= signal_wire_23;
     end
     assign signal_select_25 = value[4:0];
     assign signal_eq_64 = select == signal_const;
@@ -8639,14 +8639,14 @@ module host_port (
     assign signal_eq_65 = addr == signal_const_90;
     assign signal_and_68 = signal_eq_65 & signal_eq_64;
     assign signal_and_69 = signal_and_68 & signal_wire_62;
-    assign signal_mux_48 = signal_and_69 ? signal_select_25 : signal_reg_24;
-    assign signal_mux_49 = write ? signal_mux_48 : signal_reg_24;
+    assign signal_mux_48 = signal_and_69 ? signal_select_25 : configs$1$in_count;
+    assign signal_mux_49 = write ? signal_mux_48 : configs$1$in_count;
     assign signal_wire_24 = signal_mux_49;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_24 <= signal_const_34;
+            configs$1$in_count <= signal_const_34;
         else
-            signal_reg_24 <= signal_wire_24;
+            configs$1$in_count <= signal_wire_24;
     end
     assign signal_select_26 = value[4:0];
     assign signal_eq_66 = select == signal_const;
@@ -8654,14 +8654,14 @@ module host_port (
     assign signal_eq_67 = addr == signal_const_93;
     assign signal_and_70 = signal_eq_67 & signal_eq_66;
     assign signal_and_71 = signal_and_70 & signal_wire_62;
-    assign signal_mux_50 = signal_and_71 ? signal_select_26 : signal_reg_25;
-    assign signal_mux_51 = write ? signal_mux_50 : signal_reg_25;
+    assign signal_mux_50 = signal_and_71 ? signal_select_26 : configs$1$in_base;
+    assign signal_mux_51 = write ? signal_mux_50 : configs$1$in_base;
     assign signal_wire_25 = signal_mux_51;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_25 <= signal_const_34;
+            configs$1$in_base <= signal_const_34;
         else
-            signal_reg_25 <= signal_wire_25;
+            configs$1$in_base <= signal_wire_25;
     end
     assign signal_select_27 = value[0:0];
     assign signal_eq_68 = select == signal_const;
@@ -8669,14 +8669,14 @@ module host_port (
     assign signal_eq_69 = addr == signal_const_96;
     assign signal_and_72 = signal_eq_69 & signal_eq_68;
     assign signal_and_73 = signal_and_72 & signal_wire_62;
-    assign signal_mux_52 = signal_and_73 ? signal_select_27 : signal_reg_26;
-    assign signal_mux_53 = write ? signal_mux_52 : signal_reg_26;
+    assign signal_mux_52 = signal_and_73 ? signal_select_27 : configs$1$side_set_pindirs;
+    assign signal_mux_53 = write ? signal_mux_52 : configs$1$side_set_pindirs;
     assign signal_wire_26 = signal_mux_53;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_26 <= signal_const_16;
+            configs$1$side_set_pindirs <= signal_const_16;
         else
-            signal_reg_26 <= signal_wire_26;
+            configs$1$side_set_pindirs <= signal_wire_26;
     end
     assign signal_select_28 = value[4:0];
     assign signal_eq_70 = select == signal_const;
@@ -8684,14 +8684,14 @@ module host_port (
     assign signal_eq_71 = addr == signal_const_99;
     assign signal_and_74 = signal_eq_71 & signal_eq_70;
     assign signal_and_75 = signal_and_74 & signal_wire_62;
-    assign signal_mux_54 = signal_and_75 ? signal_select_28 : signal_reg_27;
-    assign signal_mux_55 = write ? signal_mux_54 : signal_reg_27;
+    assign signal_mux_54 = signal_and_75 ? signal_select_28 : configs$1$side_set_base;
+    assign signal_mux_55 = write ? signal_mux_54 : configs$1$side_set_base;
     assign signal_wire_27 = signal_mux_55;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_27 <= signal_const_34;
+            configs$1$side_set_base <= signal_const_34;
         else
-            signal_reg_27 <= signal_wire_27;
+            configs$1$side_set_base <= signal_wire_27;
     end
     assign signal_const_100 = 2'b00;
     assign signal_select_29 = value[1:0];
@@ -8700,14 +8700,14 @@ module host_port (
     assign signal_eq_73 = addr == signal_const_102;
     assign signal_and_76 = signal_eq_73 & signal_eq_72;
     assign signal_and_77 = signal_and_76 & signal_wire_62;
-    assign signal_mux_56 = signal_and_77 ? signal_select_29 : signal_reg_28;
-    assign signal_mux_57 = write ? signal_mux_56 : signal_reg_28;
+    assign signal_mux_56 = signal_and_77 ? signal_select_29 : configs$1$side_set_count;
+    assign signal_mux_57 = write ? signal_mux_56 : configs$1$side_set_count;
     assign signal_wire_28 = signal_mux_57;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_28 <= signal_const_100;
+            configs$1$side_set_count <= signal_const_100;
         else
-            signal_reg_28 <= signal_wire_28;
+            configs$1$side_set_count <= signal_wire_28;
     end
     assign signal_eq_74 = select == signal_const_16;
     assign signal_select_30 = value[3:3];
@@ -8754,403 +8754,403 @@ module host_port (
     assign signal_eq_91 = addr == signal_const_18;
     assign signal_and_98 = signal_eq_91 & signal_eq_90;
     assign signal_and_99 = signal_and_98 & signal_wire_73;
-    assign signal_mux_58 = signal_and_99 ? signal_select_34 : signal_reg_29;
-    assign signal_mux_59 = write ? signal_mux_58 : signal_reg_29;
+    assign signal_mux_58 = signal_and_99 ? signal_select_34 : configs$0$manchester;
+    assign signal_mux_59 = write ? signal_mux_58 : configs$0$manchester;
     assign signal_wire_29 = signal_mux_59;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_29 <= signal_const_16;
+            configs$0$manchester <= signal_const_16;
         else
-            signal_reg_29 <= signal_wire_29;
+            configs$0$manchester <= signal_wire_29;
     end
     assign signal_select_35 = value[0:0];
     assign signal_eq_92 = select == signal_const_16;
     assign signal_eq_93 = addr == signal_const_21;
     assign signal_and_100 = signal_eq_93 & signal_eq_92;
     assign signal_and_101 = signal_and_100 & signal_wire_73;
-    assign signal_mux_60 = signal_and_101 ? signal_select_35 : signal_reg_30;
-    assign signal_mux_61 = write ? signal_mux_60 : signal_reg_30;
+    assign signal_mux_60 = signal_and_101 ? signal_select_35 : configs$0$autopull_data;
+    assign signal_mux_61 = write ? signal_mux_60 : configs$0$autopull_data;
     assign signal_wire_30 = signal_mux_61;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_30 <= signal_const_16;
+            configs$0$autopull_data <= signal_const_16;
         else
-            signal_reg_30 <= signal_wire_30;
+            configs$0$autopull_data <= signal_wire_30;
     end
     assign signal_eq_94 = select == signal_const_16;
     assign signal_eq_95 = addr == signal_const_24;
     assign signal_and_102 = signal_eq_95 & signal_eq_94;
     assign signal_and_103 = signal_and_102 & signal_wire_73;
-    assign signal_mux_62 = signal_and_103 ? value : signal_reg_31;
-    assign signal_mux_63 = write ? signal_mux_62 : signal_reg_31;
+    assign signal_mux_62 = signal_and_103 ? value : configs$0$period_fraction;
+    assign signal_mux_63 = write ? signal_mux_62 : configs$0$period_fraction;
     assign signal_wire_31 = signal_mux_63;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_31 <= signal_const_22;
+            configs$0$period_fraction <= signal_const_22;
         else
-            signal_reg_31 <= signal_wire_31;
+            configs$0$period_fraction <= signal_wire_31;
     end
     assign signal_select_36 = value[8:0];
     assign signal_eq_96 = select == signal_const_16;
     assign signal_eq_97 = addr == signal_const_27;
     assign signal_and_104 = signal_eq_97 & signal_eq_96;
     assign signal_and_105 = signal_and_104 & signal_wire_73;
-    assign signal_mux_64 = signal_and_105 ? signal_select_36 : signal_reg_32;
-    assign signal_mux_65 = write ? signal_mux_64 : signal_reg_32;
+    assign signal_mux_64 = signal_and_105 ? signal_select_36 : configs$0$wrap_top;
+    assign signal_mux_65 = write ? signal_mux_64 : configs$0$wrap_top;
     assign signal_wire_32 = signal_mux_65;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_32 <= signal_const_25;
+            configs$0$wrap_top <= signal_const_25;
         else
-            signal_reg_32 <= signal_wire_32;
+            configs$0$wrap_top <= signal_wire_32;
     end
     assign signal_select_37 = value[8:0];
     assign signal_eq_98 = select == signal_const_16;
     assign signal_eq_99 = addr == signal_const_30;
     assign signal_and_106 = signal_eq_99 & signal_eq_98;
     assign signal_and_107 = signal_and_106 & signal_wire_73;
-    assign signal_mux_66 = signal_and_107 ? signal_select_37 : signal_reg_33;
-    assign signal_mux_67 = write ? signal_mux_66 : signal_reg_33;
+    assign signal_mux_66 = signal_and_107 ? signal_select_37 : configs$0$wrap_bottom;
+    assign signal_mux_67 = write ? signal_mux_66 : configs$0$wrap_bottom;
     assign signal_wire_33 = signal_mux_67;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_33 <= signal_const_25;
+            configs$0$wrap_bottom <= signal_const_25;
         else
-            signal_reg_33 <= signal_wire_33;
+            configs$0$wrap_bottom <= signal_wire_33;
     end
     assign signal_select_38 = value[0:0];
     assign signal_eq_100 = select == signal_const_16;
     assign signal_eq_101 = addr == signal_const_33;
     assign signal_and_108 = signal_eq_101 & signal_eq_100;
     assign signal_and_109 = signal_and_108 & signal_wire_73;
-    assign signal_mux_68 = signal_and_109 ? signal_select_38 : signal_reg_34;
-    assign signal_mux_69 = write ? signal_mux_68 : signal_reg_34;
+    assign signal_mux_68 = signal_and_109 ? signal_select_38 : configs$0$stuff_level;
+    assign signal_mux_69 = write ? signal_mux_68 : configs$0$stuff_level;
     assign signal_wire_34 = signal_mux_69;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_34 <= signal_const_16;
+            configs$0$stuff_level <= signal_const_16;
         else
-            signal_reg_34 <= signal_wire_34;
+            configs$0$stuff_level <= signal_wire_34;
     end
     assign signal_select_39 = value[4:0];
     assign signal_eq_102 = select == signal_const_16;
     assign signal_eq_103 = addr == signal_const_36;
     assign signal_and_110 = signal_eq_103 & signal_eq_102;
     assign signal_and_111 = signal_and_110 & signal_wire_73;
-    assign signal_mux_70 = signal_and_111 ? signal_select_39 : signal_reg_35;
-    assign signal_mux_71 = write ? signal_mux_70 : signal_reg_35;
+    assign signal_mux_70 = signal_and_111 ? signal_select_39 : configs$0$stuff_threshold;
+    assign signal_mux_71 = write ? signal_mux_70 : configs$0$stuff_threshold;
     assign signal_wire_35 = signal_mux_71;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_35 <= signal_const_34;
+            configs$0$stuff_threshold <= signal_const_34;
         else
-            signal_reg_35 <= signal_wire_35;
+            configs$0$stuff_threshold <= signal_wire_35;
     end
     assign signal_select_40 = value[0:0];
     assign signal_eq_104 = select == signal_const_16;
     assign signal_eq_105 = addr == signal_const_39;
     assign signal_and_112 = signal_eq_105 & signal_eq_104;
     assign signal_and_113 = signal_and_112 & signal_wire_73;
-    assign signal_mux_72 = signal_and_113 ? signal_select_40 : signal_reg_36;
-    assign signal_mux_73 = write ? signal_mux_72 : signal_reg_36;
+    assign signal_mux_72 = signal_and_113 ? signal_select_40 : configs$0$crc_reflect;
+    assign signal_mux_73 = write ? signal_mux_72 : configs$0$crc_reflect;
     assign signal_wire_36 = signal_mux_73;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_36 <= signal_const_16;
+            configs$0$crc_reflect <= signal_const_16;
         else
-            signal_reg_36 <= signal_wire_36;
+            configs$0$crc_reflect <= signal_wire_36;
     end
     assign signal_eq_106 = select == signal_const_16;
     assign signal_eq_107 = addr == signal_const_42;
     assign signal_and_114 = signal_eq_107 & signal_eq_106;
     assign signal_and_115 = signal_and_114 & signal_wire_73;
-    assign signal_mux_74 = signal_and_115 ? value : signal_reg_37;
-    assign signal_mux_75 = write ? signal_mux_74 : signal_reg_37;
+    assign signal_mux_74 = signal_and_115 ? value : configs$0$crc_init;
+    assign signal_mux_75 = write ? signal_mux_74 : configs$0$crc_init;
     assign signal_wire_37 = signal_mux_75;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_37 <= signal_const_22;
+            configs$0$crc_init <= signal_const_22;
         else
-            signal_reg_37 <= signal_wire_37;
+            configs$0$crc_init <= signal_wire_37;
     end
     assign signal_eq_108 = select == signal_const_16;
     assign signal_eq_109 = addr == signal_const_45;
     assign signal_and_116 = signal_eq_109 & signal_eq_108;
     assign signal_and_117 = signal_and_116 & signal_wire_73;
-    assign signal_mux_76 = signal_and_117 ? value : signal_reg_38;
-    assign signal_mux_77 = write ? signal_mux_76 : signal_reg_38;
+    assign signal_mux_76 = signal_and_117 ? value : configs$0$crc_poly;
+    assign signal_mux_77 = write ? signal_mux_76 : configs$0$crc_poly;
     assign signal_wire_38 = signal_mux_77;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_38 <= signal_const_22;
+            configs$0$crc_poly <= signal_const_22;
         else
-            signal_reg_38 <= signal_wire_38;
+            configs$0$crc_poly <= signal_wire_38;
     end
     assign signal_select_41 = value[4:0];
     assign signal_eq_110 = select == signal_const_16;
     assign signal_eq_111 = addr == signal_const_48;
     assign signal_and_118 = signal_eq_111 & signal_eq_110;
     assign signal_and_119 = signal_and_118 & signal_wire_73;
-    assign signal_mux_78 = signal_and_119 ? signal_select_41 : signal_reg_39;
-    assign signal_mux_79 = write ? signal_mux_78 : signal_reg_39;
+    assign signal_mux_78 = signal_and_119 ? signal_select_41 : configs$0$crc_width;
+    assign signal_mux_79 = write ? signal_mux_78 : configs$0$crc_width;
     assign signal_wire_39 = signal_mux_79;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_39 <= signal_const_34;
+            configs$0$crc_width <= signal_const_34;
         else
-            signal_reg_39 <= signal_wire_39;
+            configs$0$crc_width <= signal_wire_39;
     end
     assign signal_select_42 = value[4:0];
     assign signal_eq_112 = select == signal_const_16;
     assign signal_eq_113 = addr == signal_const_51;
     assign signal_and_120 = signal_eq_113 & signal_eq_112;
     assign signal_and_121 = signal_and_120 & signal_wire_73;
-    assign signal_mux_80 = signal_and_121 ? signal_select_42 : signal_reg_40;
-    assign signal_mux_81 = write ? signal_mux_80 : signal_reg_40;
+    assign signal_mux_80 = signal_and_121 ? signal_select_42 : configs$0$pull_threshold;
+    assign signal_mux_81 = write ? signal_mux_80 : configs$0$pull_threshold;
     assign signal_wire_40 = signal_mux_81;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_40 <= signal_const_34;
+            configs$0$pull_threshold <= signal_const_34;
         else
-            signal_reg_40 <= signal_wire_40;
+            configs$0$pull_threshold <= signal_wire_40;
     end
     assign signal_select_43 = value[0:0];
     assign signal_eq_114 = select == signal_const_16;
     assign signal_eq_115 = addr == signal_const_54;
     assign signal_and_122 = signal_eq_115 & signal_eq_114;
     assign signal_and_123 = signal_and_122 & signal_wire_73;
-    assign signal_mux_82 = signal_and_123 ? signal_select_43 : signal_reg_41;
-    assign signal_mux_83 = write ? signal_mux_82 : signal_reg_41;
+    assign signal_mux_82 = signal_and_123 ? signal_select_43 : configs$0$autopull;
+    assign signal_mux_83 = write ? signal_mux_82 : configs$0$autopull;
     assign signal_wire_41 = signal_mux_83;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_41 <= signal_const_16;
+            configs$0$autopull <= signal_const_16;
         else
-            signal_reg_41 <= signal_wire_41;
+            configs$0$autopull <= signal_wire_41;
     end
     assign signal_select_44 = value[4:0];
     assign signal_eq_116 = select == signal_const_16;
     assign signal_eq_117 = addr == signal_const_57;
     assign signal_and_124 = signal_eq_117 & signal_eq_116;
     assign signal_and_125 = signal_and_124 & signal_wire_73;
-    assign signal_mux_84 = signal_and_125 ? signal_select_44 : signal_reg_42;
-    assign signal_mux_85 = write ? signal_mux_84 : signal_reg_42;
+    assign signal_mux_84 = signal_and_125 ? signal_select_44 : configs$0$push_threshold;
+    assign signal_mux_85 = write ? signal_mux_84 : configs$0$push_threshold;
     assign signal_wire_42 = signal_mux_85;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_42 <= signal_const_34;
+            configs$0$push_threshold <= signal_const_34;
         else
-            signal_reg_42 <= signal_wire_42;
+            configs$0$push_threshold <= signal_wire_42;
     end
     assign signal_select_45 = value[0:0];
     assign signal_eq_118 = select == signal_const_16;
     assign signal_eq_119 = addr == signal_const_60;
     assign signal_and_126 = signal_eq_119 & signal_eq_118;
     assign signal_and_127 = signal_and_126 & signal_wire_73;
-    assign signal_mux_86 = signal_and_127 ? signal_select_45 : signal_reg_43;
-    assign signal_mux_87 = write ? signal_mux_86 : signal_reg_43;
+    assign signal_mux_86 = signal_and_127 ? signal_select_45 : configs$0$autopush;
+    assign signal_mux_87 = write ? signal_mux_86 : configs$0$autopush;
     assign signal_wire_43 = signal_mux_87;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_43 <= signal_const_16;
+            configs$0$autopush <= signal_const_16;
         else
-            signal_reg_43 <= signal_wire_43;
+            configs$0$autopush <= signal_wire_43;
     end
     assign signal_select_46 = value[0:0];
     assign signal_eq_120 = select == signal_const_16;
     assign signal_eq_121 = addr == signal_const_63;
     assign signal_and_128 = signal_eq_121 & signal_eq_120;
     assign signal_and_129 = signal_and_128 & signal_wire_73;
-    assign signal_mux_88 = signal_and_129 ? signal_select_46 : signal_reg_44;
-    assign signal_mux_89 = write ? signal_mux_88 : signal_reg_44;
+    assign signal_mux_88 = signal_and_129 ? signal_select_46 : configs$0$out_shift_right;
+    assign signal_mux_89 = write ? signal_mux_88 : configs$0$out_shift_right;
     assign signal_wire_44 = signal_mux_89;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_44 <= signal_const_16;
+            configs$0$out_shift_right <= signal_const_16;
         else
-            signal_reg_44 <= signal_wire_44;
+            configs$0$out_shift_right <= signal_wire_44;
     end
     assign signal_select_47 = value[0:0];
     assign signal_eq_122 = select == signal_const_16;
     assign signal_eq_123 = addr == signal_const_66;
     assign signal_and_130 = signal_eq_123 & signal_eq_122;
     assign signal_and_131 = signal_and_130 & signal_wire_73;
-    assign signal_mux_90 = signal_and_131 ? signal_select_47 : signal_reg_45;
-    assign signal_mux_91 = write ? signal_mux_90 : signal_reg_45;
+    assign signal_mux_90 = signal_and_131 ? signal_select_47 : configs$0$in_shift_right;
+    assign signal_mux_91 = write ? signal_mux_90 : configs$0$in_shift_right;
     assign signal_wire_45 = signal_mux_91;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_45 <= signal_const_16;
+            configs$0$in_shift_right <= signal_const_16;
         else
-            signal_reg_45 <= signal_wire_45;
+            configs$0$in_shift_right <= signal_wire_45;
     end
     assign signal_select_48 = value[0:0];
     assign signal_eq_124 = select == signal_const_16;
     assign signal_eq_125 = addr == signal_const_69;
     assign signal_and_132 = signal_eq_125 & signal_eq_124;
     assign signal_and_133 = signal_and_132 & signal_wire_73;
-    assign signal_mux_92 = signal_and_133 ? signal_select_48 : signal_reg_46;
-    assign signal_mux_93 = write ? signal_mux_92 : signal_reg_46;
+    assign signal_mux_92 = signal_and_133 ? signal_select_48 : configs$0$capture_rising;
+    assign signal_mux_93 = write ? signal_mux_92 : configs$0$capture_rising;
     assign signal_wire_46 = signal_mux_93;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_46 <= signal_const_16;
+            configs$0$capture_rising <= signal_const_16;
         else
-            signal_reg_46 <= signal_wire_46;
+            configs$0$capture_rising <= signal_wire_46;
     end
     assign signal_select_49 = value[4:0];
     assign signal_eq_126 = select == signal_const_16;
     assign signal_eq_127 = addr == signal_const_72;
     assign signal_and_134 = signal_eq_127 & signal_eq_126;
     assign signal_and_135 = signal_and_134 & signal_wire_73;
-    assign signal_mux_94 = signal_and_135 ? signal_select_49 : signal_reg_47;
-    assign signal_mux_95 = write ? signal_mux_94 : signal_reg_47;
+    assign signal_mux_94 = signal_and_135 ? signal_select_49 : configs$0$capture_pin;
+    assign signal_mux_95 = write ? signal_mux_94 : configs$0$capture_pin;
     assign signal_wire_47 = signal_mux_95;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_47 <= signal_const_34;
+            configs$0$capture_pin <= signal_const_34;
         else
-            signal_reg_47 <= signal_wire_47;
+            configs$0$capture_pin <= signal_wire_47;
     end
     assign signal_select_50 = value[4:0];
     assign signal_eq_128 = select == signal_const_16;
     assign signal_eq_129 = addr == signal_const_75;
     assign signal_and_136 = signal_eq_129 & signal_eq_128;
     assign signal_and_137 = signal_and_136 & signal_wire_73;
-    assign signal_mux_96 = signal_and_137 ? signal_select_50 : signal_reg_48;
-    assign signal_mux_97 = write ? signal_mux_96 : signal_reg_48;
+    assign signal_mux_96 = signal_and_137 ? signal_select_50 : configs$0$jmp_pin;
+    assign signal_mux_97 = write ? signal_mux_96 : configs$0$jmp_pin;
     assign signal_wire_48 = signal_mux_97;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_48 <= signal_const_34;
+            configs$0$jmp_pin <= signal_const_34;
         else
-            signal_reg_48 <= signal_wire_48;
+            configs$0$jmp_pin <= signal_wire_48;
     end
     assign signal_select_51 = value[2:0];
     assign signal_eq_130 = select == signal_const_16;
     assign signal_eq_131 = addr == signal_const_78;
     assign signal_and_138 = signal_eq_131 & signal_eq_130;
     assign signal_and_139 = signal_and_138 & signal_wire_73;
-    assign signal_mux_98 = signal_and_139 ? signal_select_51 : signal_reg_49;
-    assign signal_mux_99 = write ? signal_mux_98 : signal_reg_49;
+    assign signal_mux_98 = signal_and_139 ? signal_select_51 : configs$0$set_count;
+    assign signal_mux_99 = write ? signal_mux_98 : configs$0$set_count;
     assign signal_wire_49 = signal_mux_99;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_49 <= signal_const_76;
+            configs$0$set_count <= signal_const_76;
         else
-            signal_reg_49 <= signal_wire_49;
+            configs$0$set_count <= signal_wire_49;
     end
     assign signal_select_52 = value[4:0];
     assign signal_eq_132 = select == signal_const_16;
     assign signal_eq_133 = addr == signal_const_81;
     assign signal_and_140 = signal_eq_133 & signal_eq_132;
     assign signal_and_141 = signal_and_140 & signal_wire_73;
-    assign signal_mux_100 = signal_and_141 ? signal_select_52 : signal_reg_50;
-    assign signal_mux_101 = write ? signal_mux_100 : signal_reg_50;
+    assign signal_mux_100 = signal_and_141 ? signal_select_52 : configs$0$set_base;
+    assign signal_mux_101 = write ? signal_mux_100 : configs$0$set_base;
     assign signal_wire_50 = signal_mux_101;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_50 <= signal_const_34;
+            configs$0$set_base <= signal_const_34;
         else
-            signal_reg_50 <= signal_wire_50;
+            configs$0$set_base <= signal_wire_50;
     end
     assign signal_select_53 = value[4:0];
     assign signal_eq_134 = select == signal_const_16;
     assign signal_eq_135 = addr == signal_const_84;
     assign signal_and_142 = signal_eq_135 & signal_eq_134;
     assign signal_and_143 = signal_and_142 & signal_wire_73;
-    assign signal_mux_102 = signal_and_143 ? signal_select_53 : signal_reg_51;
-    assign signal_mux_103 = write ? signal_mux_102 : signal_reg_51;
+    assign signal_mux_102 = signal_and_143 ? signal_select_53 : configs$0$out_count;
+    assign signal_mux_103 = write ? signal_mux_102 : configs$0$out_count;
     assign signal_wire_51 = signal_mux_103;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_51 <= signal_const_34;
+            configs$0$out_count <= signal_const_34;
         else
-            signal_reg_51 <= signal_wire_51;
+            configs$0$out_count <= signal_wire_51;
     end
     assign signal_select_54 = value[4:0];
     assign signal_eq_136 = select == signal_const_16;
     assign signal_eq_137 = addr == signal_const_87;
     assign signal_and_144 = signal_eq_137 & signal_eq_136;
     assign signal_and_145 = signal_and_144 & signal_wire_73;
-    assign signal_mux_104 = signal_and_145 ? signal_select_54 : signal_reg_52;
-    assign signal_mux_105 = write ? signal_mux_104 : signal_reg_52;
+    assign signal_mux_104 = signal_and_145 ? signal_select_54 : configs$0$out_base;
+    assign signal_mux_105 = write ? signal_mux_104 : configs$0$out_base;
     assign signal_wire_52 = signal_mux_105;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_52 <= signal_const_34;
+            configs$0$out_base <= signal_const_34;
         else
-            signal_reg_52 <= signal_wire_52;
+            configs$0$out_base <= signal_wire_52;
     end
     assign signal_select_55 = value[4:0];
     assign signal_eq_138 = select == signal_const_16;
     assign signal_eq_139 = addr == signal_const_90;
     assign signal_and_146 = signal_eq_139 & signal_eq_138;
     assign signal_and_147 = signal_and_146 & signal_wire_73;
-    assign signal_mux_106 = signal_and_147 ? signal_select_55 : signal_reg_53;
-    assign signal_mux_107 = write ? signal_mux_106 : signal_reg_53;
+    assign signal_mux_106 = signal_and_147 ? signal_select_55 : configs$0$in_count;
+    assign signal_mux_107 = write ? signal_mux_106 : configs$0$in_count;
     assign signal_wire_53 = signal_mux_107;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_53 <= signal_const_34;
+            configs$0$in_count <= signal_const_34;
         else
-            signal_reg_53 <= signal_wire_53;
+            configs$0$in_count <= signal_wire_53;
     end
     assign signal_select_56 = value[4:0];
     assign signal_eq_140 = select == signal_const_16;
     assign signal_eq_141 = addr == signal_const_93;
     assign signal_and_148 = signal_eq_141 & signal_eq_140;
     assign signal_and_149 = signal_and_148 & signal_wire_73;
-    assign signal_mux_108 = signal_and_149 ? signal_select_56 : signal_reg_54;
-    assign signal_mux_109 = write ? signal_mux_108 : signal_reg_54;
+    assign signal_mux_108 = signal_and_149 ? signal_select_56 : configs$0$in_base;
+    assign signal_mux_109 = write ? signal_mux_108 : configs$0$in_base;
     assign signal_wire_54 = signal_mux_109;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_54 <= signal_const_34;
+            configs$0$in_base <= signal_const_34;
         else
-            signal_reg_54 <= signal_wire_54;
+            configs$0$in_base <= signal_wire_54;
     end
     assign signal_select_57 = value[0:0];
     assign signal_eq_142 = select == signal_const_16;
     assign signal_eq_143 = addr == signal_const_96;
     assign signal_and_150 = signal_eq_143 & signal_eq_142;
     assign signal_and_151 = signal_and_150 & signal_wire_73;
-    assign signal_mux_110 = signal_and_151 ? signal_select_57 : signal_reg_55;
-    assign signal_mux_111 = write ? signal_mux_110 : signal_reg_55;
+    assign signal_mux_110 = signal_and_151 ? signal_select_57 : configs$0$side_set_pindirs;
+    assign signal_mux_111 = write ? signal_mux_110 : configs$0$side_set_pindirs;
     assign signal_wire_55 = signal_mux_111;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_55 <= signal_const_16;
+            configs$0$side_set_pindirs <= signal_const_16;
         else
-            signal_reg_55 <= signal_wire_55;
+            configs$0$side_set_pindirs <= signal_wire_55;
     end
     assign signal_select_58 = value[4:0];
     assign signal_eq_144 = select == signal_const_16;
     assign signal_eq_145 = addr == signal_const_99;
     assign signal_and_152 = signal_eq_145 & signal_eq_144;
     assign signal_and_153 = signal_and_152 & signal_wire_73;
-    assign signal_mux_112 = signal_and_153 ? signal_select_58 : signal_reg_56;
-    assign signal_mux_113 = write ? signal_mux_112 : signal_reg_56;
+    assign signal_mux_112 = signal_and_153 ? signal_select_58 : configs$0$side_set_base;
+    assign signal_mux_113 = write ? signal_mux_112 : configs$0$side_set_base;
     assign signal_wire_56 = signal_mux_113;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_56 <= signal_const_34;
+            configs$0$side_set_base <= signal_const_34;
         else
-            signal_reg_56 <= signal_wire_56;
+            configs$0$side_set_base <= signal_wire_56;
     end
     assign signal_select_59 = value[1:0];
     assign signal_eq_146 = select == signal_const_16;
     assign signal_eq_147 = addr == signal_const_102;
     assign signal_and_154 = signal_eq_147 & signal_eq_146;
     assign signal_and_155 = signal_and_154 & signal_wire_73;
-    assign signal_mux_114 = signal_and_155 ? signal_select_59 : signal_reg_57;
-    assign signal_mux_115 = write ? signal_mux_114 : signal_reg_57;
+    assign signal_mux_114 = signal_and_155 ? signal_select_59 : configs$0$side_set_count;
+    assign signal_mux_115 = write ? signal_mux_114 : configs$0$side_set_count;
     assign signal_wire_57 = signal_mux_115;
     always @(posedge signal_wire_93) begin
         if (signal_wire_92)
-            signal_reg_57 <= signal_const_100;
+            configs$0$side_set_count <= signal_const_100;
         else
-            signal_reg_57 <= signal_wire_57;
+            configs$0$side_set_count <= signal_wire_57;
     end
     assign signal_select_60 = tx_word[7:0];
     assign rx_head = select ? signal_wire_58 : signal_wire_69;
@@ -9454,35 +9454,35 @@ module host_port (
           .frame_end(signal_inst[11:11]) );
     assign signal_select_77 = signal_inst[0:0];
     assign miso = signal_select_77;
-    assign engines$config$side_set_count_0 = signal_reg_57;
-    assign engines$config$side_set_base_0 = signal_reg_56;
-    assign engines$config$side_set_pindirs_0 = signal_reg_55;
-    assign engines$config$in_base_0 = signal_reg_54;
-    assign engines$config$in_count_0 = signal_reg_53;
-    assign engines$config$out_base_0 = signal_reg_52;
-    assign engines$config$out_count_0 = signal_reg_51;
-    assign engines$config$set_base_0 = signal_reg_50;
-    assign engines$config$set_count_0 = signal_reg_49;
-    assign engines$config$jmp_pin_0 = signal_reg_48;
-    assign engines$config$capture_pin_0 = signal_reg_47;
-    assign engines$config$capture_rising_0 = signal_reg_46;
-    assign engines$config$in_shift_right_0 = signal_reg_45;
-    assign engines$config$out_shift_right_0 = signal_reg_44;
-    assign engines$config$autopush_0 = signal_reg_43;
-    assign engines$config$push_threshold_0 = signal_reg_42;
-    assign engines$config$autopull_0 = signal_reg_41;
-    assign engines$config$pull_threshold_0 = signal_reg_40;
-    assign engines$config$crc_width_0 = signal_reg_39;
-    assign engines$config$crc_poly_0 = signal_reg_38;
-    assign engines$config$crc_init_0 = signal_reg_37;
-    assign engines$config$crc_reflect_0 = signal_reg_36;
-    assign engines$config$stuff_threshold_0 = signal_reg_35;
-    assign engines$config$stuff_level_0 = signal_reg_34;
-    assign engines$config$wrap_bottom_0 = signal_reg_33;
-    assign engines$config$wrap_top_0 = signal_reg_32;
-    assign engines$config$period_fraction_0 = signal_reg_31;
-    assign engines$config$autopull_data_0 = signal_reg_30;
-    assign engines$config$manchester_0 = signal_reg_29;
+    assign engines$config$side_set_count_0 = configs$0$side_set_count;
+    assign engines$config$side_set_base_0 = configs$0$side_set_base;
+    assign engines$config$side_set_pindirs_0 = configs$0$side_set_pindirs;
+    assign engines$config$in_base_0 = configs$0$in_base;
+    assign engines$config$in_count_0 = configs$0$in_count;
+    assign engines$config$out_base_0 = configs$0$out_base;
+    assign engines$config$out_count_0 = configs$0$out_count;
+    assign engines$config$set_base_0 = configs$0$set_base;
+    assign engines$config$set_count_0 = configs$0$set_count;
+    assign engines$config$jmp_pin_0 = configs$0$jmp_pin;
+    assign engines$config$capture_pin_0 = configs$0$capture_pin;
+    assign engines$config$capture_rising_0 = configs$0$capture_rising;
+    assign engines$config$in_shift_right_0 = configs$0$in_shift_right;
+    assign engines$config$out_shift_right_0 = configs$0$out_shift_right;
+    assign engines$config$autopush_0 = configs$0$autopush;
+    assign engines$config$push_threshold_0 = configs$0$push_threshold;
+    assign engines$config$autopull_0 = configs$0$autopull;
+    assign engines$config$pull_threshold_0 = configs$0$pull_threshold;
+    assign engines$config$crc_width_0 = configs$0$crc_width;
+    assign engines$config$crc_poly_0 = configs$0$crc_poly;
+    assign engines$config$crc_init_0 = configs$0$crc_init;
+    assign engines$config$crc_reflect_0 = configs$0$crc_reflect;
+    assign engines$config$stuff_threshold_0 = configs$0$stuff_threshold;
+    assign engines$config$stuff_level_0 = configs$0$stuff_level;
+    assign engines$config$wrap_bottom_0 = configs$0$wrap_bottom;
+    assign engines$config$wrap_top_0 = configs$0$wrap_top;
+    assign engines$config$period_fraction_0 = configs$0$period_fraction;
+    assign engines$config$autopull_data_0 = configs$0$autopull_data;
+    assign engines$config$manchester_0 = configs$0$manchester;
     assign engines$start_0 = signal_and_97;
     assign engines$program_write$valid_0 = signal_and_94;
     assign engines$program_write$addr_0 = program_addr;
@@ -9496,35 +9496,35 @@ module host_port (
     assign engines$clear_irq_0 = signal_and_86;
     assign engines$stop_0 = signal_and_83;
     assign engines$flush_0 = signal_and_80;
-    assign engines$config$side_set_count_1 = signal_reg_28;
-    assign engines$config$side_set_base_1 = signal_reg_27;
-    assign engines$config$side_set_pindirs_1 = signal_reg_26;
-    assign engines$config$in_base_1 = signal_reg_25;
-    assign engines$config$in_count_1 = signal_reg_24;
-    assign engines$config$out_base_1 = signal_reg_23;
-    assign engines$config$out_count_1 = signal_reg_22;
-    assign engines$config$set_base_1 = signal_reg_21;
-    assign engines$config$set_count_1 = signal_reg_20;
-    assign engines$config$jmp_pin_1 = signal_reg_19;
-    assign engines$config$capture_pin_1 = signal_reg_18;
-    assign engines$config$capture_rising_1 = signal_reg_17;
-    assign engines$config$in_shift_right_1 = signal_reg_16;
-    assign engines$config$out_shift_right_1 = signal_reg_15;
-    assign engines$config$autopush_1 = signal_reg_14;
-    assign engines$config$push_threshold_1 = signal_reg_13;
-    assign engines$config$autopull_1 = signal_reg_12;
-    assign engines$config$pull_threshold_1 = signal_reg_11;
-    assign engines$config$crc_width_1 = signal_reg_10;
-    assign engines$config$crc_poly_1 = signal_reg_9;
-    assign engines$config$crc_init_1 = signal_reg_8;
-    assign engines$config$crc_reflect_1 = signal_reg_7;
-    assign engines$config$stuff_threshold_1 = signal_reg_6;
-    assign engines$config$stuff_level_1 = signal_reg_5;
-    assign engines$config$wrap_bottom_1 = signal_reg_4;
-    assign engines$config$wrap_top_1 = signal_reg_3;
-    assign engines$config$period_fraction_1 = signal_reg_2;
-    assign engines$config$autopull_data_1 = signal_reg_1;
-    assign engines$config$manchester_1 = signal_reg;
+    assign engines$config$side_set_count_1 = configs$1$side_set_count;
+    assign engines$config$side_set_base_1 = configs$1$side_set_base;
+    assign engines$config$side_set_pindirs_1 = configs$1$side_set_pindirs;
+    assign engines$config$in_base_1 = configs$1$in_base;
+    assign engines$config$in_count_1 = configs$1$in_count;
+    assign engines$config$out_base_1 = configs$1$out_base;
+    assign engines$config$out_count_1 = configs$1$out_count;
+    assign engines$config$set_base_1 = configs$1$set_base;
+    assign engines$config$set_count_1 = configs$1$set_count;
+    assign engines$config$jmp_pin_1 = configs$1$jmp_pin;
+    assign engines$config$capture_pin_1 = configs$1$capture_pin;
+    assign engines$config$capture_rising_1 = configs$1$capture_rising;
+    assign engines$config$in_shift_right_1 = configs$1$in_shift_right;
+    assign engines$config$out_shift_right_1 = configs$1$out_shift_right;
+    assign engines$config$autopush_1 = configs$1$autopush;
+    assign engines$config$push_threshold_1 = configs$1$push_threshold;
+    assign engines$config$autopull_1 = configs$1$autopull;
+    assign engines$config$pull_threshold_1 = configs$1$pull_threshold;
+    assign engines$config$crc_width_1 = configs$1$crc_width;
+    assign engines$config$crc_poly_1 = configs$1$crc_poly;
+    assign engines$config$crc_init_1 = configs$1$crc_init;
+    assign engines$config$crc_reflect_1 = configs$1$crc_reflect;
+    assign engines$config$stuff_threshold_1 = configs$1$stuff_threshold;
+    assign engines$config$stuff_level_1 = configs$1$stuff_level;
+    assign engines$config$wrap_bottom_1 = configs$1$wrap_bottom;
+    assign engines$config$wrap_top_1 = configs$1$wrap_top;
+    assign engines$config$period_fraction_1 = configs$1$period_fraction;
+    assign engines$config$autopull_data_1 = configs$1$autopull_data;
+    assign engines$config$manchester_1 = configs$1$manchester;
     assign engines$start_1 = signal_and_19;
     assign engines$program_write$valid_1 = signal_and_16;
     assign engines$program_write$addr_1 = program_addr;
