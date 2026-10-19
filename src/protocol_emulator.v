@@ -9580,13 +9580,13 @@ module top (
     wire signal_select_3;
     wire [4:0] signal_const;
     wire [4:0] signal_select_4;
-    reg [4:0] signal_reg;
-    reg [4:0] signal_reg_1;
+    reg [4:0] ui_meta;
+    reg [4:0] ui_sync;
     wire [6:0] signal_const_2;
     wire [7:0] signal_const_3;
     wire [7:0] signal_wire;
-    reg [7:0] signal_reg_2;
-    reg [7:0] signal_reg_3;
+    reg [7:0] uio_meta;
+    reg [7:0] uio_sync;
     wire [19:0] inputs;
     wire signal_select_5;
     wire signal_select_6;
@@ -9729,7 +9729,7 @@ module top (
     wire signal_wire_26;
     wire signal_not;
     wire vdd;
-    reg signal_reg_4;
+    reg reset_meta;
     reg reset_done;
     wire signal_not_1;
     wire signal_wire_27;
@@ -9745,34 +9745,34 @@ module top (
     assign signal_select_4 = signal_wire_25[7:3];
     always @(posedge signal_wire_27) begin
         if (signal_not_1)
-            signal_reg <= signal_const;
+            ui_meta <= signal_const;
         else
-            signal_reg <= signal_select_4;
+            ui_meta <= signal_select_4;
     end
     always @(posedge signal_wire_27) begin
         if (signal_not_1)
-            signal_reg_1 <= signal_const;
+            ui_sync <= signal_const;
         else
-            signal_reg_1 <= signal_reg;
+            ui_sync <= ui_meta;
     end
     assign signal_const_2 = 7'b0000000;
     assign signal_const_3 = 8'b00000000;
     assign signal_wire = uio_in;
     always @(posedge signal_wire_27) begin
         if (signal_not_1)
-            signal_reg_2 <= signal_const_3;
+            uio_meta <= signal_const_3;
         else
-            signal_reg_2 <= signal_wire;
+            uio_meta <= signal_wire;
     end
     always @(posedge signal_wire_27) begin
         if (signal_not_1)
-            signal_reg_3 <= signal_const_3;
+            uio_sync <= signal_const_3;
         else
-            signal_reg_3 <= signal_reg_2;
+            uio_sync <= uio_meta;
     end
-    assign inputs = { signal_reg_3,
+    assign inputs = { uio_sync,
                       signal_const_2,
-                      signal_reg_1 };
+                      ui_sync };
     assign signal_select_5 = signal_inst[430:430];
     assign signal_select_6 = signal_inst[429:429];
     assign signal_select_7 = signal_inst[428:428];
@@ -10031,15 +10031,15 @@ module top (
     assign vdd = 1'b1;
     always @(posedge signal_wire_27 or posedge signal_not) begin
         if (signal_not)
-            signal_reg_4 <= signal_const_5;
+            reset_meta <= signal_const_5;
         else
-            signal_reg_4 <= vdd;
+            reset_meta <= vdd;
     end
     always @(posedge signal_wire_27 or posedge signal_not) begin
         if (signal_not)
             reset_done <= signal_const_5;
         else
-            reset_done <= signal_reg_4;
+            reset_done <= reset_meta;
     end
     assign signal_not_1 = ~ reset_done;
     assign signal_wire_27 = clk;

@@ -832,7 +832,7 @@ sync_gate_teeth:
 	$(TOOTH) sg13cmos5l_tiehi hi (.L_HI(tooth_hi)); sg13cmos5l_dfrbpq_1 tooth \
 	  (.RESET_B(tooth_hi), .D(ui_in[3]), .Q(tooth_q), .CLK(clk));' $(NETLIST) > sync_teeth/sample.v
 	$(TOOTH) sg13cmos5l_tiehi hi (.L_HI(tooth_hi)); sg13cmos5l_dfrbpq_1 tooth \
-	  (.RESET_B(tooth_hi), .D(\\core.top.signal_reg_2[0] ), .Q(tooth_q), .CLK(clk));' \
+	  (.RESET_B(tooth_hi), .D(\\core.top.uio_meta[0] ), .Q(tooth_q), .CLK(clk));' \
 	  $(NETLIST) > sync_teeth/stage.v
 	$(TOOTH) sg13cmos5l_dlhq_1 tooth (.D(\\core.top.host_port.addr[0] ), \
 	  .GATE(\\core.top.host_port.select ), .Q(tooth_q));' $(NETLIST) > sync_teeth/latch.v
