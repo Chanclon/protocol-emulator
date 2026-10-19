@@ -7032,17 +7032,16 @@ module host_spi (
     output frame_start;
     output frame_end;
 
-    wire signal_const;
-    reg signal_reg;
     wire signal_not;
     wire frame_end_0;
+    wire signal_const;
     reg rx_valid_0;
-    wire [2:0] signal_const_2;
+    wire [2:0] signal_const_1;
     wire signal_eq;
     wire last_bit;
-    wire [7:0] signal_const_3;
+    wire [7:0] signal_const_2;
     wire signal_wire;
-    reg signal_reg_1;
+    reg mosi_meta;
     reg mosi_0;
     wire [6:0] signal_select;
     wire [7:0] signal_cat;
@@ -7057,10 +7056,9 @@ module host_spi (
     wire [6:0] signal_select_2;
     wire [7:0] signal_cat_2;
     wire [7:0] signal_mux_1;
-    wire [2:0] signal_const_8;
-    wire [2:0] signal_const_11;
+    wire [2:0] signal_const_7;
+    wire [2:0] signal_const_10;
     wire [2:0] signal_add;
-    reg signal_reg_2;
     wire signal_not_1;
     wire signal_and;
     wire sck_rise;
@@ -7069,15 +7067,15 @@ module host_spi (
     wire [2:0] signal_wire_3;
     reg [2:0] count;
     wire signal_eq_1;
-    reg signal_reg_3;
+    reg sck_last;
     wire signal_wire_4;
-    reg signal_reg_4;
+    reg sck_meta;
     reg sck_0;
     wire signal_not_2;
     wire signal_and_1;
     wire sck_fall;
     wire signal_and_2;
-    reg signal_reg_5;
+    reg selected_last;
     wire signal_not_3;
     wire frame_start_0;
     wire signal_or;
@@ -7088,41 +7086,35 @@ module host_spi (
     wire signal_wire_6;
     wire signal_wire_7;
     wire signal_wire_8;
-    reg signal_reg_6;
-    reg signal_reg_7;
+    reg cs_n_meta;
+    reg cs_n_0;
     wire selected;
     wire signal_and_3;
-    assign signal_const = 1'b0;
-    always @(posedge signal_wire_7) begin
-        if (signal_wire_6)
-            signal_reg <= signal_const;
-        else
-            signal_reg <= selected;
-    end
     assign signal_not = ~ selected;
-    assign frame_end_0 = signal_not & signal_reg;
+    assign frame_end_0 = signal_not & selected_last;
+    assign signal_const = 1'b0;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
             rx_valid_0 <= signal_const;
         else
             rx_valid_0 <= last_bit;
     end
-    assign signal_const_2 = 3'b111;
-    assign signal_eq = count == signal_const_2;
+    assign signal_const_1 = 3'b111;
+    assign signal_eq = count == signal_const_1;
     assign last_bit = sck_rise & signal_eq;
-    assign signal_const_3 = 8'b00000000;
+    assign signal_const_2 = 8'b00000000;
     assign signal_wire = mosi;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            signal_reg_1 <= signal_const;
+            mosi_meta <= signal_const;
         else
-            signal_reg_1 <= signal_wire;
+            mosi_meta <= signal_wire;
     end
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
             mosi_0 <= signal_const;
         else
-            mosi_0 <= signal_reg_1;
+            mosi_0 <= mosi_meta;
     end
     assign signal_select = shift_in[6:0];
     assign signal_cat = { signal_select,
@@ -7131,7 +7123,7 @@ module host_spi (
     assign signal_wire_1 = signal_mux;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            shift_in <= signal_const_3;
+            shift_in <= signal_const_2;
         else
             shift_in <= signal_wire_1;
     end
@@ -7140,7 +7132,7 @@ module host_spi (
                             mosi_0 };
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            rx_byte_0 <= signal_const_3;
+            rx_byte_0 <= signal_const_2;
         else
             if (last_bit)
                 rx_byte_0 <= signal_cat_1;
@@ -7151,65 +7143,59 @@ module host_spi (
     assign signal_cat_2 = { signal_select_2,
                             gnd };
     assign signal_mux_1 = sck_fall ? signal_cat_2 : shift_out;
-    assign signal_const_8 = 3'b000;
-    assign signal_const_11 = 3'b001;
-    assign signal_add = count + signal_const_11;
-    always @(posedge signal_wire_7) begin
-        if (signal_wire_6)
-            signal_reg_2 <= signal_const;
-        else
-            signal_reg_2 <= sck_0;
-    end
-    assign signal_not_1 = ~ signal_reg_2;
+    assign signal_const_7 = 3'b000;
+    assign signal_const_10 = 3'b001;
+    assign signal_add = count + signal_const_10;
+    assign signal_not_1 = ~ sck_last;
     assign signal_and = selected & sck_0;
     assign sck_rise = signal_and & signal_not_1;
     assign signal_mux_2 = sck_rise ? signal_add : count;
-    assign signal_mux_3 = frame_start_0 ? signal_const_8 : signal_mux_2;
+    assign signal_mux_3 = frame_start_0 ? signal_const_7 : signal_mux_2;
     assign signal_wire_3 = signal_mux_3;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            count <= signal_const_8;
+            count <= signal_const_7;
         else
             count <= signal_wire_3;
     end
-    assign signal_eq_1 = count == signal_const_8;
+    assign signal_eq_1 = count == signal_const_7;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            signal_reg_3 <= signal_const;
+            sck_last <= signal_const;
         else
-            signal_reg_3 <= sck_0;
+            sck_last <= sck_0;
     end
     assign signal_wire_4 = sck;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            signal_reg_4 <= signal_const;
+            sck_meta <= signal_const;
         else
-            signal_reg_4 <= signal_wire_4;
+            sck_meta <= signal_wire_4;
     end
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
             sck_0 <= signal_const;
         else
-            sck_0 <= signal_reg_4;
+            sck_0 <= sck_meta;
     end
     assign signal_not_2 = ~ sck_0;
     assign signal_and_1 = selected & signal_not_2;
-    assign sck_fall = signal_and_1 & signal_reg_3;
+    assign sck_fall = signal_and_1 & sck_last;
     assign signal_and_2 = sck_fall & signal_eq_1;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            signal_reg_5 <= signal_const;
+            selected_last <= signal_const;
         else
-            signal_reg_5 <= selected;
+            selected_last <= selected;
     end
-    assign signal_not_3 = ~ signal_reg_5;
+    assign signal_not_3 = ~ selected_last;
     assign frame_start_0 = selected & signal_not_3;
     assign signal_or = frame_start_0 | signal_and_2;
     assign signal_mux_4 = signal_or ? signal_wire_2 : signal_mux_1;
     assign signal_wire_5 = signal_mux_4;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            shift_out <= signal_const_3;
+            shift_out <= signal_const_2;
         else
             shift_out <= signal_wire_5;
     end
@@ -7219,17 +7205,17 @@ module host_spi (
     assign signal_wire_8 = cs_n;
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            signal_reg_6 <= signal_const;
+            cs_n_meta <= signal_const;
         else
-            signal_reg_6 <= signal_wire_8;
+            cs_n_meta <= signal_wire_8;
     end
     always @(posedge signal_wire_7) begin
         if (signal_wire_6)
-            signal_reg_7 <= signal_const;
+            cs_n_0 <= signal_const;
         else
-            signal_reg_7 <= signal_reg_6;
+            cs_n_0 <= cs_n_meta;
     end
-    assign selected = ~ signal_reg_7;
+    assign selected = ~ cs_n_0;
     assign signal_and_3 = selected & signal_select_3;
     assign miso = signal_and_3;
     assign rx_byte = rx_byte_0;

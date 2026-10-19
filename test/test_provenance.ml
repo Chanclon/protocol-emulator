@@ -27,7 +27,7 @@ let%expect_test "tracing leaves the committed verilog byte for byte" =
         ~bytes:(String.length committed : int)
         ~untraced_identical:(String.equal plain committed : bool)
         ~traced_identical:(String.equal traced committed : bool)];
-  [%expect {| ((bytes 389331) (untraced_identical true) (traced_identical true)) |}]
+  [%expect {| ((bytes 388879) (untraced_identical true) (traced_identical true)) |}]
 ;;
 
 (* no module's lines are an interface's fields, where its derived code sits *)
@@ -70,8 +70,8 @@ let%expect_test "the share of verilog names that resolve to a src line" =
              : string list)]);
   [%expect
     {|
-    ((names 3751) (named_at 202) (made_at 2900) (unresolved 649)
-     (distinct_lines 466))
+    ((names 3749) (named_at 208) (made_at 2892) (unresolved 649)
+     (distinct_lines 471))
     (data_memory (names 60) (unresolved 30) (files (src/data_memory.ml)))
     (engine (names 2007) (unresolved 106)
      (files
@@ -79,7 +79,7 @@ let%expect_test "the share of verilog names that resolve to a src line" =
     (engines (names 431) (unresolved 174) (files (src/engines.ml)))
     (host_fifo (names 92) (unresolved 85) (files (src/host_fifo.ml)))
     (host_port (names 882) (unresolved 186) (files (src/host_port.ml)))
-    (host_spi (names 71) (unresolved 21) (files (src/host_spi.ml)))
+    (host_spi (names 69) (unresolved 21) (files (src/host_spi.ml)))
     (protocol_emulator (names 17) (unresolved 17) (files ()))
     (sram_macro (names 21) (unresolved 19) (files (src/sram_macro.ml)))
     (top (names 170) (unresolved 11) (files (src/top.ml)))
