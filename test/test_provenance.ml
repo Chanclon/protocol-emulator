@@ -27,7 +27,7 @@ let%expect_test "tracing leaves the committed verilog byte for byte" =
         ~bytes:(String.length committed : int)
         ~untraced_identical:(String.equal plain committed : bool)
         ~traced_identical:(String.equal traced committed : bool)];
-  [%expect {| ((bytes 391699) (untraced_identical true) (traced_identical true)) |}]
+  [%expect {| ((bytes 391555) (untraced_identical true) (traced_identical true)) |}]
 ;;
 
 (* no module's lines are an interface's fields, where its derived code sits *)
@@ -70,8 +70,8 @@ let%expect_test "the share of verilog names that resolve to a src line" =
              : string list)]);
   [%expect
     {|
-    ((names 3749) (named_at 208) (made_at 2892) (unresolved 649)
-     (distinct_lines 471))
+    ((names 3749) (named_at 232) (made_at 2868) (unresolved 649)
+     (distinct_lines 472))
     (data_memory (names 60) (unresolved 30) (files (src/data_memory.ml)))
     (engine (names 2007) (unresolved 106)
      (files

@@ -755,18 +755,24 @@ module Make (Timer : Timer) = struct
       ; decode = issue &: ~:decode_ok
       }
     in
-    let fault = Fault.map faulting ~f:sticky in
+    let%hw.Fault.Of_signal fault = Fault.map faulting ~f:sticky in
     (* the four in one flop, so a gate on any fault starts at a flop and not at their OR *)
     let%hw faulted = sticky (Fault.to_list faulting |> reduce ~f:( |: )) in
     rx_push.valid <-- (op_go &: pushes &: ~:(rx.full));
     rx_push.value <-- mux2 (is In) isr_shifted isr;
     tx_pop <-- (op_go &: (is Out &: pull_ok |: (pulls &: ~:(tx.empty))));
-    pc <-- reg spec pc_value_next;
-    x <-- reg spec ~enable:go x_next;
-    y <-- reg spec ~enable:go y_next;
-    p <-- reg spec ~enable:go p_next;
-    t <-- reg spec ~enable:go t_next;
-    t_fraction <-- reg spec ~enable:go t_fraction_next;
+    let%hw pc_reg = reg spec pc_value_next in
+    pc <-- pc_reg;
+    let%hw x_reg = reg spec ~enable:go x_next in
+    x <-- x_reg;
+    let%hw y_reg = reg spec ~enable:go y_next in
+    y <-- y_reg;
+    let%hw p_reg = reg spec ~enable:go p_next in
+    p <-- p_reg;
+    let%hw t_reg = reg spec ~enable:go t_next in
+    t <-- t_reg;
+    let%hw t_fraction_reg = reg spec ~enable:go t_fraction_next in
+    t_fraction <-- t_fraction_reg;
     let%hw seeks = op_go &: is_sys Seek in
     let%hw pulls_data = op_go &: is Out &: pull_data_ok in
     (* the pointer is at 0 from the start pulse on, so the word is there by the first
@@ -775,45 +781,68 @@ module Make (Timer : Timer) = struct
     <-- mux2 (starting |: start) (zero Isa.data_addr_bits)
         @@ mux2 seeks (sel_bottom x ~width:Isa.data_addr_bits)
         @@ mux2 pulls_data (data_ptr +:. 1) data_ptr;
-    data_ptr <-- reg spec data_ptr_next;
-    data_moved <-- reg spec (mux2 start gnd (seeks |: pulls_data));
-    osr <-- reg spec ~enable:go osr_next;
-    osr_count
-    <-- reg
-          spec
-          ~enable:go
-          ~clear_to:(of_unsigned_int ~width:count_bits data_bits)
-          osr_count_next_value;
-    isr <-- reg spec ~enable:go isr_next;
-    isr_count <-- reg spec ~enable:go isr_count_next_value;
-    now <-- reg spec (mux2 start (zero timer_bits) (now +:. 1));
+    let%hw data_ptr_reg = reg spec data_ptr_next in
+    data_ptr <-- data_ptr_reg;
+    let%hw data_moved_reg = reg spec (mux2 start gnd (seeks |: pulls_data)) in
+    data_moved <-- data_moved_reg;
+    let%hw osr_reg = reg spec ~enable:go osr_next in
+    osr <-- osr_reg;
+    let%hw osr_count_reg =
+      reg
+        spec
+        ~enable:go
+        ~clear_to:(of_unsigned_int ~width:count_bits data_bits)
+        osr_count_next_value
+    in
+    osr_count <-- osr_count_reg;
+    let%hw isr_reg = reg spec ~enable:go isr_next in
+    isr <-- isr_reg;
+    let%hw isr_count_reg = reg spec ~enable:go isr_count_next_value in
+    isr_count <-- isr_count_reg;
+    let%hw now_reg = reg spec (mux2 start (zero timer_bits) (now +:. 1)) in
+    now <-- now_reg;
     (* a jump carries no side-set, so all it does to the pins is the flip *)
-    pin_out
-    <-- (reg
-           spec
-           ~enable:(op_go |: (issue &: flip_pending))
-           (mux2 op_go pin_out_next pin_out_flipped)
-         |> unwritten ~writable:output_pin);
+    let%hw pin_out_reg =
+      reg
+        spec
+        ~enable:(op_go |: (issue &: flip_pending))
+        (mux2 op_go pin_out_next pin_out_flipped)
+      |> unwritten ~writable:output_pin
+    in
+    pin_out <-- pin_out_reg;
     let%hw starts_manchester_bit =
       op_go &: is Out &: Isa.Out_dest.Of_signal.is out_dest Pins &: manchester_out
     in
-    flip_pending
-    <-- reg
-          spec
-          (mux2 start gnd @@ mux2 starts_manchester_bit vdd @@ mux2 issue gnd flip_pending);
-    flip_bit <-- reg spec ~enable:starts_manchester_bit out_value.:(0);
-    pin_dir <-- (reg spec ~enable:op_go pin_dir_next |> unwritten ~writable:bidir_pin);
-    pins_sampled <-- reg spec sample;
-    stall <-- reg spec stall_next;
-    halted <-- reg spec ~clear_to:vdd halted_next;
-    capture <-- reg spec ~enable:captured now;
-    crc <-- reg spec (mux2 start c.crc_init @@ mux2 go crc_next crc);
-    stuff_run
-    <-- reg spec (mux2 start (zero count_bits) @@ mux2 go stuff_run_next stuff_run);
-    capture_armed
-    <-- reg
-          spec
-          (mux2 captured gnd @@ mux2 (op_go &: is_sys Capture_arm) vdd capture_armed);
+    let%hw flip_pending_reg =
+      reg
+        spec
+        (mux2 start gnd @@ mux2 starts_manchester_bit vdd @@ mux2 issue gnd flip_pending)
+    in
+    flip_pending <-- flip_pending_reg;
+    let%hw flip_bit_reg = reg spec ~enable:starts_manchester_bit out_value.:(0) in
+    flip_bit <-- flip_bit_reg;
+    let%hw pin_dir_reg =
+      reg spec ~enable:op_go pin_dir_next |> unwritten ~writable:bidir_pin
+    in
+    pin_dir <-- pin_dir_reg;
+    let%hw pins_sampled_reg = reg spec sample in
+    pins_sampled <-- pins_sampled_reg;
+    let%hw stall_reg = reg spec stall_next in
+    stall <-- stall_reg;
+    let%hw halted_reg = reg spec ~clear_to:vdd halted_next in
+    halted <-- halted_reg;
+    let%hw capture_reg = reg spec ~enable:captured now in
+    capture <-- capture_reg;
+    let%hw crc_reg = reg spec (mux2 start c.crc_init @@ mux2 go crc_next crc) in
+    crc <-- crc_reg;
+    let%hw stuff_run_reg =
+      reg spec (mux2 start (zero count_bits) @@ mux2 go stuff_run_next stuff_run)
+    in
+    stuff_run <-- stuff_run_reg;
+    let%hw capture_armed_reg =
+      reg spec (mux2 captured gnd @@ mux2 (op_go &: is_sys Capture_arm) vdd capture_armed)
+    in
+    capture_armed <-- capture_armed_reg;
     let%hw irq =
       reg_fb spec ~width:1 ~f:(fun d ->
         mux2 (op_go &: is_sys Irq) vdd @@ mux2 i.clear_irq gnd d)

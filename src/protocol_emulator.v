@@ -522,7 +522,7 @@ module engine (
     reg faulted_0;
     wire signal_not;
     wire signal_and;
-    reg signal_reg;
+    reg fault$decode_0;
     wire [23:0] signal_const_6;
     wire [23:0] signal_sub;
     wire signal_eq_3;
@@ -533,10 +533,10 @@ module engine (
     wire deadline_late;
     wire signal_and_1;
     wire signal_and_2;
-    reg signal_reg_1;
+    reg fault$missed_deadline_0;
     wire signal_and_3;
     wire signal_and_4;
-    reg signal_reg_2;
+    reg fault$overflow_0;
     wire signal_and_5;
     wire signal_and_6;
     wire signal_and_7;
@@ -544,7 +544,7 @@ module engine (
     wire signal_and_8;
     wire signal_or_4;
     wire signal_and_9;
-    reg signal_reg_3;
+    reg fault$underflow_0;
     wire signal_wire;
     wire signal_mux;
     wire [3:0] signal_const_11;
@@ -563,7 +563,7 @@ module engine (
     wire signal_or_5;
     wire [8:0] signal_mux_4;
     wire [8:0] data_ptr_next;
-    reg [8:0] signal_reg_4;
+    reg [8:0] data_ptr_reg;
     wire [8:0] data_ptr_0;
     wire signal_and_12;
     wire signal_or_6;
@@ -961,7 +961,7 @@ module engine (
     wire [27:0] signal_cat_79;
     wire signal_not_13;
     wire signal_select_197;
-    reg signal_reg_5;
+    reg flip_bit_reg;
     wire flip_bit_0;
     wire signal_not_14;
     wire [1:0] signal_cat_80;
@@ -1015,7 +1015,7 @@ module engine (
     wire starts_manchester_bit;
     wire signal_mux_90;
     wire signal_mux_91;
-    reg signal_reg_6;
+    reg flip_pending_reg;
     wire flip_pending_0;
     wire [27:0] pin_out_flipped;
     wire signal_not_16;
@@ -1034,7 +1034,7 @@ module engine (
     wire [4:0] signal_mux_93;
     wire [4:0] signal_mux_94;
     wire [4:0] stall_next;
-    reg [4:0] signal_reg_7;
+    reg [4:0] stall_reg;
     wire [4:0] stall_0;
     wire signal_eq_11;
     wire [3:0] signal_const_80;
@@ -1105,7 +1105,7 @@ module engine (
     wire [4:0] stuff_run_next;
     wire [4:0] signal_mux_102;
     wire [4:0] signal_mux_103;
-    reg [4:0] signal_reg_8;
+    reg [4:0] stuff_run_reg;
     wire [4:0] stuff_run_0;
     wire signal_lt_10;
     wire signal_not_24;
@@ -1185,7 +1185,7 @@ module engine (
     wire [8:0] signal_mux_106;
     wire [8:0] signal_mux_107;
     wire [8:0] pc_value_next;
-    reg [8:0] signal_reg_9;
+    reg [8:0] pc_reg;
     wire [8:0] pc_0;
     wire signal_eq_25;
     wire [8:0] pc_next;
@@ -1261,7 +1261,7 @@ module engine (
     wire [15:0] signal_select_307;
     wire [15:0] signal_mux_118;
     reg [15:0] t_fraction_next;
-    reg [15:0] signal_reg_10;
+    reg [15:0] t_fraction_reg;
     wire [15:0] t_fraction_0;
     wire [16:0] signal_cat_91;
     wire [16:0] fraction_sum;
@@ -1278,7 +1278,7 @@ module engine (
     wire advances_deadline;
     wire [23:0] signal_mux_119;
     reg [23:0] t_next;
-    reg [23:0] signal_reg_11;
+    reg [23:0] t_reg;
     wire [23:0] t_0;
     wire [23:0] signal_sub_4;
     wire signal_select_309;
@@ -1738,7 +1738,7 @@ module engine (
     wire signal_select_537;
     wire signal_select_538;
     wire signal_select_539;
-    reg [27:0] signal_reg_12;
+    reg [27:0] pins_sampled_reg;
     wire [27:0] pins_sampled;
     wire signal_select_540;
     reg signal_mux_179;
@@ -1780,16 +1780,16 @@ module engine (
     wire signal_and_120;
     wire signal_mux_181;
     wire signal_mux_182;
-    reg signal_reg_13;
+    reg capture_armed_reg;
     wire capture_armed_0;
     wire signal_and_121;
     wire captured;
     wire [23:0] signal_const_194;
     wire [23:0] signal_add_6;
     wire [23:0] signal_mux_183;
-    reg [23:0] signal_reg_14;
+    reg [23:0] now_reg;
     wire [23:0] now_0;
-    reg [23:0] signal_reg_15;
+    reg [23:0] capture_reg;
     wire [23:0] capture_0;
     wire [15:0] signal_select_569;
     wire [15:0] signal_wire_20;
@@ -1860,7 +1860,7 @@ module engine (
     wire [15:0] crc_next;
     wire [15:0] signal_mux_194;
     wire [15:0] signal_mux_195;
-    reg [15:0] signal_reg_16;
+    reg [15:0] crc_reg;
     wire [15:0] crc_0;
     wire [7:0] signal_select_599;
     wire [15:0] signal_cat_156;
@@ -1941,7 +1941,7 @@ module engine (
     wire [4:0] signal_mux_214;
     wire [4:0] signal_mux_215;
     reg [4:0] isr_count_next_value;
-    reg [4:0] signal_reg_17;
+    reg [4:0] isr_count_reg;
     wire [4:0] isr_count_0;
     wire [5:0] signal_cat_169;
     wire [5:0] signal_add_7;
@@ -1954,7 +1954,7 @@ module engine (
     wire autopush_now;
     wire [15:0] signal_mux_216;
     reg [15:0] isr_next;
-    reg [15:0] signal_reg_18;
+    reg [15:0] isr_reg;
     wire [15:0] isr_0;
     wire [15:0] signal_xor_6;
     wire [15:0] signal_sub_7;
@@ -1970,7 +1970,7 @@ module engine (
     wire signal_eq_54;
     wire [15:0] signal_mux_221;
     reg [15:0] p_next;
-    reg [15:0] signal_reg_19;
+    reg [15:0] p_reg;
     wire [15:0] p_0;
     wire [15:0] signal_xor_7;
     wire [15:0] signal_sub_8;
@@ -1991,7 +1991,7 @@ module engine (
     wire signal_eq_59;
     wire [15:0] signal_mux_227;
     reg [15:0] y_next;
-    reg [15:0] signal_reg_20;
+    reg [15:0] y_reg;
     wire [15:0] y_0;
     reg [15:0] signal_mux_228;
     wire [2:0] d$alu_reg$binary_variant;
@@ -2021,7 +2021,7 @@ module engine (
     wire signal_eq_64;
     wire [15:0] signal_mux_234;
     reg [15:0] x_next;
-    reg [15:0] signal_reg_21;
+    reg [15:0] x_reg;
     wire [15:0] x_0;
     wire [23:0] signal_cat_174;
     wire [7:0] signal_select_633;
@@ -2116,7 +2116,7 @@ module engine (
     wire [15:0] signal_mux_255;
     wire [15:0] osr_shifted;
     reg [15:0] osr_next;
-    reg [15:0] signal_reg_22;
+    reg [15:0] osr_reg;
     wire [15:0] osr_0;
     wire signal_wire_29;
     wire flush_0;
@@ -2145,7 +2145,7 @@ module engine (
     wire seeks;
     wire signal_or_20;
     wire signal_mux_257;
-    reg signal_reg_23;
+    reg data_moved_reg;
     wire data_moved;
     wire signal_not_54;
     wire signal_wire_32;
@@ -2169,7 +2169,7 @@ module engine (
     wire signal_lt_14;
     wire [4:0] osr_count_next;
     reg [4:0] osr_count_next_value;
-    reg [4:0] signal_reg_24;
+    reg [4:0] osr_count_reg;
     wire [4:0] osr_count_0;
     wire signal_lt_15;
     wire signal_not_55;
@@ -2345,7 +2345,7 @@ module engine (
     wire [27:0] pin_dir_base;
     wire [2:0] d$opcode$binary_variant;
     reg [27:0] pin_dir_next;
-    reg [27:0] signal_reg_25;
+    reg [27:0] pin_dir_reg;
     wire [27:0] pin_dir_0;
     wire signal_select_753;
     wire signal_mux_296;
@@ -2417,7 +2417,7 @@ module engine (
     wire starting;
     reg start_0;
     wire halted_next;
-    reg signal_reg_26;
+    reg halted_reg;
     wire halted_0;
     wire signal_not_63;
     wire signal_and_140;
@@ -2425,7 +2425,7 @@ module engine (
     wire go;
     wire op_go;
     wire [27:0] signal_mux_303;
-    reg [27:0] signal_reg_27;
+    reg [27:0] pin_out_reg;
     wire [27:0] pin_out_0;
     assign signal_const = 3'b100;
     assign signal_eq = signal_select_770 == signal_const;
@@ -2483,10 +2483,10 @@ module engine (
     assign signal_and = issue & signal_not;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg <= signal_const_4;
+            fault$decode_0 <= signal_const_4;
         else
             if (signal_and)
-                signal_reg <= vdd;
+                fault$decode_0 <= vdd;
     end
     assign signal_const_6 = 24'b000000000000000000000000;
     assign signal_sub = now_0 - t_0;
@@ -2500,19 +2500,19 @@ module engine (
     assign signal_and_2 = signal_and_1 & deadline_late;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_1 <= signal_const_4;
+            fault$missed_deadline_0 <= signal_const_4;
         else
             if (signal_and_2)
-                signal_reg_1 <= vdd;
+                fault$missed_deadline_0 <= vdd;
     end
     assign signal_and_3 = op_go & pushes;
     assign signal_and_4 = signal_and_3 & signal_select_282;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_2 <= signal_const_4;
+            fault$overflow_0 <= signal_const_4;
         else
             if (signal_and_4)
-                signal_reg_2 <= vdd;
+                fault$overflow_0 <= vdd;
     end
     assign signal_and_5 = pulls & signal_select_676;
     assign signal_and_6 = pull_data & data_moved;
@@ -2523,10 +2523,10 @@ module engine (
     assign signal_and_9 = op_go & signal_or_4;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_3 <= signal_const_4;
+            fault$underflow_0 <= signal_const_4;
         else
             if (signal_and_9)
-                signal_reg_3 <= vdd;
+                fault$underflow_0 <= vdd;
     end
     assign signal_wire = clear_irq;
     assign signal_mux = signal_wire ? gnd : irq_0;
@@ -2553,11 +2553,11 @@ module engine (
     assign data_ptr_next = signal_mux_4;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_4 <= signal_const_12;
+            data_ptr_reg <= signal_const_12;
         else
-            signal_reg_4 <= data_ptr_next;
+            data_ptr_reg <= data_ptr_next;
     end
-    assign data_ptr_0 = signal_reg_4;
+    assign data_ptr_0 = data_ptr_reg;
     assign signal_and_12 = issue & flip_pending_0;
     assign signal_or_6 = op_go | signal_and_12;
     assign signal_const_15 = 28'b0000000000000000000000000000;
@@ -3054,12 +3054,12 @@ module engine (
     assign signal_select_197 = out_value[0:0];
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_5 <= signal_const_4;
+            flip_bit_reg <= signal_const_4;
         else
             if (starts_manchester_bit)
-                signal_reg_5 <= signal_select_197;
+                flip_bit_reg <= signal_select_197;
     end
-    assign flip_bit_0 = signal_reg_5;
+    assign flip_bit_0 = flip_bit_reg;
     assign signal_not_14 = ~ flip_bit_0;
     assign signal_cat_80 = { signal_not_14,
                              signal_not_13 };
@@ -3121,11 +3121,11 @@ module engine (
     assign signal_mux_91 = start_0 ? gnd : signal_mux_90;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_6 <= signal_const_4;
+            flip_pending_reg <= signal_const_4;
         else
-            signal_reg_6 <= signal_mux_91;
+            flip_pending_reg <= signal_mux_91;
     end
-    assign flip_pending_0 = signal_reg_6;
+    assign flip_pending_0 = flip_pending_reg;
     assign pin_out_flipped = flip_pending_0 ? signal_or_11 : pin_out_0;
     assign signal_not_16 = ~ is_opcode$0;
     assign signal_not_17 = ~ start_0;
@@ -3156,11 +3156,11 @@ module engine (
     assign stall_next = start_0 ? signal_const_71 : signal_mux_94;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_7 <= signal_const_71;
+            stall_reg <= signal_const_71;
         else
-            signal_reg_7 <= stall_next;
+            stall_reg <= stall_next;
     end
-    assign stall_0 = signal_reg_7;
+    assign stall_0 = stall_reg;
     assign signal_eq_11 = stall_0 == signal_const_71;
     assign signal_const_80 = 4'b0001;
     assign signal_eq_12 = d$sys_op$binary_variant == signal_const_80;
@@ -3243,11 +3243,11 @@ module engine (
     assign signal_mux_103 = start_0 ? signal_const_71 : signal_mux_102;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_8 <= signal_const_71;
+            stuff_run_reg <= signal_const_71;
         else
-            signal_reg_8 <= signal_mux_103;
+            stuff_run_reg <= signal_mux_103;
     end
-    assign stuff_run_0 = signal_reg_8;
+    assign stuff_run_0 = stuff_run_reg;
     assign signal_lt_10 = stuff_run_0 < signal_wire_8;
     assign signal_not_24 = ~ signal_lt_10;
     assign signal_wire_8 = config$stuff_threshold;
@@ -3473,11 +3473,11 @@ module engine (
     assign pc_value_next = start_0 ? signal_const_12 : signal_mux_107;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_9 <= signal_const_12;
+            pc_reg <= signal_const_12;
         else
-            signal_reg_9 <= pc_value_next;
+            pc_reg <= pc_value_next;
     end
-    assign pc_0 = signal_reg_9;
+    assign pc_0 = pc_reg;
     assign signal_eq_25 = pc_0 == signal_wire_6;
     assign pc_next = signal_eq_25 ? signal_wire_5 : signal_add_2;
     assign signal_mux_108 = advance ? signal_mux_98 : pc_next;
@@ -3633,12 +3633,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_10 <= signal_const_3;
+            t_fraction_reg <= signal_const_3;
         else
             if (go)
-                signal_reg_10 <= t_fraction_next;
+                t_fraction_reg <= t_fraction_next;
     end
-    assign t_fraction_0 = signal_reg_10;
+    assign t_fraction_0 = t_fraction_reg;
     assign signal_cat_91 = { gnd,
                              t_fraction_0 };
     assign fraction_sum = signal_cat_91 + signal_cat_90;
@@ -3678,12 +3678,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_11 <= signal_const_6;
+            t_reg <= signal_const_6;
         else
             if (go)
-                signal_reg_11 <= t_next;
+                t_reg <= t_next;
     end
-    assign t_0 = signal_reg_11;
+    assign t_0 = t_reg;
     assign signal_sub_4 = now_0 - t_0;
     assign signal_select_309 = signal_sub_4[23:23];
     assign deadline_ready = ~ signal_select_309;
@@ -4310,11 +4310,11 @@ module engine (
     assign signal_select_539 = pins_sampled[1:1];
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_12 <= signal_const_15;
+            pins_sampled_reg <= signal_const_15;
         else
-            signal_reg_12 <= sample;
+            pins_sampled_reg <= sample;
     end
-    assign pins_sampled = signal_reg_12;
+    assign pins_sampled = pins_sampled_reg;
     assign signal_select_540 = pins_sampled[0:0];
     always @* begin
         case (signal_wire_19)
@@ -4475,11 +4475,11 @@ module engine (
     assign signal_mux_182 = captured ? gnd : signal_mux_181;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_13 <= signal_const_4;
+            capture_armed_reg <= signal_const_4;
         else
-            signal_reg_13 <= signal_mux_182;
+            capture_armed_reg <= signal_mux_182;
     end
-    assign capture_armed_0 = signal_reg_13;
+    assign capture_armed_0 = capture_armed_reg;
     assign signal_and_121 = capture_armed_0 & signal_not_46;
     assign captured = signal_and_121 & signal_eq_42;
     assign signal_const_194 = 24'b000000000000000000000001;
@@ -4487,19 +4487,19 @@ module engine (
     assign signal_mux_183 = start_0 ? signal_const_6 : signal_add_6;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_14 <= signal_const_6;
+            now_reg <= signal_const_6;
         else
-            signal_reg_14 <= signal_mux_183;
+            now_reg <= signal_mux_183;
     end
-    assign now_0 = signal_reg_14;
+    assign now_0 = now_reg;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_15 <= signal_const_6;
+            capture_reg <= signal_const_6;
         else
             if (captured)
-                signal_reg_15 <= now_0;
+                capture_reg <= now_0;
     end
-    assign capture_0 = signal_reg_15;
+    assign capture_0 = capture_reg;
     assign signal_select_569 = capture_0[15:0];
     assign signal_wire_20 = config$crc_init;
     assign signal_select_570 = signal_mux_186[7:0];
@@ -4617,11 +4617,11 @@ module engine (
     assign signal_mux_195 = start_0 ? signal_wire_20 : signal_mux_194;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_16 <= signal_const_3;
+            crc_reg <= signal_const_3;
         else
-            signal_reg_16 <= signal_mux_195;
+            crc_reg <= signal_mux_195;
     end
-    assign crc_0 = signal_reg_16;
+    assign crc_0 = crc_reg;
     assign signal_select_599 = signal_mux_198[7:0];
     assign signal_cat_156 = { signal_select_599,
                               signal_const_20 };
@@ -4754,12 +4754,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_17 <= signal_const_71;
+            isr_count_reg <= signal_const_71;
         else
             if (go)
-                signal_reg_17 <= isr_count_next_value;
+                isr_count_reg <= isr_count_next_value;
     end
-    assign isr_count_0 = signal_reg_17;
+    assign isr_count_0 = isr_count_reg;
     assign signal_cat_169 = { gnd,
                               isr_count_0 };
     assign signal_add_7 = signal_cat_169 + signal_cat_168;
@@ -4793,12 +4793,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_18 <= signal_const_3;
+            isr_reg <= signal_const_3;
         else
             if (go)
-                signal_reg_18 <= isr_next;
+                isr_reg <= isr_next;
     end
-    assign isr_0 = signal_reg_18;
+    assign isr_0 = isr_reg;
     assign signal_xor_6 = p_0 ^ alu_operand;
     assign signal_sub_7 = p_0 - alu_operand;
     assign signal_add_8 = p_0 + alu_operand;
@@ -4844,12 +4844,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_19 <= signal_const_3;
+            p_reg <= signal_const_3;
         else
             if (go)
-                signal_reg_19 <= p_next;
+                p_reg <= p_next;
     end
-    assign p_0 = signal_reg_19;
+    assign p_0 = p_reg;
     assign signal_xor_7 = y_0 ^ alu_operand;
     assign signal_sub_8 = y_0 - alu_operand;
     assign signal_add_9 = y_0 + alu_operand;
@@ -4900,12 +4900,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_20 <= signal_const_3;
+            y_reg <= signal_const_3;
         else
             if (go)
-                signal_reg_20 <= y_next;
+                y_reg <= y_next;
     end
-    assign y_0 = signal_reg_20;
+    assign y_0 = y_reg;
     always @* begin
         case (d$alu_reg$binary_variant)
         0:
@@ -4978,12 +4978,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_21 <= signal_const_3;
+            x_reg <= signal_const_3;
         else
             if (go)
-                signal_reg_21 <= x_next;
+                x_reg <= x_next;
     end
-    assign x_0 = signal_reg_21;
+    assign x_0 = x_reg;
     assign signal_cat_174 = { signal_const_20,
                               x_0 };
     assign signal_select_633 = signal_mux_237[7:0];
@@ -5144,12 +5144,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_22 <= signal_const_3;
+            osr_reg <= signal_const_3;
         else
             if (go)
-                signal_reg_22 <= osr_next;
+                osr_reg <= osr_next;
     end
-    assign osr_0 = signal_reg_22;
+    assign osr_0 = osr_reg;
     assign signal_wire_29 = flush;
     assign flush_0 = signal_wire_29 & halted_0;
     assign signal_not_51 = ~ signal_select_676;
@@ -5196,11 +5196,11 @@ module engine (
     assign signal_mux_257 = start_0 ? gnd : signal_or_20;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_23 <= signal_const_4;
+            data_moved_reg <= signal_const_4;
         else
-            signal_reg_23 <= signal_mux_257;
+            data_moved_reg <= signal_mux_257;
     end
-    assign data_moved = signal_reg_23;
+    assign data_moved = data_moved_reg;
     assign signal_not_54 = ~ data_moved;
     assign signal_wire_32 = config$autopull_data;
     assign signal_wire_33 = config$pull_threshold;
@@ -5252,12 +5252,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_24 <= signal_const_87;
+            osr_count_reg <= signal_const_87;
         else
             if (go)
-                signal_reg_24 <= osr_count_next_value;
+                osr_count_reg <= osr_count_next_value;
     end
-    assign osr_count_0 = signal_reg_24;
+    assign osr_count_0 = osr_count_reg;
     assign signal_lt_15 = osr_count_0 < signal_wire_33;
     assign signal_not_55 = ~ signal_lt_15;
     assign signal_wire_34 = config$autopull;
@@ -5491,12 +5491,12 @@ module engine (
     end
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_25 <= signal_const_15;
+            pin_dir_reg <= signal_const_15;
         else
             if (op_go)
-                signal_reg_25 <= pin_dir_next;
+                pin_dir_reg <= pin_dir_next;
     end
-    assign pin_dir_0 = signal_reg_25;
+    assign pin_dir_0 = pin_dir_reg;
     assign signal_select_753 = pin_dir_0[19:19];
     assign signal_mux_296 = signal_select_753 ? signal_select_350 : signal_select_351;
     assign signal_select_754 = signal_wire_40[20:20];
@@ -5664,11 +5664,11 @@ module engine (
     assign halted_next = start_0 ? gnd : signal_mux_302;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_26 <= vdd;
+            halted_reg <= vdd;
         else
-            signal_reg_26 <= halted_next;
+            halted_reg <= halted_next;
     end
-    assign halted_0 = signal_reg_26;
+    assign halted_0 = halted_reg;
     assign signal_not_63 = ~ halted_0;
     assign signal_and_140 = signal_not_63 & signal_eq_11;
     assign issue = signal_and_140 & signal_not_17;
@@ -5677,12 +5677,12 @@ module engine (
     assign signal_mux_303 = op_go ? pin_out_next : pin_out_flipped;
     always @(posedge signal_wire_45) begin
         if (signal_wire_44)
-            signal_reg_27 <= signal_const_15;
+            pin_out_reg <= signal_const_15;
         else
             if (signal_or_6)
-                signal_reg_27 <= signal_mux_303;
+                pin_out_reg <= signal_mux_303;
     end
-    assign pin_out_0 = signal_reg_27;
+    assign pin_out_0 = pin_out_reg;
     assign d$alu_imm = d$alu_reg$binary_variant;
     assign d$in_source$binary_variant = d$out_dest$binary_variant;
     assign pin_out = pin_out_0;
@@ -5703,10 +5703,10 @@ module engine (
     assign stall = stall_0;
     assign halted = halted_0;
     assign irq = irq_0;
-    assign fault$underflow = signal_reg_3;
-    assign fault$overflow = signal_reg_2;
-    assign fault$missed_deadline = signal_reg_1;
-    assign fault$decode = signal_reg;
+    assign fault$underflow = fault$underflow_0;
+    assign fault$overflow = fault$overflow_0;
+    assign fault$missed_deadline = fault$missed_deadline_0;
+    assign fault$decode = fault$decode_0;
     assign faulted = faulted_0;
     assign capture = capture_0;
     assign capture_armed = capture_armed_0;
