@@ -1,11 +1,7 @@
-(** A part's timing margins, measured by the chip: each sweep moves one of the part's
-    datasheet timings past the sheet's limits, a firmware a point, for the bench to find
-    where the part stops answering.
-
-    The library's limits are never loosened. A point is certified only against its own
-    limit set: the part's rows from the library's table, each row the point breaks set at
-    the point's own value, and the swept parameter exactly as designed. Every point says
-    which rows it breaks, so an out-of-spec run cannot pass for a certified one. *)
+(** Sweeps of a part's datasheet timings past the sheet's limits, a firmware a point, to
+    find where the part stops answering. The library's limits are never loosened: a point
+    is certified only against its own limit set, with each row it breaks set at its own
+    value, and every point names the rows it breaks. *)
 
 open! Core
 
