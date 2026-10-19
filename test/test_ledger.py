@@ -111,6 +111,22 @@ class Ledger(unittest.TestCase):
         kept = runs / "bitstreams" / (bit_hash[:16] + ".bit")
         self.assertEqual(kept.read_bytes(), self.bit.read_bytes())
 
+    def test_netlist(self):
+        """The netlist's hash from the .sha256 icepi/Makefile writes beside the bitstream,
+        kept with it, and "-" when that file names another bitstream or is missing."""
+        bit_hash = ledger.sha256(self.bit)
+        self.assertEqual(ledger.netlist(self.bit, bit_hash), "-")
+        sums = self.tmp / "chip.sha256"
+        sums.write_text("%s  usb1.json\n%s  chip.bit\n" % ("ab" * 32, bit_hash))
+        self.assertEqual(ledger.netlist(self.bit, bit_hash), "ab" * 32)
+        self.assertEqual(ledger.netlist(self.bit, "cd" * 32), "-")
+        self.run_ledger("smoke")
+        (row,) = self.rows()
+        self.assertIn("netlist_sha256: %s\n" % ("ab" * 32),
+                      (self.check_sums(row) / "ledger.txt").read_text())
+        kept = self.tmp / "evidence" / row["date"] / "ledger" / "bitstreams"
+        self.assertEqual((kept / (bit_hash[:16] + ".sha256")).read_text(), sums.read_text())
+
     def test_fail_and_no_overwrite(self):
         self.assertEqual(self.run_ledger("smoke").returncode, 0)
         run = self.run_ledger("smoke", VERDICT="FAIL")

@@ -137,6 +137,18 @@ def sha256(path):
     return h.hexdigest()
 
 
+def netlist(bitstream, bit_hash):
+    """The hash of the netlist the bitstream came from, as icepi/Makefile wrote it beside
+    the bitstream (its .sha256), which formal/icepi_equiv proves equal to the RTL; "-"
+    without one that names this bitstream."""
+    sums = Path(bitstream).with_suffix(".sha256")
+    lines = sums.read_text().split() if sums.is_file() else []
+    pairs = dict(zip(lines[1::2], lines[0::2]))
+    if pairs.get(Path(bitstream).name) != bit_hash:
+        return "-"
+    return next((h for name, h in pairs.items() if name.endswith(".json")), "-")
+
+
 def commit():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
                           text=True).stdout.strip() or "unknown"
@@ -381,7 +393,9 @@ class Ledger:
                 ("expected", demo.expect),
                 ("why", demo.why), ("time", datetime.datetime.now().isoformat(timespec="seconds")),
                 ("commit", head), ("bitstream", os.path.abspath(self.args.bitstream)),
-                ("bitstream_sha256", bit_hash), ("pico_a", self.pico),
+                ("bitstream_sha256", bit_hash),
+                ("netlist_sha256", netlist(self.args.bitstream, bit_hash)),
+                ("pico_a", self.pico),
                 ("pico_b", "%s %s" % (self.serial, self.pico_b or "unknown")),
                 ("rate", (demo.rate or os.environ.get("RATE", "24M"))
                  if demo.kind != "pico" or demo.capture_ms else "")]
@@ -444,6 +458,9 @@ def main():
         kept.parent.mkdir(parents=True, exist_ok=True)
         if not kept.exists():
             shutil.copyfile(args.bitstream, kept)
+        sums = Path(args.bitstream).with_suffix(".sha256")
+        if netlist(args.bitstream, bit_hash) != "-":
+            shutil.copyfile(sums, kept.with_suffix(".sha256"))
     print("commit %s, bitstream %s, evidence %s" % (head, args.bitstream, args.runs))
     ledger = Ledger(args, Bench(args.dry_run))
     rows = []
