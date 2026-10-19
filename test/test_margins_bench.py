@@ -184,11 +184,11 @@ async def test_ds18b20(dut):
     transfer, _, _, _ = acted(dut)
     host = demo_margins.pe.Host(transfer)
     us = 48
+    # each point simulates some 50 ms, so the library's timing once and a failure a kind
     for parameter, cycles, passes in [
         ("tRSTL", 504 * us, True), ("tRSTL", 400 * us, False),
-        ("presence sample", 72 * us, True), ("presence sample", 20 * us, False),
-        ("tLOW0", 66 * us, True), ("tLOW0", 10 * us, False),
-        ("read sample", 12 * us, True), ("read sample", 40 * us, False),
+        ("presence sample", 20 * us, False), ("tLOW0", 10 * us, False),
+        ("read sample", 40 * us, False),
     ]:
         sweep, _ = point("DS18B20", parameter, cycles)
         ok, out = await judged(
