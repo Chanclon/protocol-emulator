@@ -51,6 +51,7 @@ formal/isolation/
 !formal/sram_equiv/
 !formal/kernel_equiv/
 !formal/frontend_equiv/
+!formal/icepi_equiv/
 __pycache__/
 test/fpga_netlist.v
 test/fpga_top.v
@@ -70,3 +71,4 @@ formal/kernel_accepts_gates.aag
 test/icepi_netlist.v
 icepi/build
 formal/RM_IHPSG13_1P_512x16_c2_bm_bist.v
+formal/verilog_*

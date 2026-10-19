@@ -1,5 +1,5 @@
 all: issue_timing host_timing host_spacing late_host fifo_order unreachable phase_step fetch_step edge_step event_step frame_step \
-  value_step narrow saturating chip_frame fail_safe isolation data_step teeth fsm_miter \
+  value_step narrow saturating chip_frame fail_safe isolation data_step teeth fsm_miter verilog_in \
   sram_equiv kernel_equiv translation frontend_equiv link self_check self_check_clean powerup offset_axioms
 
 # every dune here runs from the checkout's root, which a worktree inside another checkout
@@ -476,6 +476,21 @@ fsm_miter: engine_sram.v
 fsm_miter_proof:
 	sby -f fsm_miter.sby prove short_gap early mutant
 
+# Verilog in (write_certificate.ml -verilog-corpus): the transmitters in
+# test/certify/third_party, each refused by name or compiled by its frame, certified and
+# written as a miter beside the engine; the accepted ones are proved, ~30 s, teeth ~5 min
+# (the second's mutant, ~10 min, is left to a local run).
+# verilog_in_proof runs on files written already, for CI.
+verilog_in: engine_sram.v
+	(cd .. && dune exec -- test/certify/write_certificate.exe -verilog-corpus -out formal) \
+	  > verilog_corpus.txt
+	$(MAKE) verilog_in_proof
+
+verilog_in_proof:
+	diff ../test/certify/third_party/corpus.expected verilog_corpus.txt
+	sby -f verilog_nandland_uart.sby prove early mutant short_gap
+	sby -f verilog_alexforencich_uart_tied.sby prove early
+
 memory_flops.v: ../src/*.ml
 	cd .. && dune exec -- bin/generate.exe memory > formal/memory_flops.v
 
@@ -730,6 +745,56 @@ netlist_anystate_teeth:
 	$(MAKE) netlist_equiv NETLIST=netlist_anystate_teeth/stuck.v EQUIV=netlist_anystate_stuck
 	$(MAKE) netlist_anystate EQUIV=netlist_anystate_stuck ANY_EXPECT=0
 
+# The Icepi Zero's build equals the RTL: synth_ecp5's netlist, before place and route,
+# against icepi_top.v around the chip's Verilog, the macros' cores cut on both sides
+# (icepi_equiv/miter.ys), from all 0 and from the state the bitstream configures
+# (configured.awk). About 5 min in CI:
+#   make -C icepi build/usb1.json && make icepi_equiv
+# ICEPI_JSON, USB and MHZ name another build, as icepi/Makefile's equiv target does.
+ICEPI = icepi_equiv_run
+ICEPI_JSON = ../icepi/build/usb1.json
+USB = 1
+MHZ = 48
+ICEPI_PROOF = print_stats; scorr; print_stats; dprove; print_status
+icepi_equiv:
+	rm -rf $(ICEPI) && mkdir $(ICEPI)
+	cp $(ICEPI_JSON) $(ICEPI)/netlist.json
+	cp $(WRITTEN) $(ICEPI)/written.v
+	echo 'chparam -set USB_UIO $(USB) -set MHZ $(MHZ) icepi_top' > $(ICEPI)/params.ys
+	cd $(ICEPI) && yosys -q -l gold.log ../icepi_equiv/gold.ys
+	cd $(ICEPI) && yosys -q -l gate.log ../icepi_equiv/gate.ys
+	cd $(ICEPI) && $(FSM_STEP) > fsm_step.log
+	grep 'Status = 1 ' $(ICEPI)/fsm_step.log
+	cd $(ICEPI) && yosys -q -l miter.log ../icepi_equiv/miter.ys
+	cd $(ICEPI) && awk -f ../icepi_equiv/configured.awk miter_pre.il > configured.il
+	cd $(ICEPI) && yosys -q -l configured.log ../icepi_equiv/configured.ys
+	cd $(ICEPI) && timeout 3600 yosys-abc -c 'read_aiger miter.aig; $(ICEPI_PROOF)' > proof.log
+	grep 'Status = $(EXPECT) ' $(ICEPI)/proof.log
+	cd $(ICEPI) && timeout 3600 yosys-abc -c 'read_aiger configured.aig; $(ICEPI_PROOF)' \
+	  > configured_proof.log
+	grep 'Status = $(EXPECT) ' $(ICEPI)/configured_proof.log
+	@echo "netlist sha256 $$(sha256sum < $(ICEPI)/netlist.json | cut -d' ' -f1)"
+
+# Mutants that must be refuted: the LUT driving uio[2] inverted, the data memory's block
+# RAM with two data bits swapped, the written host port's state held against fsm_step, and
+# a block RAM in a mode DP16KD.v does not model, which has to stop the run
+ICEPI_TEETH = icepi_equiv_teeth
+icepi_equiv_teeth:
+	rm -rf $(ICEPI_TEETH) && mkdir $(ICEPI_TEETH)
+	jq --arg pad 'uio_pad[2]' -f icepi_equiv/flip.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/flip.json
+	jq --arg a DIA0 --arg b DIA1 -f icepi_equiv/swap.jq $(ICEPI_JSON) > $(ICEPI_TEETH)/swap.json
+	jq '(.modules.icepi_top.cells[] | select(.type == "DP16KD") | .parameters.WRITEMODE_A) = "NORMAL"' \
+	  $(ICEPI_JSON) > $(ICEPI_TEETH)/mode.json
+	sed -E '/^module host_port /,/^endmodule/s/^( *sm <= )signal_wire_[0-9]+;/\1sm;/' \
+	  $(WRITTEN) > $(ICEPI_TEETH)/written.v
+	! cmp -s $(WRITTEN) $(ICEPI_TEETH)/written.v
+	$(MAKE) icepi_equiv ICEPI_JSON=$(ICEPI_TEETH)/flip.json ICEPI=icepi_equiv_flip EXPECT=0
+	$(MAKE) icepi_equiv ICEPI_JSON=$(ICEPI_TEETH)/swap.json ICEPI=icepi_equiv_swap EXPECT=0
+	! $(MAKE) icepi_equiv ICEPI_JSON=$(ICEPI_TEETH)/mode.json ICEPI=icepi_equiv_mode
+	grep -q 'DP16KD: a configuration icepi_equiv does not model' icepi_equiv_mode/gate.log
+	! $(MAKE) icepi_equiv WRITTEN=$(ICEPI_TEETH)/written.v ICEPI=icepi_equiv_written
+	grep 'Status = 0 ' icepi_equiv_written/fsm_step.log
+
 # one clock, and every other pin through one two-flop synchroniser (sync/check.tcl), on
 # the RTL and on the hardened netlist; about 3 min:
 #   make sync_rtl sync_gate NETLIST=../runs/wokwi/final/nl/tt_um_marcosash_protocol_emulator.nl.v
@@ -948,8 +1013,9 @@ proof_bundle_tooth:
   inductive_write inductive_certificate inductive_proof inductive_certificates inductive_names \
   stamped_certificate stamped_proof data_certificate data_proof data_certificates data_names \
   netlist_equiv netlist_equiv_teeth netlist_anystate netlist_anystate_teeth \
+  icepi_equiv icepi_equiv_teeth \
   sync_rtl sync_gate sync_rtl_teeth sync_gate_teeth \
-  fsm_miter fsm_miter_proof sram_equiv sram_equiv_proof \
+  fsm_miter fsm_miter_proof verilog_in verilog_in_proof sram_equiv sram_equiv_proof \
   sram_equiv_step sram_equiv_teeth kernel_equiv kernel_equiv_proof kernel_miter sat_tools \
   narrow narrow_proof saturating saturating_proof saturating_chip self_check self_check_proof \
   self_check_clean self_check_clean_proof \

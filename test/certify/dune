@@ -6,7 +6,16 @@
   write_refusal
   write_self_check
   write_tolerance)
- (libraries core hardcaml protocol_emulator protocol_emulator_test pio)
+ (libraries
+  core
+  core_unix
+  core_unix.filename_unix
+  hardcaml
+  hardcaml_of_verilog
+  jsonaf
+  protocol_emulator
+  protocol_emulator_test
+  pio)
  (lint
   (pps ppx_js_style -check-doc-comments))
  (preprocess
