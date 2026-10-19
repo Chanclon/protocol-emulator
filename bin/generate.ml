@@ -233,6 +233,98 @@ let kernel_gates_command =
         print_string (A.to_aiger outputs)]
 ;;
 
+(* What [Kernel.check] and [Osr_kernel.check] decide of a row, over gates, a port a field,
+   so a mutant whose rows change width differs in its ports. *)
+let check_gates_command =
+  Command.basic
+    ~summary:
+      "The kernel's check of a row as its software check decides it: the successors, \
+       every conjunct, the open start and, for a spacing, an interval row; test/mutant \
+       compares a mutant's with the original's"
+    [%map_open.Command
+      let osr = flag "-osr" no_arg ~doc:" the osr kernel's check instead" in
+      fun () ->
+        let module A = Aig.Make () in
+        let conjuncts names values =
+          List.map (List.zip_exn names values) ~f:(fun (name, value) ->
+            "conjunct$" ^ name, value)
+        in
+        let outputs =
+          if osr
+          then
+            let module O = Osr_kernel.Make (A) in
+            let module Row = Osr_kernel.Row in
+            let rows name =
+              Row.map2 Row.port_names Row.port_widths ~f:(fun field width ->
+                A.input (name ^ "$" ^ field) width)
+            in
+            let side_set_count = A.input "side_set_count" 2 in
+            let autopull = A.input "autopull" 1 in
+            let pull_threshold = A.input "pull_threshold" Isa.count_bits in
+            let word = A.input "word" Isa.data_bits in
+            let x_lo = A.input "x_lo" Isa.data_bits in
+            let x_hi = A.input "x_hi" Isa.data_bits in
+            let row = rows "row" in
+            let c =
+              O.conjuncts
+                ~side_set_count
+                ~autopull
+                ~pull_threshold
+                ~word
+                ~x_lo
+                ~x_hi
+                ~row
+                ~next:(rows "next")
+                ~target:(rows "target")
+            in
+            conjuncts
+              (Osr_kernel.Conjuncts.to_list Osr_kernel.Conjuncts.port_names)
+              (Osr_kernel.Conjuncts.to_list c)
+            @ [ "is_full", O.is_full row ]
+          else
+            let module K = Kernel.Make (A) in
+            let module Row = Kernel.Row in
+            let rows name =
+              Row.map2 Row.port_names Row.port_widths ~f:(fun field width ->
+                A.input (name ^ "$" ^ field) width)
+            in
+            let i =
+              Kernel.Accepts.I.map2
+                Kernel.Accepts.I.port_names
+                Kernel.Accepts.I.port_widths
+                ~f:(fun name width -> name, width)
+            in
+            let input (name, width) = A.input name width in
+            let spacing = Kernel.Spaced.map i.spacing ~f:input in
+            let word = input i.word in
+            let wrap_top = input i.wrap_top in
+            let wrap_bottom = input i.wrap_bottom in
+            let pc = input i.pc in
+            let row = rows "row" in
+            let next_pc, target_pc = K.successors ~wrap_top ~wrap_bottom ~pc ~word in
+            let c =
+              K.conjuncts
+                ~side_set_count:(input i.side_set_count)
+                ~fraction:(input i.fraction)
+                ~loaded:(With_valid.map i.loaded ~f:input)
+                ~capture:(Kernel.Capture.map i.capture ~f:input)
+                ~spacing
+                ~word
+                ~row
+                ~next:(rows "next")
+                ~target:(rows "target")
+            in
+            [ "next_pc", next_pc; "target_pc", target_pc ]
+            @ conjuncts
+                (Kernel.Conjuncts.to_list Kernel.Conjuncts.port_names)
+                (Kernel.Conjuncts.to_list c)
+            @ [ "starts_open", K.starts_open row ~spacing
+              ; ("interval", A.(K.offset_is_full row &: (row.slope ==:. 0)))
+              ]
+        in
+        print_string (A.to_aiger outputs)]
+;;
+
 let osr_rtl_command =
   Command.basic
     ~summary:
@@ -715,6 +807,7 @@ let () =
        ; "memory", memory_rtl_command
        ; "kernel", kernel_rtl_command
        ; "kernel-gates", kernel_gates_command
+       ; "check-gates", check_gates_command
        ; "osr", osr_rtl_command
        ; "manchester-rx", manchester_rx_rtl_command
        ; "kernel-accepts", kernel_accepts_rtl_command
