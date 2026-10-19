@@ -18,7 +18,7 @@ the RTL is proven never to miss one of its deadlines, under the assumptions belo
 | Clock | 48 MHz | `info.yaml` |
 | Cores | 2 cores, 3 IHP 512 x 16 SRAM macros: a program memory each and a data memory they share | `src/protocol_emulator.v` |
 | Pins | 4 for the host's SPI, 5 in, 7 out, 8 bidirectional, and 8 wires between the cores | `info.yaml`, `src/isa.ml` |
-| Hardened | 23,595 standard cells at 49.7% utilisation, setup slack +3.100 ns at the slow corner, precheck clean | gds run [39073398014](https://github.com/MarcosAsh/protocol-emulator/actions/runs/39073398014) |
+| Hardened | 23,517 standard cells at 49.6% utilisation, setup slack +3.487 ns at the slow corner, precheck clean | gds run [39277515192](https://github.com/MarcosAsh/protocol-emulator/actions/runs/39277515192) |
 | Firmware | 43 library firmwares the kernel accepts | `test/test_kernel.ml` |
 | Proved | a program the kernel accepts never misses a deadline on each core's RTL, under the assumptions below | `formal/phase_table.sby`, `formal/phase_table_affine.sby` |
 | Board | the RTL on an Icepi Zero (ECP5 FPGA) passed the self-timing demo on 2026-10-09, no silicon yet | `python/demo_self_timing.py` |
@@ -172,11 +172,11 @@ no board in about 17 minutes. Each claim's last green run in CI is on the
 [results page](https://marcosash.github.io/protocol-emulator/results/).
 
 To harden, clone TinyTapeout/tt-support-tools, branch `ihp-sg13cmos5l`, into `tt/`, then
-`tt/tt_tool.py --create-user-config --ihp` and `--harden --ihp`. Gds run 39073398014, on
-this Verilog, signs off with setup slack +3.100 ns at the slow corner, at 49.7%
+`tt/tt_tool.py --create-user-config --ihp` and `--harden --ihp`. Gds run 39277515192, on
+this Verilog, signs off with setup slack +3.487 ns at the slow corner, at 49.6%
 utilisation. The picture is this harden's die by RTL module, drawn by `demo/die.py` from its
 `GDS_logs` artifact. 1,883 of 1,893 flops map by RTL line and net name. Each gate goes with
-the nearest flop it feeds, which gets 96.8% of gates right on the RTL synthesised a module
+the nearest flop it feeds, which gets 96.7% of gates right on the RTL synthesised a module
 at a time (`--check`).
 
 ![the hardened die, each cell coloured by its RTL module](docs/die.png)
