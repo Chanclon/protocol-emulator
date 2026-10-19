@@ -146,7 +146,9 @@ SCOPES = {
         "max_per_operator": None,
     },
     "kernel": {
-        "files": ["src/kernel.ml", "src/osr_kernel.ml"],
+        "files": [
+            "src/kernel.ml", "src/kernel_types.ml", "src/kernel_step.ml", "src/kernel_accepts.ml",
+            "src/kernel_table.ml", "src/osr_kernel.ml"],
         "operators": lambda file: HARDWARE + MORE_HARDWARE + SOFTWARE,
         "max_per_operator": None,
     },
@@ -157,24 +159,31 @@ SCOPES = {
 # accepts; the lines where it is software the gates leave out; and the proofs, fastest
 # first, a mutant that accepts more must pass: an sby run each, or one a task of a task list
 # of formal/Makefile, those of the second list, the slowest, last.
+KERNEL_PROVED = {
+    "check": ["check-gates"],
+    "equal": ["next_pc", "target_pc"],
+    "accept": ["conjunct$", "starts_open", "interval"],
+    "outside": [],
+    "lemma": "test_kernel.ml",
+    "verilog": ["engine.v", "kernel_step.v", "kernel_accepts.v"],
+    "proofs": [
+        ("phase_step", ["phase_step.sby", "prove"]),
+        ("phase_table", ["phase_table.sby", "prove"]),
+        ("row_step", ["row_step.sby", "jmp", "wait", "in", "out", "mov", "set", "alu_x", "alu_y", "alu_p",
+          "alu_t", "sys"]),
+        ("phase_table_affine", ["phase_table_affine.sby", "prove"]),
+        ("phase_spacing", ["phase_spacing.sby", "prove"]),
+        ("pair_step", ["pair_step.sby"], "PAIR_STEP_TASKS", "PAIR_STEP_ALONE"),
+    ],
+}
+
+# the files that make the kernel's check: its software outside the gates is what only a test kills
 PROVED = {
-    "src/kernel.ml": {
-        "check": ["check-gates"],
-        "equal": ["next_pc", "target_pc"],
-        "accept": ["conjunct$", "starts_open", "interval"],
-        "outside": [(r"^  let of_spec", r"^end"), (r"^  let verdicts", r"^  module I = struct")],
-        "lemma": "test_kernel.ml",
-        "verilog": ["engine.v", "kernel_step.v", "kernel_accepts.v"],
-        "proofs": [
-            ("phase_step", ["phase_step.sby", "prove"]),
-            ("phase_table", ["phase_table.sby", "prove"]),
-            ("row_step", ["row_step.sby", "jmp", "wait", "in", "out", "mov", "set", "alu_x", "alu_y", "alu_p",
-              "alu_t", "sys"]),
-            ("phase_table_affine", ["phase_table_affine.sby", "prove"]),
-            ("phase_spacing", ["phase_spacing.sby", "prove"]),
-            ("pair_step", ["pair_step.sby"], "PAIR_STEP_TASKS", "PAIR_STEP_ALONE"),
-        ],
-    },
+    "src/kernel.ml": KERNEL_PROVED,
+    "src/kernel_types.ml": KERNEL_PROVED | {"outside": [(r"^  let of_spec", r"^end")]},
+    "src/kernel_step.ml": KERNEL_PROVED,
+    "src/kernel_accepts.ml": KERNEL_PROVED,
+    "src/kernel_table.ml": KERNEL_PROVED | {"outside": [(r"^  let verdicts", r"^end")]},
     "src/osr_kernel.ml": {
         "check": ["check-gates", "-osr"],
         "equal": [],
