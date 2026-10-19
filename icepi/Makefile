@@ -1,4 +1,4 @@
-# The chip on an Icepi Zero (ECP5 LFE5U-25F): make [REV=v1.4] [USB=1] [SEED=1], then
+# The chip on an Icepi Zero (ECP5 LFE5U-25F): make [REV=v1.4] [USB=1] [SEEDS='1 2'], then
 # make prog to load it or make flash to keep it. USB=0 puts uio[1:0] on the header too.
 # The bitstream's .sha256 names it and the netlist it came from, which make equiv proves
 # equal to the RTL (formal/icepi_equiv).
@@ -13,6 +13,9 @@ $(error MHZ is 48, or 40 for 10BASE-T, not $(MHZ))
 endif
 USB ?= $(if $(filter 40,$(MHZ)),0,1)
 SEED ?= 1
+# 48 MHz is tight and placement moves with the seed (about 1 in 8 fails), so the chip
+# takes the first of these that meets timing; the same netlist always gets the same one
+SEEDS ?= 1 2 3 4 5 6 7 8
 FREQ ?= $(MHZ)
 
 BUILD = build
@@ -31,9 +34,14 @@ $(JSON): $(SOURCES)
 		chparam -set USB_UIO $(USB) -set MHZ $(MHZ) icepi_top; synth_ecp5 -top icepi_top -json $@"
 
 $(BUILD)/$(NAME).config: $(JSON) header.lpf $(REV).lpf
-	nextpnr-ecp5 --25k --package CABGA256 --speed 6 --json $< --lpf header.lpf \
-		--lpf $(REV).lpf --freq $(FREQ) --seed $(SEED) --textcfg $@ \
-		--report $(BUILD)/$(NAME).report.json --log $(BUILD)/$(NAME).log -q
+	rm -f $@
+	for seed in $(SEEDS); do \
+	  nextpnr-ecp5 --25k --package CABGA256 --speed 6 --json $< --lpf header.lpf \
+	    --lpf $(REV).lpf --freq $(FREQ) --seed $$seed --textcfg $@ \
+	    --report $(BUILD)/$(NAME).report.json --log $(BUILD)/$(NAME).log -q \
+	    && echo "seed $$seed" && break; \
+	  rm -f $@; \
+	done; test -f $@
 	grep -h "Max frequency\|TRELLIS_COMB:\|TRELLIS_FF:\|DP16KD:" $(BUILD)/$(NAME).log | tail -5
 
 $(BUILD)/$(NAME).bit: $(BUILD)/$(NAME).config
