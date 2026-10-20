@@ -775,7 +775,9 @@ class PicoB:
         self.dut.can_o.value = 0
         await Timer(CAN_BIT_PS, unit="ps")
         self.dut.can_o.value = 1
-        value = lambda b: int("".join(map(str, b)), 2) if b else 0
+        def value(b):
+            return int("".join(map(str, b)), 2) if b else 0
+
         data = [value(bits[19 + 8 * i:27 + 8 * i]) for i in range((need - 34) // 8)]
         return value(bits[1:12]), bits[12], value(bits[15:19]), data
 
