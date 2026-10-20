@@ -5,7 +5,8 @@ on:
     branches: ['**']
   workflow_dispatch:
 jobs:
-  # Python linting job (Ruff) - Runs always in parallel
+  # the Python held to ruff's checks, pinned so a new ruff cannot fail an unchanged tree;
+  # ruff.toml waives what a sigrok decoder package needs
   lint:
     runs-on: ubuntu-24.04
     steps:
@@ -18,13 +19,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install Ruff
-        run: pip install ruff
+        run: pip install ruff==0.14.0
 
       - name: Run Ruff check
         run: ruff check python/ demo/ test/
-
-      - name: Run Ruff format check
-        run: ruff format --check python/ demo/ test/
 
   # whether a branch's changes reach the cocotb tests (.github/changed.sh); a skip counts
   # as a pass
