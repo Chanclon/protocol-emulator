@@ -101,6 +101,8 @@ DEMOS = [
     outside("neopixel"),
     outside("swd"),
     outside("referee"),
+    # Pico B idle, as its GP1 shares OUT0's net
+    outside("nec", pico_b="micropython"),
     outside("can", pico_b="can_node"),
     outside("can_node", pico_b="can_node"),
     Demo("start_hold_pio", "start_hold", expect="FAIL",
