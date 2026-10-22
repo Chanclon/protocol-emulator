@@ -149,6 +149,17 @@ def netlist(bitstream, bit_hash):
     return next((h for name, h in pairs.items() if name.endswith(".json")), "-")
 
 
+def keep_bitstream(bitstream, runs, bit_hash):
+    """The bitstream itself in runs/bitstreams, so its hash can be checked once the build is
+    gone, and the sums that name its netlist."""
+    kept = runs / "bitstreams" / (bit_hash[:16] + ".bit")
+    kept.parent.mkdir(parents=True, exist_ok=True)
+    if not kept.exists():
+        shutil.copyfile(bitstream, kept)
+    if netlist(bitstream, bit_hash) != "-":
+        shutil.copyfile(Path(bitstream).with_suffix(".sha256"), kept.with_suffix(".sha256"))
+
+
 def commit():
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
                           text=True).stdout.strip() or "unknown"
@@ -453,14 +464,7 @@ def main():
     head = commit()
     bit_hash = "-" if args.dry_run else sha256(args.bitstream)
     if not args.dry_run:
-        # the bitstream itself, so its hash can be checked once the build is gone
-        kept = args.runs / "bitstreams" / (bit_hash[:16] + ".bit")
-        kept.parent.mkdir(parents=True, exist_ok=True)
-        if not kept.exists():
-            shutil.copyfile(args.bitstream, kept)
-        sums = Path(args.bitstream).with_suffix(".sha256")
-        if netlist(args.bitstream, bit_hash) != "-":
-            shutil.copyfile(sums, kept.with_suffix(".sha256"))
+        keep_bitstream(args.bitstream, args.runs, bit_hash)
     print("commit %s, bitstream %s, evidence %s" % (head, args.bitstream, args.runs))
     ledger = Ledger(args, Bench(args.dry_run))
     rows = []
