@@ -1,5 +1,16 @@
 name: mutation
 on:
+  # the engine scope's four files, its allowed survivors and the tool that mutates them
+  push:
+    branches: [main]
+    paths:
+      - src/engine.ml
+      - src/decoder.ml
+      - src/pins.ml
+      - src/host_port.ml
+      - test/mutate.py
+      - test/mutation_allow.txt
+      - .github/workflows/mutation.yaml
   schedule:
     - cron: '0 3 * * 1'
   workflow_dispatch:
