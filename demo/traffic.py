@@ -17,6 +17,7 @@ import demo_can  # noqa: E402
 import demo_can_node  # noqa: E402
 import demo_ds18b20  # noqa: E402
 import demo_flash  # noqa: E402
+import demo_nec  # noqa: E402
 import demo_neopixel  # noqa: E402
 import demo_referee  # noqa: E402
 import demo_swd  # noqa: E402
@@ -295,6 +296,11 @@ def keyboard(_levels):
     return judge
 
 
+def nec(_levels):
+    expected = demo_nec.lines(demo_nec.KEYS)
+    return lambda decoded, _log: exactly(decoded, expected, "the keys sent")
+
+
 def sweep(levels):
     """OUT0 echoes wire 20, so it has at least every edge the chip stamped."""
     edges = levels[4][0]
@@ -331,6 +337,7 @@ CHECKS = {
     "start_hold": (I2C, start_hold),
     "self_timing": (OUT0, self_timing),
     "keyboard": (OUT0, keyboard),
+    "nec": (OUT0, nec),
     "sweep": (OUT0, sweep),
     "pio_ws2812": (NEO, pio_ws2812),
     "pio_uart_tx": (OUT0, pio_uart_tx),
