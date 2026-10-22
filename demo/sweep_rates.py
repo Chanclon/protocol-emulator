@@ -77,7 +77,7 @@ class Frame:
     bits: int
     setup: int
     hold: int
-    # samples between leading edges, each frame's
+    # the median samples between leading edges, each frame's
     period: float
     idle_ok: bool
     first_ok: bool
@@ -106,8 +106,9 @@ def frames(samples, mode):
                   for i in sample]
         after = [int(moves[moves > i].min() - i) if (moves > i).any() else 1 << 30
                  for i in sample]
+        # the median, as the firmware's pull between words stretches a few periods
         leading = edges[::2]
-        period = (leading[-1] - leading[0]) / (len(leading) - 1) if len(leading) > 1 else 0
+        period = statistics.median(b - a for a, b in zip(leading, leading[1:])) if len(leading) > 1 else 0
         bytes_ = []
         for line in (mosi, miso):
             bits = [int(line[i]) for i in sample]
@@ -390,6 +391,19 @@ def self_check():
     print("self-check passed")
 
 
+def older_than_sources(bitstream):
+    """Why a bitstream is older than the RTL and pins in its own checkout, or None. A
+    10-01 build met 10-10's firmware, which had moved SCL and SDA, and crossed them."""
+    repo = Path(bitstream).resolve().parent
+    last = subprocess.run(["git", "-C", str(repo), "log", "-1", "--format=%ct %h", "--",
+                           ":/src/protocol_emulator.v", ":/icepi/"],
+                          capture_output=True, text=True).stdout.split()
+    if not last or Path(bitstream).stat().st_mtime >= int(last[0]):
+        return None
+    return "%s is older than %s, which changed the RTL or the Icepi's pins: rebuild it" % (
+        bitstream, last[1])
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("bitstream", nargs="?")
@@ -413,6 +427,9 @@ def main():
             sys.exit("PICO=id:<serial of Pico A> is unset")
         if not Path(args.bitstream).is_file():
             sys.exit("no bitstream %s" % args.bitstream)
+        stale = older_than_sources(args.bitstream)
+        if stale:
+            sys.exit(stale)
     runs = [r for r in RUNS if not args.only or r.name in args.only]
     day = datetime.date.today().isoformat()
     args.runs = args.evidence / day / "sweep-rates"
