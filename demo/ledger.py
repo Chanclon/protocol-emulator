@@ -81,7 +81,8 @@ DEMOS = [
     Demo("sweep", "pico",
          files=("python/demo_self_timing.py", "python/sweep_firmware.py",
                 "python/demo_sweep.py"),
-         run="python/demo_sweep.py", capture_ms=8000),
+         # 12 MS/s: the analyser's USB falls behind at 24 before 8 s are in
+         run="python/demo_sweep.py", capture_ms=8000, rate="12M"),
     # wire 20 never leaves the chip: nothing to capture
     Demo("self_check", "pico",
          files=("python/demo_self_check.py", "test/uart_tx_host_rate.hex",
