@@ -605,6 +605,8 @@ PAGE_STYLE = """
   .proved { color: var(--ok); }
   .unverified, .bad { color: var(--bad); }
   .muted, dd { color: var(--muted); }
+  .headline { display: flex; flex-wrap: wrap; gap: 8px 32px; margin: 16px 0; }
+  .figure { font-size: 1.6rem; font-weight: 600; }
   dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 16px; }
   dd { margin: 0; }
   /* narrow: each row a card, the roles in the markup keep it a table to a screen reader */
@@ -647,6 +649,44 @@ def html_row(r):
             + "</tr>")
 
 
+def headline(rows):
+    """The page's top numbers as (label, figure, run), each from the rows that hold it."""
+    e = html.escape
+    by_target = {r.claim.target: r for r in rows.values()}
+
+    def link(r, text):
+        if r.run is None:
+            return e(text)
+        return f'<a href="{e(r.run["url"])}">{e(text)}</a>'
+
+    def shown(r):
+        return r.status != "not verified"
+
+    cells = []
+    mutants = by_target.get("test/mutate.py")
+    found = mutants and re.match(r"(\d+) of (\d+) mutants killed", mutants.teeth)
+    if found and shown(mutants):
+        cells.append(("Mutants killed", link(mutants, f"{found[1]} of {found[2]}")))
+    proved = [r for r in rows.values() if r.status == "proved for all time"]
+    if proved:
+        runs = [r.run["databaseId"] for r in proved]
+        common = max(set(runs), key=runs.count)
+        newest = next(r for r in proved if r.run["databaseId"] == common)
+        cells.append(("Proofs for all time", link(newest, str(sum(r.passes for r in proved)))))
+    netlist = by_target.get("netlist_equiv netlist_equiv_teeth")
+    if netlist and shown(netlist):
+        cells_of = re.match(r"(\d+) logic cells", netlist.note)
+        cells.append(("Netlist equals RTL", link(netlist, f"{cells_of[1]} cells" if cells_of
+                                                 else f"{netlist.passes} proofs")))
+    for label, target in [("RTL tests", "make -C test; make replay"),
+                          ("Gate-level tests", "tt-gds-action/gl_test; make replay GATES=yes")]:
+        r = by_target.get(target)
+        if r and shown(r):
+            cells.append((label, link(r, str(r.passes))))
+    return "".join(f'<div><div class="figure">{figure}</div><div class="muted">{e(label)}'
+                   "</div></div>" for label, figure in cells)
+
+
 def html_page(rows, now):
     """The claims as one table, for GitHub Pages."""
     e = html.escape
@@ -684,6 +724,7 @@ are under
 <a href="https://github.com/{e(REPO)}#what-is-not-proved">What is not proved</a> in the
 README. Bench measurements are not in CI and not here.
 <a href="https://github.com/{e(REPO)}">Repository</a>, <a href="../playground/">playground</a>.</p>
+<div class="headline">{headline(rows)}</div>
 <p>{e(tally)}.</p>
 <table role="table">
 <thead role="rowgroup"><tr role="row">{heads}</tr></thead>
