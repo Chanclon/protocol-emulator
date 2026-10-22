@@ -49,9 +49,14 @@ def when(stamp):
 @cache
 def runs(workflow):
     """The newest completed runs of [workflow] on main, newest first."""
-    out = gh("run", "list", "-R", REPO, "--workflow", workflow, "--branch", "main",
-             "--status", "completed", "--limit", str(RUNS),
-             "--json", "databaseId,conclusion,createdAt,headSha,url")
+    # the API returns an empty list now and then, so ask again before taking it for none
+    for attempt in range(4):
+        out = gh("run", "list", "-R", REPO, "--workflow", workflow, "--branch", "main",
+                 "--status", "completed", "--limit", str(RUNS),
+                 "--json", "databaseId,conclusion,createdAt,headSha,url")
+        if json.loads(out):
+            break
+        time.sleep(2 ** attempt)
     return json.loads(out)
 
 
