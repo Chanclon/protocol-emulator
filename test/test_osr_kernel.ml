@@ -284,6 +284,8 @@ let%expect_test "what each out sends, in the firmware library" =
     (table_open_drain (verdict (Ok ())) (sends ()))
     (nec_tx (verdict (Ok ())) (sends ()))
     (nec_rx (verdict (Ok ())) (sends ()))
+    (snorble (verdict (Ok ())) (sends ()))
+    (plinkoo (verdict (Ok ())) (sends ()))
     (uart_tx_stream (verdict (Ok ())) (sends ((8 "not a pulled word"))))
     (spi_master_stream (verdict (Ok ()))
      (sends ((4 "not a pulled word") (8 "not a pulled word"))))

@@ -401,6 +401,8 @@ let%expect_test "the kernel on the firmware library, from the analyser's rows" =
     (table_open_drain (verdict (Ok ())))
     (nec_tx (verdict (Ok ())))
     (nec_rx (verdict (Ok ())))
+    (snorble (verdict (Ok ())))
+    (plinkoo (verdict (Ok ())))
     |}]
 ;;
 
@@ -1204,6 +1206,8 @@ let%expect_test "a bound on the jitter of every pin edge, in firmware the kernel
     (table_open_drain (pc 6) (jitter_bound 0) (untimed ()))
     (nec_tx (pc 1) (jitter_bound 0) (untimed ()))
     (nec_rx "writes no pins")
+    (snorble (pc 38) (jitter_bound 0) (untimed (0)))
+    (plinkoo (pc 27) (jitter_bound 0) (untimed (0)))
     (spi_slave_captured "no edge has a deadline" (untimed (0 5))
      (reaction ((pc 5) (at_most 2))))
     |}]

@@ -84,6 +84,8 @@ let%expect_test "the firmware library and its certificates" =
     table_open_drain     112         2      0
     nec_tx                80        22  26989  period 27000, no wrap
     nec_rx                37         4  13493  period 13500, one edge before capture, no wrap
+    snorble               84         5      0  no wrap
+    plinkoo               90        15      0  no wrap
     |}]
 ;;
 

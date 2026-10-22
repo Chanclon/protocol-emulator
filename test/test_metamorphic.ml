@@ -560,23 +560,23 @@ let%expect_test "a delay before a deadline wait takes exactly its slack" =
   print_tallies field_tally;
   [%expect
     {|
-    ("nops before a wait, library" (programs 41) (variants 384)
-     (kernel_checked 77) (accepted 270) (refused 114) (violations_on_accepted 0)
+    ("nops before a wait, library" (programs 43) (variants 407)
+     (kernel_checked 82) (accepted 287) (refused 120) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("nops before a wait, random" (programs 26) (variants 185)
-     (kernel_checked 37) (accepted 130) (refused 55) (violations_on_accepted 0)
+    ("nops before a wait, random" (programs 26) (variants 178)
+     (kernel_checked 36) (accepted 123) (refused 55) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("jump over dead code before a wait, library" (programs 41) (variants 116)
-     (kernel_checked 24) (accepted 97) (refused 19) (violations_on_accepted 0)
+    ("jump over dead code before a wait, library" (programs 43) (variants 122)
+     (kernel_checked 25) (accepted 103) (refused 19) (violations_on_accepted 0)
      (violations_on_refused 0))
     ("jump over dead code before a wait, random" (programs 26) (variants 55)
      (kernel_checked 11) (accepted 45) (refused 10) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("delay field before a wait, library" (programs 34) (variants 217)
-     (kernel_checked 44) (accepted 159) (refused 58) (violations_on_accepted 0)
+    ("delay field before a wait, library" (programs 35) (variants 218)
+     (kernel_checked 44) (accepted 160) (refused 58) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("delay field before a wait, random" (programs 24) (variants 124)
-     (kernel_checked 25) (accepted 90) (refused 34) (violations_on_accepted 0)
+    ("delay field before a wait, random" (programs 24) (variants 117)
+     (kernel_checked 24) (accepted 83) (refused 34) (violations_on_accepted 0)
      (violations_on_refused 0))
     |}]
 ;;
@@ -649,8 +649,8 @@ let%expect_test "dead code changes nothing" =
   print_tallies padding;
   [%expect
     {|
-    ("dead code after a word that never falls through, library" (programs 48)
-     (variants 96) (kernel_checked 20) (accepted 96) (refused 0)
+    ("dead code after a word that never falls through, library" (programs 50)
+     (variants 100) (kernel_checked 20) (accepted 100) (refused 0)
      (violations_on_accepted 0) (violations_on_refused 0))
     ("dead code after a word that never falls through, random" (programs 100)
      (variants 200) (kernel_checked 40) (accepted 52) (refused 148)
@@ -692,11 +692,11 @@ let%expect_test "moving the program in memory changes nothing" =
   print_tallies relocation;
   [%expect
     {|
-    ("program moved in memory, library" (programs 48) (variants 96)
-     (kernel_checked 20) (accepted 96) (refused 0) (violations_on_accepted 0)
+    ("program moved in memory, library" (programs 50) (variants 100)
+     (kernel_checked 20) (accepted 100) (refused 0) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("program moved in memory, random" (programs 100) (variants 199)
-     (kernel_checked 40) (accepted 52) (refused 147) (violations_on_accepted 0)
+    ("program moved in memory, random" (programs 100) (variants 200)
+     (kernel_checked 40) (accepted 52) (refused 148) (violations_on_accepted 0)
      (violations_on_refused 0))
     |}]
 ;;
@@ -779,14 +779,14 @@ let%expect_test "a delay split into the word and a nop changes nothing" =
     ("delay split into the word and a nop, library" (programs 6) (variants 17)
      (kernel_checked 4) (accepted 17) (refused 0) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("delay split into the word and a nop, random" (programs 100) (variants 334)
-     (kernel_checked 67) (accepted 84) (refused 250) (violations_on_accepted 0)
+    ("delay split into the word and a nop, random" (programs 100) (variants 340)
+     (kernel_checked 68) (accepted 84) (refused 256) (violations_on_accepted 0)
      (violations_on_refused 0))
     ("delay of a set x split into it and a nop, library" (programs 0)
      (variants 0) (kernel_checked 0) (accepted 0) (refused 0)
      (violations_on_accepted 0) (violations_on_refused 0))
-    ("delay of a set x split into it and a nop, random" (programs 26)
-     (variants 34) (kernel_checked 7) (accepted 0) (refused 34)
+    ("delay of a set x split into it and a nop, random" (programs 23)
+     (variants 28) (kernel_checked 6) (accepted 0) (refused 28)
      (violations_on_accepted 0) (violations_on_refused 0))
     |}]
 ;;
@@ -908,11 +908,11 @@ let%expect_test "a deadline wait split at an earlier deadline changes nothing af
   print_tallies split;
   [%expect
     {|
-    ("deadline wait split in two, library" (programs 37) (variants 114)
-     (kernel_checked 23) (accepted 72) (refused 42) (violations_on_accepted 0)
+    ("deadline wait split in two, library" (programs 39) (variants 119)
+     (kernel_checked 24) (accepted 76) (refused 43) (violations_on_accepted 0)
      (violations_on_refused 0))
-    ("deadline wait split in two, random" (programs 24) (variants 61)
-     (kernel_checked 13) (accepted 40) (refused 21) (violations_on_accepted 0)
+    ("deadline wait split in two, random" (programs 24) (variants 62)
+     (kernel_checked 13) (accepted 40) (refused 22) (violations_on_accepted 0)
      (violations_on_refused 0))
     |}]
 ;;
@@ -979,8 +979,8 @@ let%expect_test "a longer period lowers no slack and refuses nothing more" =
   print_tallies longer;
   [%expect
     {|
-    ("longer period, library" (programs 38) (variants 93) (kernel_checked 19)
-     (accepted 93) (refused 0) (violations_on_accepted 0)
+    ("longer period, library" (programs 39) (variants 95) (kernel_checked 19)
+     (accepted 95) (refused 0) (violations_on_accepted 0)
      (violations_on_refused 0))
     ("longer period, random" (programs 93) (variants 172) (kernel_checked 35)
      (accepted 46) (refused 126) (violations_on_accepted 0)

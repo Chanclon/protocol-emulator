@@ -112,5 +112,7 @@ let%expect_test "the kernel refuses each row moved by a cycle" =
     (table_open_drain (phase 182) (arm 0) (capture 0) (accepted ()))
     (nec_tx (phase 146) (arm 0) (capture 0) (accepted ()))
     (nec_rx (phase 52) (arm 12) (capture 22) (accepted ()))
+    (snorble (phase 128) (arm 0) (capture 0) (accepted ()))
+    (plinkoo (phase 168) (arm 0) (capture 0) (accepted ()))
     |}]
 ;;
