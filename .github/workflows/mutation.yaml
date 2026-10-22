@@ -45,6 +45,12 @@ env:
   PROOFS: ${{ inputs.proofs }}
   SEED: '20261002'
 
+# twelve shards a run, so a push a later push overtakes is cancelled; a weekly or
+# dispatched run always finishes
+concurrency:
+  group: mutation-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
 jobs:
   plan:
     runs-on: ubuntu-24.04
