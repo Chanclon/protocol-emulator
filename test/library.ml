@@ -20,6 +20,7 @@ let protocols =
   ; Spi_target.protocol
   ; Swd.protocol
   ; Tables.protocol
+  ; Nec.protocol
   ]
 ;;
 

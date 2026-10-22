@@ -479,6 +479,23 @@ let%expect_test "every protocol from its file to the decoded trace" =
     table_open_drain: 112 words, 2 deadline waits, worst slack 0, the kernel accepts it, assuming nothing
 
     limits
+
+    === nec
+
+    certificates
+    nec_tx: 80 words, 22 deadline waits, worst slack 26989, the kernel accepts it, assuming period 27000, a load of 11 or more, no wrap
+    nec_rx: 37 words, 4 deadline waits, worst slack 13493, the kernel accepts it, assuming period 13500, one edge before capture, no wrap
+
+    limits
+    nec_tx: none, no datasheet at hand; Nec.decode holds each mark and space to 5%
+    nec_rx: none, a receiver: it samples, and drives nothing
+
+    lockstep: nec, nec_tx
+    ("lockstep held" (cycles 10408))
+    (received ())
+    decode: test/traces/sigrok/nec.trace, by sigrok's ir_nec:ir=OUT0
+      ir_nec=addr:addr-inv:cmd:cmd-inv: ir_nec-1: Address: 0x04, ir_nec-1: Address#: 0xFB, ir_nec-1: Command: 0x08, ir_nec-1: Command#: 0xF7, ir_nec-1: Address: 0x00, ir_nec-1: Address#: 0xFF, ir_nec-1: Command: 0x45, ir_nec-1: Command#: 0xBA
+      ir_nec=repeat-code: ir_nec-1: Repeat code
     |}]
 ;;
 

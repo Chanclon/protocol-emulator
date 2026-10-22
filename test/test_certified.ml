@@ -82,6 +82,8 @@ let%expect_test "the firmware library and its certificates" =
     swd                  232        52     15  period 25, no wrap
     table                112         2      0
     table_open_drain     112         2      0
+    nec_tx                80        22  26989  period 27000, no wrap
+    nec_rx                37         4  13493  period 13500, one edge before capture, no wrap
     |}]
 ;;
 
@@ -181,5 +183,9 @@ let%expect_test "the least period the host may load" =
     (QED "swd: every load of 10 or more")
     (counterexample "swd: every load of 9 or more"
      (model ((loaded 0000000000001001))))
+    (nec_tx (period (27000)) (floor 11) (passes true) (one_less false))
+    (QED "nec_tx: every load of 11 or more")
+    (counterexample "nec_tx: every load of 10 or more"
+     (model ((loaded 0000000000001010))))
     |}]
 ;;

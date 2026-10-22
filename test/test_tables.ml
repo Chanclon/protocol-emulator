@@ -1110,6 +1110,13 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
       , "-"
       , "1 MHz"
       , "SWDIO turns around, which needs pins and pindirs in one table" )
+    ; ( "nec"
+      , "untried"
+      , "-"
+      , "unit 27000, half 13500"
+      , [%string
+          "a 108 ms frame is at least %{((108 * clock / 1000) + max_hold - 1) / \
+           max_hold#Int} steps, each held at most %{max_hold#Int} cycles"] )
     ]
   in
   let named = List.map rows ~f:(fun (name, _, _, _, _) -> name) in
@@ -1157,5 +1164,7 @@ let%expect_test "which library protocols fit the class, how fast, and why not" =
       library half 14 and up, all four modes; it shifts only while CS is low, and a table's await cannot abort on CS
     swd        no       -
       library 1 MHz; SWDIO turns around, which needs pins and pindirs in one table
+    nec        untried  -
+      library unit 27000, half 13500; a 108 ms frame is at least 83 steps, each held at most 65535 cycles
     |}]
 ;;
