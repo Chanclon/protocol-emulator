@@ -25,4 +25,4 @@ sigrok-cli -i "$out/nec_rx.sr" -P ir_nec:ir=D6 -A ir_nec=addr:addr-inv:cmd:cmd-i
     > "$out/nec_rx.decode"
 (cd "$out" && sha256sum nec_rx.sr nec_rx.log nec_rx.decode > SHA256SUMS)
 cat "$out/nec_rx.log"
-tail -1 "$out/nec_rx.log" | grep -qx PASS
+tail -1 "$out/nec_rx.log" | tr -d "\r" | grep -qx PASS
