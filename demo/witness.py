@@ -591,6 +591,78 @@ def spi(sck, mosi, miso, cs):
     return timing, byte_tooth, edge_tooth
 
 
+# NEC in units of 562.5 us, as test/nec.ml holds it (SB-Projects' page), each mark and space
+# within 5% as Nec.decode takes it, the period at least 5% under its 192
+NEC = "NEC, test/nec.ml's frames and Nec.decode's 5%"
+NEC_UNIT = 562.5e-6
+
+
+def nec(line):
+    def marks(samples):
+        """Each mark, the line low, as (first sample, samples, the space after it)."""
+        found = runs(samples, line)
+        return [(first, n, found[i + 1][2] if i + 1 < len(found) else None)
+                for i, (level, first, n) in enumerate(found) if not level]
+
+    def messages(samples, rate):
+        """Each leader's mark, and the marks after it up to the next leader."""
+        out = []
+        for m in marks(samples):
+            if m[1] > 8 * NEC_UNIT * rate:
+                out.append([m])
+            elif out:
+                out[-1].append(m)
+        return out
+
+    def timing(samples, rate, _capture, _decode, _log):
+        n = {k: [] for k in ["leader mark", "leader space", "repeat space", "bit mark",
+                             "zero space", "one space", "final mark", "period"]}
+        found = messages(samples, rate)
+        for message, after in zip(found, found[1:] + [None]):
+            (start, mark, space), rest = message[0], message[1:]
+            n["leader mark"].append(mark)
+            if space is not None and space < 6 * NEC_UNIT * rate:
+                n["repeat space"].append(space)
+            elif space is not None:
+                n["leader space"].append(space)
+                for _, bit, gap in rest[:32]:
+                    n["bit mark"].append(bit)
+                    if gap is not None:
+                        n["one space" if gap > 2 * NEC_UNIT * rate else "zero space"].append(gap)
+                rest = rest[32:]
+            n["final mark"] += [m for _, m, _ in rest[:1]]
+            if after:
+                n["period"].append(after[0][0] - start)
+        units = {"leader mark": 16, "leader space": 8, "repeat space": 4, "bit mark": 1,
+                 "zero space": 1, "one space": 3, "final mark": 1}
+        records = []
+        for p, k in units.items():
+            spans = [span(w, rate) for w in n[p]]
+            records.append(bound(p, NEC, spans, at_least=0.95 * k * NEC_UNIT))
+            records.append(bound(p, NEC, spans, at_most=1.05 * k * NEC_UNIT))
+        return records + [bound("period", NEC, [span(w, rate) for w in n["period"]],
+                                at_least=0.95 * 192 * NEC_UNIT)]
+
+    def byte_tooth(samples, rate, _capture, _decode):
+        """The first command's bits 3 and 4, a one then a zero, swapped in the same six
+        units: the command reads 0x10."""
+        bits = messages(samples, rate)[0][1:]
+        start, end, unit = bits[19][0], bits[21][0], round(NEC_UNIT * rate)
+        out = changed(samples, line, start, start + unit, 0)
+        out = changed(out, line, start + unit, start + 2 * unit, 1)
+        out = changed(out, line, start + 2 * unit, start + 3 * unit, 0)
+        return (changed(out, line, start + 3 * unit, end, 1),
+                "the first command's bits 3 and 4 swapped")
+
+    def edge_tooth(samples, rate):
+        """The first leader's mark a unit short."""
+        start, mark, _ = messages(samples, rate)[0][0]
+        return (moved(samples, line, start + mark, start + mark - round(NEC_UNIT * rate)),
+                "the first leader mark a unit short", "leader mark")
+
+    return timing, byte_tooth, edge_tooth
+
+
 @dataclass(frozen=True)
 class Demo:
     # demo/outside.sh's sigrok arguments, or demo/ledger.py's
@@ -681,6 +753,12 @@ DEMOS = {
                 ("python/demo_swd.py",), "Pico B's RP2040 as the SWD target", swd(6, 7),
                 ("sigrok misreads the dormant wake and TARGETSEL, so only reads are held to "
                  "the bytes",)),
+    "nec": Demo("-P ir_nec:ir=D4 -A ir_nec=addr:addr-inv:cmd:cmd-inv:repeat-code", "A",
+                {"D4": "OUT0, low for a mark"}, ("NEC_TX",), ("python/demo_nec.py",),
+                "nothing, OUT0 as an IR receiver module's output would be, Pico B idle on it",
+                nec(4),
+                ("NEC has no datasheet table, so its windows are test/nec.ml's frames and "
+                 "Nec.decode's 5%",)),
     "self_timing": Demo("-P uart:rx=D4:baudrate=9600 -A uart=rx-data", "A",
                         {"D4": "OUT0, engine 1's echo of wire 20"},
                         ("test/uart_tx_host_rate.hex", "test/edge_logger_echo.hex"),
