@@ -116,7 +116,7 @@ def outside_line(act):
     """The sigrok arguments a protocol's own demo gives on its "# outside:" line, as
     demo/outside.sh reads them."""
     with open("../python/demo_%s.py" % act) as f:
-        line = next(l for l in f if l.startswith("# outside: "))
+        line = next(ln for ln in f if ln.startswith("# outside: "))
     return line.split("decode=", 1)[1].split()
 
 
