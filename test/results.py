@@ -251,15 +251,25 @@ def green(lines):
 
 
 def mutation(lines):
-    killed = [re.search(r"total: killed (\d+) of (\d+) valid mutants", t) for _, t in lines]
-    killed = [m for m in killed if m]
-    refused = sum(1 for _, t in lines if re.match(r"survived: .*: NOT ALLOWED$", t))
+    """The score job's report: the scope from its env, then test/mutate.py --report."""
+    texts = [t for _, t in lines]
+    killed = [m for m in (re.search(r"total: killed (\d+) of (\d+) valid mutants", t) for t in texts) if m]
+    scope = [m[1] for m in (re.match(r"\s*SCOPE: (\w+)", t) for t in texts) if m]
+    refused = sum(1 for t in texts if re.match(r"survived: .*: NOT ALLOWED$", t))
     if not killed:
         return Result()
     k, n = int(killed[-1][1]), int(killed[-1][2])
     return Result(wrong=refused,
                   teeth_note=f"{k} of {n} mutants killed; of the {n - k} survivors "
-                  f"{n - k - refused} allowed with a reason, {refused} not")
+                  f"{n - k - refused} allowed with a reason, {refused} not"
+                  + (f"; {scope[-1]} scope" if scope else ""))
+
+
+def engine_scope(found):
+    """True if a shard skipped the proof tools, which every scope but engine installs."""
+    shards = [j for j in found if j["name"].startswith("mutate (")]
+    return any(s["name"] == "Install OSS CAD Suite" and s["conclusion"] == "skipped"
+               for j in shards for s in j["steps"])
 
 
 def split(lines):
@@ -295,9 +305,13 @@ def status_word(status):
 
 class Claim:
     def __init__(self, text, workflow, job, target, read, step=None, teeth_note="",
-                 status="proved for all time"):
+                 status="proved for all time", reads=lambda job: True,
+                 accept=lambda found: True):
         self.text, self.workflow, self.job, self.target = text, workflow, job, target
         self.read, self.step, self.teeth_note, self.status = read, step, teeth_note, status
+        # [reads]: the jobs whose logs hold the check, the rest only have to be green;
+        # [accept]: whether a run with these jobs is the claim's
+        self.reads, self.accept = reads, accept
 
     def jobs_of(self, run):
         found = [j for j in jobs(run["databaseId"]) if self.job(j["name"])]
@@ -321,7 +335,7 @@ class Claim:
             found = self.jobs_of(run)
             if found and latest is None:
                 latest = (run, found)
-            if self.ok(found):
+            if self.ok(found) and self.accept(found):
                 return run, found, True
         return (*latest, False) if latest else (None, [], False)
 
@@ -476,8 +490,10 @@ CLAIMS = [
                                      "{} of {} protocols")),
               step="Decode the gate level's traces with sigrok", status="simulated"),
         Claim("Every textual mutant of the engine, decoder, pins and host port is killed by "
-              "the tests, or allowed with a reason", "mutation", exactly("mutate"),
-              "test/mutate.py", mutation, status="tested"),
+              "the tests, or allowed with a reason", "mutation",
+              lambda job: job == "score" or job.startswith("mutate ("),
+              "test/mutate.py", mutation, status="tested", reads=exactly("score"),
+              accept=engine_scope),
     ]),
 ]
 
@@ -525,6 +541,9 @@ def row(claim):
         return Row(claim)
     result = Result(time=0.0)
     for job in found:
+        if not claim.reads(job["name"]):
+            result.time += seconds(job)
+            continue
         r = claim.read(step_lines(job, claim.step))
         if r.time is None:
             r.time = seconds(job, claim.step)
