@@ -2,7 +2,7 @@
 # NEC infrared from the library's transmitter (MicroPython, Pico A): OUT0 low for a mark, as
 # an IR receiver module's output, which analyser A's D4 and Pico B's GP1 see. A key held for
 # two repeat codes, then two keys tapped, a frame or repeat code every 108 ms.
-# outside: analyser=A ms=2000 decode=-P ir_nec:ir=D4 -A ir_nec=addr:addr-inv:cmd:cmd-inv:repeat-code
+# outside: analyser=A ms=4000 decode=-P ir_nec:ir=D4 -A ir_nec=addr:addr-inv:cmd:cmd-inv:repeat-code
 
 import bench
 import bench_firmware
