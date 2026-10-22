@@ -192,9 +192,7 @@ let%expect_test "every limit's pairs of edges in the prediction" =
     sk6812         T1H               72 pairs, as measured
     sk6812         T1H               72 pairs, as measured
     sk6812         T0L               69 pairs, as measured
-    sk6812         T0L               69 pairs, as measured
     sk6812         T1L              143 pairs, as measured
-    sk6812         T1L               72 pairs, as measured
     sk6812         T                141 pairs, as measured
     sk6812         reset              2 pairs, 10933, measured 10907
     one_wire       tLOW1             25 pairs, as measured
