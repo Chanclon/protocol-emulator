@@ -350,25 +350,35 @@ def check(demo, directory):
     d = Path(directory)
     if name not in CHECKS:
         return []
-    channels, make = CHECKS[name]
     if not (d / (name + ".sr")).exists():
         return ["no capture %s" % (d / (name + ".sr"))]
     try:
         _, _, samples = sigrok.read(d / (name + ".sr"))
     except (OSError, KeyError, ValueError, zipfile.BadZipFile) as e:
         return ["the capture %s does not read: %s" % (d / (name + ".sr"), e)]
-    levels = {c: line(samples, c) for c in channels}
+    levels = lines(name, samples)
     del samples
+    decode, log = d / (name + ".decode"), d / (name + ".log")
+    decoded = decode.read_text(errors="replace").splitlines() if decode.exists() else []
+    return judge(name, levels, decoded, log.read_text(errors="replace") if log.exists() else "")
+
+
+def lines(name, samples):
+    """line() of each of the demo's analyser channels."""
+    return {c: line(samples, c) for c in CHECKS[name][0]}
+
+
+def judge(name, levels, decoded, log):
+    """What the demo's traffic lacks, from its channels' lines(), sigrok's decode and Pico
+    A's log."""
+    channels, make = CHECKS[name]
     # a line that never moves explains whatever the decode lacks
     stuck = ["D%d (%s) never changes in the capture: %s throughout" % (
         c, what, "no samples" if first is None else "high" if first else "low")
         for c, what in channels.items() for edges, first, _ in [levels[c]] if not edges]
     if stuck:
         return stuck
-    judge = make(levels)
-    decode, log = d / (name + ".decode"), d / (name + ".log")
-    decoded = decode.read_text(errors="replace").splitlines() if decode.exists() else []
-    return judge(decoded, log.read_text(errors="replace") if log.exists() else "")
+    return make(levels)(decoded, log)
 
 
 def main():
