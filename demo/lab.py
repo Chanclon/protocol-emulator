@@ -107,7 +107,8 @@ class Spool:
 class Issues:
     """What `gh issue list --label lab --json number,author,createdAt,body` printed, saved
     to FILE by whatever fetched it: a job is the body's first ```json block. Read only;
-    the issues answered are kept in RESULTS/issues_taken."""
+    the issues answered are kept in RESULTS/issues_taken. Anyone can open an issue on a
+    public repo, so the fetch should take only a label the owner sets or authors they allow."""
 
     FENCE = re.compile(r"```json\s*\n(.*?)\n```", re.S)
 
